@@ -19,26 +19,26 @@ function calculateParagraphLines() {
 }
 
 const hasMoreThanTwoLines = ref(false);
-const isOverflowingTextHidden = ref(false);
+const isOverflowingTextHidden = ref(true);
 
 // Clamp the paragraph to 2 lines if
 // 1. The paragraph has more than 2 lines
 // 2. The overflow is not hidden
 const classObject = computed(() => {
   return {
-    "line-clamp-2": hasMoreThanTwoLines.value && !isOverflowingTextHidden.value,
+    "line-clamp-2": hasMoreThanTwoLines.value && isOverflowingTextHidden.value,
   };
 });
 
 const recalculateParagraphLines = () => {
-  hasMoreThanTwoLines.value = calculateParagraphLines() > 2;
+  const oldValue = hasMoreThanTwoLines.value;
+  const nextValue = calculateParagraphLines() > 2;
 
-  // If the overflow is hidden and the paragraph has less than 2 lines
-  // Reset the overflow to visible (nothing is hidden)
-  // This is necessary when the window is resized from a smaller size to a larger size
+  hasMoreThanTwoLines.value = nextValue;
 
-  if (isOverflowingTextHidden.value && !hasMoreThanTwoLines.value) {
-    isOverflowingTextHidden.value = false;
+  // Reset the overflow state if the paragraph has less than 2 lines after resizing
+  if (oldValue && !nextValue) {
+    isOverflowingTextHidden.value = true;
   }
 };
 
