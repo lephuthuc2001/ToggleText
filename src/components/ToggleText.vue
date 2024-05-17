@@ -30,7 +30,7 @@ const classObject = computed(() => {
   };
 });
 
-const recalculateParagraphLines = () => {
+const checkParagraphLines = () => {
   const oldValue = hasMoreThanTwoLines.value;
   const nextValue = calculateParagraphLines() > 2;
 
@@ -48,15 +48,15 @@ const toggleOverflowingText = () => {
 
 // Update the hasMoreThanTwoLines value when the component is mounted
 onMounted(() => {
-  recalculateParagraphLines();
+  checkParagraphLines();
 
   // Update the hasMoreThanTwoLines value when the window is resized
-  window.addEventListener("resize", recalculateParagraphLines);
+  window.addEventListener("resize", checkParagraphLines);
 });
 
 // Remove the event listener when the component is unmounted
 onUnmounted(() => {
-  window.removeEventListener("resize", recalculateParagraphLines);
+  window.removeEventListener("resize", checkParagraphLines);
 });
 </script>
 
