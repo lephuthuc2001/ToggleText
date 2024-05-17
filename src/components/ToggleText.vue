@@ -23,7 +23,7 @@ const isOverflowingTextHidden = ref(true);
 
 // Clamp the paragraph to 2 lines if
 // 1. The paragraph has more than 2 lines
-// 2. The overflow is not hidden
+// 2. We want to hide the overflowing text
 const classObject = computed(() => {
   return {
     "line-clamp-2": hasMoreThanTwoLines.value && isOverflowingTextHidden.value,
