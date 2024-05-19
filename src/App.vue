@@ -1,12 +1,14 @@
 <template>
-  <h1>Week 4 - Mentorship Program</h1>
-  <hr />
-  <h2>Toggle Text component</h2>
-  <ToggleText>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore obcaecati
-    quis quae. Quaerat saepe, reiciendis ut rerum corrupti distinctio amet
-    cupiditate ratione voluptatem est asperiores sint vero eius, maxime iste?
-  </ToggleText>
+  <main class="min-h-screen p-6">
+    <h1>Week 4 - Mentorship Program</h1>
+    <hr />
+    <h2>Toggle Text component</h2>
+    <ToggleText>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore obcaecati
+      quis quae. Quaerat saepe, reiciendis ut rerum corrupti distinctio amet
+      cupiditate ratione voluptatem est asperiores sint vero eius, maxime iste?
+    </ToggleText>
+  </main>
 </template>
 
 <script setup>
