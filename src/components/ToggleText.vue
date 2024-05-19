@@ -1,89 +1,69 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 
-// Function that calculate the number of lines of the toggleable paragraph
-function calculateParagraphLines() {
-  const customParagraph = document.querySelector(".custom-paragraph");
-
-  if (customParagraph) {
-    // Get the height of each line of the paragraph
-    const lineHeight = parseInt(
-      window.getComputedStyle(customParagraph).lineHeight
-    );
-
-    // Get the full height of the paragraph (not just the visible part - (clientHeight))
-    const height = customParagraph.scrollHeight;
-
-    return Math.round(height / lineHeight);
-  }
-}
-
+// Refs
+const paragraphRef = ref(null);
 const hasMoreThanTwoLines = ref(false);
 const isOverflowingTextHidden = ref(true);
+const maxHeightOfVisibleText = ref(0);
 
-// Clamp the paragraph to 2 lines if
-// 1. The paragraph has more than 2 lines
-// 2. We want to hide the overflowing text
-const classObject = computed(() => {
-  return {
-    "line-clamp-2": hasMoreThanTwoLines.value && isOverflowingTextHidden.value,
-  };
-});
-
-const checkParagraphLines = () => {
-  const oldValue = hasMoreThanTwoLines.value;
-  const nextValue = calculateParagraphLines() > 2;
-
-  hasMoreThanTwoLines.value = nextValue;
-
-  // Reset the overflow state if the paragraph has less than 2 lines after resizing
-  if (oldValue && !nextValue) {
-    isOverflowingTextHidden.value = true;
-  }
-};
-
+// Toggle the visibility of overflowing text
 const toggleOverflowingText = () => {
   isOverflowingTextHidden.value = !isOverflowingTextHidden.value;
 };
 
-// Update the hasMoreThanTwoLines value when the component is mounted
-onMounted(() => {
-  checkParagraphLines();
-
-  // Update the hasMoreThanTwoLines value when the window is resized
-  window.addEventListener("resize", checkParagraphLines);
+// Watch for changes in the visibility of overflowing text
+watch(isOverflowingTextHidden, () => {
+  paragraphRef.value.classList.toggle("line-clamp-2");
 });
 
-// Remove the event listener when the component is unmounted
+const resizeObserver = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    if (entry.target !== paragraphRef.value) continue;
+
+    if (paragraphRef.value.scrollHeight === maxHeightOfVisibleText.value) {
+      hasMoreThanTwoLines.value = false;
+      isOverflowingTextHidden.value = true;
+    } else {
+      hasMoreThanTwoLines.value = true;
+    }
+
+    break;
+  }
+});
+
+onMounted(function () {
+  // Set the maximum visible height of the text
+  maxHeightOfVisibleText.value = paragraphRef.value.clientHeight;
+
+  hasMoreThanTwoLines.value =
+    maxHeightOfVisibleText.value < paragraphRef.value.scrollHeight;
+
+  resizeObserver.observe(paragraphRef.value);
+});
+
 onUnmounted(() => {
-  window.removeEventListener("resize", checkParagraphLines);
+  resizeObserver.disconnect();
 });
 </script>
 
 <template>
   <div>
-    <p class="custom-paragraph" :class="classObject">
+    <p
+      ref="paragraphRef"
+      class="outline-2 outline-offset-2 outline-red outline-dotted line-clamp-2"
+    >
       <slot />
     </p>
-    <div>
-      <button v-if="hasMoreThanTwoLines" @click="toggleOverflowingText">
-        Toggle
-      </button>
-    </div>
+
+    <button
+      class="block"
+      v-if="hasMoreThanTwoLines"
+      @click="toggleOverflowingText"
+    >
+      {{ isOverflowingTextHidden ? "Expand" : "Show less" }}
+    </button>
   </div>
 </template>
 
-<style scoped>
-.custom-paragraph {
-  line-height: 1.5;
-  text-wrap: pretty;
-  outline: dashed red;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>
+<style scoped></style>
