@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted } from "vue";
-
+import vColor from "../directives/color";
 // Refs
 const paragraphRef = ref(null);
 const hasMoreThanTwoLines = ref(false);
@@ -49,16 +49,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col gap-2">
     <p
       ref="paragraphRef"
       class="outline-2 outline-offset-2 outline-red outline-dotted line-clamp-2"
+      v-color="{ outlineColor: hasMoreThanTwoLines ? 'red' : 'blue' }"
     >
       <slot />
     </p>
 
     <button
-      class="block"
+      class="block mx-auto w-fit border border-gray-300 rounded-md px-2 py-1 bg-orange-600 text-white"
       v-if="hasMoreThanTwoLines"
       @click="toggleOverflowingText"
     >

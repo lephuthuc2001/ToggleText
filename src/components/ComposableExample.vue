@@ -1,6 +1,7 @@
 <script setup>
 import useFetch from "../composables/useFetch";
 import { ref, computed, onUpdated } from "vue";
+import vFocus from "../directives/focus";
 
 const name = ref("");
 
@@ -21,6 +22,7 @@ function handleSubmit(event) {
     <form v-on:submit.prevent="handleSubmit">
       <label for="name" class="block mb-2">Name:</label>
       <input
+        v-focus
         type="text"
         name="name"
         id="name"

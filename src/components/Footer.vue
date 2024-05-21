@@ -1,5 +1,5 @@
 <template>
-  <footer class="mt-auto">
+  <footer class="mt-auto pt-4">
     <p class="text-center">{{ time }}</p>
   </footer>
 </template>
