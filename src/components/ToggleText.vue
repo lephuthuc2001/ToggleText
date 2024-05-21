@@ -21,7 +21,8 @@ const resizeObserver = new ResizeObserver((entries) => {
   for (const entry of entries) {
     if (entry.target !== paragraphRef.value) continue;
 
-    if (paragraphRef.value.scrollHeight === maxHeightOfVisibleText.value) {
+    // If total height <= 2 lines, do not show the toggle button
+    if (paragraphRef.value.scrollHeight <= maxHeightOfVisibleText.value) {
       hasMoreThanTwoLines.value = false;
       isOverflowingTextHidden.value = true;
     } else {
