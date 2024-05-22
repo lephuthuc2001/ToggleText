@@ -57,7 +57,7 @@ onUnmounted(() => {
     </p>
 
     <button
-      class="block mx-auto w-fit border border-gray-300 rounded-md px-2 py-1 bg-orange-600 text-white"
+      class="block mx-auto w-fit btn"
       v-if="hasMoreThanTwoLines"
       @click="toggleOverflowingText"
     >

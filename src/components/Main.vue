@@ -1,20 +1,20 @@
 <template>
   <main class="flex flex-col gap-4">
-    <ComposableExample />
-    <hr />
-    <div>
-      <h2 class="mb-4">Toggle Text component</h2>
+    <section>
+      <h2 class="mb-4 text-xl">Toggle Text component</h2>
       <ToggleText>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
         obcaecati quis quae. Quaerat saepe, reiciendis ut rerum corrupti
         distinctio amet cupiditate ratione voluptatem est asperiores sint vero
         eius, maxime iste?
       </ToggleText>
-    </div>
+    </section>
 
     <hr />
-    <h2 class="text-2xl">Test SLOTS</h2>
-    <div class="flex gap-4 flex-wrap">
+    <ComposableExample />
+    <hr />
+    <h2 class="text-xl">Test SLOTS</h2>
+    <section class="flex gap-4 flex-wrap">
       <Banner />
       <Banner>
         <template #header>
@@ -52,7 +52,9 @@
           <strong class="text-orange-600">{{ discount }}%</strong> off is NICE
         </template>
       </Banner>
-    </div>
+    </section>
+    <hr />
+    <AnimationTechniquesExample />
   </main>
 </template>
 
@@ -60,6 +62,8 @@
 import ToggleText from "./ToggleText.vue";
 import ComposableExample from "./ComposableExample.vue";
 import Banner from "./Banner.vue";
+import AnimationTechniquesExample from "./AnimationTechniquesExample.vue";
+
 import { ref, computed } from "vue";
 
 const discountPercent = 50;
