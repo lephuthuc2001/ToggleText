@@ -1,32 +1,23 @@
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from "vue";
-import vColor from "../directives/color";
+import { ref, onMounted, onUnmounted, watchEffect } from "vue";
+
 // Refs
 const paragraphRef = ref(null);
 const hasMoreThanTwoLines = ref(false);
 const isOverflowingTextHidden = ref(true);
-const maxHeightOfVisibleText = ref(0);
+const lineHeight = ref(0);
 
 // Toggle the visibility of overflowing text
 const toggleOverflowingText = () => {
   isOverflowingTextHidden.value = !isOverflowingTextHidden.value;
 };
 
-// Watch for changes in the visibility of overflowing text
-watch(isOverflowingTextHidden, () => {
-  paragraphRef.value.classList.toggle("line-clamp-2");
-});
-
 const resizeObserver = new ResizeObserver((entries) => {
   for (const entry of entries) {
     if (entry.target !== paragraphRef.value) continue;
 
-    // Reset the maximum visible height of the text
-    // Since this changes on resize
-    maxHeightOfVisibleText.value = paragraphRef.value.clientHeight;
-
     // If total height <= 2 lines, do not show the toggle button
-    if (paragraphRef.value.scrollHeight <= maxHeightOfVisibleText.value) {
+    if (paragraphRef.value.scrollHeight <= 2 * lineHeight.value) {
       hasMoreThanTwoLines.value = false;
       isOverflowingTextHidden.value = true;
     } else {
@@ -37,12 +28,15 @@ const resizeObserver = new ResizeObserver((entries) => {
   }
 });
 
-onMounted(function () {
-  // Set the maximum visible height of the text
-  maxHeightOfVisibleText.value = paragraphRef.value.clientHeight;
+onMounted(() => {
+  // Get the line height of the paragraph
+  lineHeight.value = parseInt(
+    window.getComputedStyle(paragraphRef.value).lineHeight
+  );
 
+  // Check if the paragraph has more than 2 lines
   hasMoreThanTwoLines.value =
-    maxHeightOfVisibleText.value < paragraphRef.value.scrollHeight;
+    paragraphRef.value.scrollHeight > 2 * lineHeight.value;
 
   resizeObserver.observe(paragraphRef.value);
 });
@@ -56,8 +50,8 @@ onUnmounted(() => {
   <div class="flex flex-col gap-2">
     <p
       ref="paragraphRef"
-      class="outline-2 outline-offset-2 outline-red outline-dotted line-clamp-2"
-      v-color="{ outlineColor: hasMoreThanTwoLines ? 'red' : 'blue' }"
+      class="outline-2 outline-offset-2 outline-red outline-dotted"
+      :class="{ 'line-clamp-2': isOverflowingTextHidden }"
     >
       <slot />
     </p>
