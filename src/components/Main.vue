@@ -55,6 +55,8 @@
     </section>
     <hr />
     <AnimationTechniquesExample />
+    <hr />
+    <InputBindingTest />
   </main>
 </template>
 
@@ -63,7 +65,7 @@ import ToggleText from "./ToggleText.vue";
 import ComposableExample from "./ComposableExample.vue";
 import Banner from "./Banner.vue";
 import AnimationTechniquesExample from "./AnimationTechniquesExample.vue";
-
+import InputBindingTest from "./InputBindingTest.vue";
 import { ref, computed } from "vue";
 
 const discountPercent = 50;
