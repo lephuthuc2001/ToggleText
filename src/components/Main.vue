@@ -2,18 +2,34 @@
   <main class="flex flex-col gap-4">
     <h1 class="text-2xl font-bold">Covid-19 Statistics</h1>
 
-    <DataGrid />
     <p v-if="isLoading">Loading data ...</p>
     <p v-else-if="error">{{ error }}</p>
-    <p v-else-if="data">{{ data[0] }}</p>
+    <DataGrid v-if="data" :dataSource="dataSource" />
   </main>
 </template>
 
 <script setup>
+import { computed, onUpdated } from "vue";
 import useFetchCovidStatistics from "../composables/useFetchCovidStatistics";
 import DataGrid from "./DataGrid.vue";
 
 const { data, error, isLoading } = useFetchCovidStatistics();
+
+function transformData(data) {
+  return data.map((item) => {
+    return {
+      continent: item.continent,
+      country: item.country,
+      population: item.population,
+      cases: item.cases.total,
+      deaths: item.deaths.total,
+    };
+  });
+}
+
+const dataSource = computed(() => {
+  return transformData(data.value);
+});
 </script>
 
 <style scoped></style>

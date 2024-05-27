@@ -1,55 +1,95 @@
 <template>
-  <div>
+  <div class="overflow-auto">
     <div class="flex gap-2 justify-end items-baseline mb-4">
-      <form>
+      <form @submit.prevent>
         <input
           id="search"
+          name="search"
           type="text"
           class="border border-slate-600 p-2 rounded"
           placeholder="Search..."
+          :value="searchTerm"
+          @input="debouncedHandleSearchTerm"
         />
       </form>
     </div>
     <table
       role="grid"
-      class="table-fixed border-collapse border-spacing-4 border border-black w-full"
+      class="border-collapse border-spacing-4 border border-black w-full"
     >
-      <caption class="caption-bottom">
-        Table Caption
+      <caption v-if="caption" class="caption-bottom">
+        {{
+          caption
+        }}
       </caption>
       <thead>
         <tr>
-          <th class="border border-slate-600 p-4">Column 1</th>
-          <th class="border border-slate-600 p-4">Column 2</th>
-          <th class="border border-slate-600 p-4">Column 3</th>
+          <th class="border border-slate-700 p-4"></th>
+          <th
+            scope="col"
+            v-for="item in header"
+            :key="item"
+            class="border border-slate-700 p-4"
+          >
+            {{ item }}
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="border border-slate-700 p-4">Row 1, Column 1</td>
-          <td class="border border-slate-700 p-4">Row 1, Column 2</td>
-          <td class="border border-slate-700 p-4">Row 1, Column 3</td>
-        </tr>
-        <tr>
-          <td class="border border-slate-700 p-4">Row 2, Column 1</td>
-          <td class="border border-slate-700 p-4">Row 2, Column 2</td>
-          <td class="border border-slate-700 p-4">Row 2, Column 3</td>
-        </tr>
-        <tr>
-          <td class="border border-slate-700 p-4">Row 3, Column 1</td>
-          <td class="border border-slate-700 p-4">Row 3, Column 2</td>
-          <td class="border border-slate-700 p-4">Row 3, Column 3</td>
+        <tr v-for="(row, index) in content" :key="Object.values(row).join('-')">
+          <td class="border border-slate-700 p-4">{{ index + 1 }}</td>
+          <td v-for="column in header" class="border border-slate-700 p-4">
+            {{ row[column] }}
+          </td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <td class="border border-slate-700 p-4" colspan="3">Footer</td>
+          <td class="border border-slate-700 p-4" :colspan="header.length + 1">
+            Footer
+          </td>
         </tr>
       </tfoot>
     </table>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, onUpdated, unref, toValue } from "vue";
+import useSearch from "../composables/useSearch";
+import debounce from "lodash/debounce";
 
-<style lang="scss" scoped></style>
+const { dataSource, caption } = defineProps({
+  dataSource: {
+    required: true,
+    type: Array,
+  },
+  caption: {
+    type: String,
+  },
+});
+
+const header = Object.keys(dataSource[0]);
+const content = ref(JSON.parse(JSON.stringify(dataSource)));
+
+const { search } = useSearch(dataSource, header);
+
+const searchTerm = ref("");
+
+function handleSearchTermChange(event) {
+  searchTerm.value = event.target.value;
+
+  if (!event.target.value) {
+    content.value = dataSource;
+    return;
+  } else {
+    content.value = search(event.target.value).map((item) => {
+      return item.item;
+    });
+  }
+}
+
+const debouncedHandleSearchTerm = debounce(handleSearchTermChange, 200);
+</script>
+
+<style lang="css" scoped></style>
