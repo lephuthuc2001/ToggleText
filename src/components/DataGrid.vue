@@ -27,11 +27,54 @@
           <th class="border border-slate-700 p-4"></th>
           <th
             scope="col"
-            v-for="item in header"
-            :key="item"
+            v-for="label in header"
+            :key="label"
             class="border border-slate-700 p-4"
           >
-            {{ item }}
+            <button
+              class="w-full"
+              v-if="!find(sortCondition, { column: label })"
+              @click="
+                (event) => {
+                  sortCondition.push({
+                    column: label,
+                    order: 'asc',
+                  });
+                }
+              "
+            >
+              {{ label }}
+            </button>
+
+            <button
+              v-if="find(sortCondition, { column: label, order: 'asc' })"
+              class="w-full"
+              @click="
+                (event) => {
+                  const index = sortCondition.findIndex(
+                    (condition) =>
+                      condition.column === label && condition.order === 'asc'
+                  );
+                  sortCondition[index].order = 'desc';
+                }
+              "
+            >
+              {{ label }} asc
+            </button>
+
+            <button
+              v-if="find(sortCondition, { column: label, order: 'desc' })"
+              class="w-full"
+              @click="
+                (event) => {
+                  sortCondition = sortCondition.filter(
+                    (condition) => condition.column !== label
+                  );
+                }
+              "
+            >
+              {{ label }} desc
+            </button>
           </th>
         </tr>
       </thead>
@@ -55,9 +98,11 @@
 </template>
 
 <script setup>
-import { ref, onUpdated, unref, toValue } from "vue";
+import { ref, onUpdated, unref, toValue, watchEffect } from "vue";
 import useSearch from "../composables/useSearch";
 import debounce from "lodash/debounce";
+import find from "lodash/find";
+import orderBy from "lodash/orderBy";
 
 const { dataSource, caption } = defineProps({
   dataSource: {
@@ -72,24 +117,39 @@ const { dataSource, caption } = defineProps({
 const header = Object.keys(dataSource[0]);
 const content = ref(JSON.parse(JSON.stringify(dataSource)));
 
+// Handle Search
 const { search } = useSearch(dataSource, header);
-
 const searchTerm = ref("");
 
+// Refactored search term change handler
 function handleSearchTermChange(event) {
   searchTerm.value = event.target.value;
-
-  if (!event.target.value) {
-    content.value = dataSource;
-    return;
-  } else {
-    content.value = search(event.target.value).map((item) => {
-      return item.item;
-    });
-  }
 }
 
 const debouncedHandleSearchTerm = debounce(handleSearchTermChange, 200);
+
+// Handle Sort
+const sortCondition = ref([]);
+
+function sortData(data) {
+  if (sortCondition.value.length === 0) {
+    return data;
+  }
+
+  return orderBy(
+    data,
+    sortCondition.value.map((condition) => condition.column),
+    sortCondition.value.map((condition) => condition.order)
+  );
+}
+
+watchEffect(function () {
+  const data = searchTerm.value
+    ? search(searchTerm.value).map((item) => item.item)
+    : dataSource;
+
+  content.value = sortData(data);
+});
 </script>
 
 <style lang="css" scoped></style>
