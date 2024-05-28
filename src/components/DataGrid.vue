@@ -23,16 +23,16 @@
         }}
       </caption>
       <thead>
-        <tr>
-          <th class="border border-slate-700 p-4"></th>
+        <tr class="hover:bg-slate-200">
+          <th class="border border-slate-700 px-4 h-12"></th>
           <th
             scope="col"
             v-for="label in header"
             :key="label"
-            class="border border-slate-700 p-4"
+            class="border border-slate-700 px-4 h-12"
           >
             <button
-              class="w-full"
+              class="w-full text-left text-slate-600 font-medium"
               v-if="!find(sortCondition, { column: label })"
               @click="
                 (event) => {
@@ -48,7 +48,7 @@
 
             <button
               v-if="find(sortCondition, { column: label, order: 'asc' })"
-              class="w-full"
+              class="w-full text-left"
               @click="
                 (event) => {
                   const index = sortCondition.findIndex(
@@ -64,7 +64,7 @@
 
             <button
               v-if="find(sortCondition, { column: label, order: 'desc' })"
-              class="w-full"
+              class="w-full text-left"
               @click="
                 (event) => {
                   sortCondition = sortCondition.filter(
@@ -79,7 +79,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, index) in content" :key="Object.values(row).join('-')">
+        <tr
+          class="hover:bg-slate-200"
+          v-for="(row, index) in content"
+          :key="Object.values(row).join('-')"
+        >
           <td class="border border-slate-700 p-4">{{ index + 1 }}</td>
           <td v-for="column in header" class="border border-slate-700 p-4">
             {{ row[column] }}
