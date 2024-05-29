@@ -1,10 +1,12 @@
 <template>
-  <main class="flex flex-col gap-4">
+  <main>
     <h1 class="text-2xl font-bold">Covid-19 Statistics</h1>
 
     <p v-if="isLoading">Loading data ...</p>
     <p v-else-if="error">{{ error }}</p>
-    <DataGrid v-if="data" :dataSource="dataSource" />
+    <section class="max-w-screen-lg mx-auto">
+      <DataGrid v-if="data" :dataSource="dataSource" />
+    </section>
   </main>
 </template>
 
