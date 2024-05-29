@@ -81,7 +81,7 @@
       <tbody>
         <tr
           class="hover:bg-slate-200"
-          v-for="(row, index) in content"
+          v-for="(row, index) in visibleContent"
           :key="Object.values(row).join('-')"
         >
           <td class="border border-slate-700 p-4">{{ index + 1 }}</td>
@@ -90,10 +90,33 @@
           </td>
         </tr>
       </tbody>
-      <tfoot>
+      <tfoot v-if="content.length > paginationState.pageSize">
         <tr>
           <td class="border border-slate-700 p-4" :colspan="header.length + 1">
-            Footer
+            <div class="flex gap-2">
+              <span class="flex-grow"
+                >Page {{ paginationState.pageIndex + 1 }}</span
+              >
+              <div class="flex gap-2">
+                <button
+                  :disabled="paginationState.pageIndex === 0"
+                  class="rounded border border-black py-1 px-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  @click="previousPage"
+                >
+                  Previous
+                </button>
+                <button
+                  :disabled="
+                    content.length <
+                    paginationState.pageSize * (paginationState.pageIndex + 1)
+                  "
+                  class="rounded border border-black py-1 px-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  @click="nextPage"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </td>
         </tr>
       </tfoot>
@@ -102,7 +125,15 @@
 </template>
 
 <script setup>
-import { ref, onUpdated, unref, toValue, watchEffect } from "vue";
+import {
+  ref,
+  onUpdated,
+  unref,
+  toValue,
+  watchEffect,
+  watch,
+  computed,
+} from "vue";
 import useSearch from "../composables/useSearch";
 import debounce from "lodash/debounce";
 import find from "lodash/find";
@@ -128,6 +159,9 @@ const searchTerm = ref("");
 // Refactored search term change handler
 function handleSearchTermChange(event) {
   searchTerm.value = event.target.value;
+
+  // Reset pagination
+  paginationState.value.pageIndex = 0;
 }
 
 const debouncedHandleSearchTerm = debounce(handleSearchTermChange, 200);
@@ -154,6 +188,40 @@ watchEffect(function () {
 
   content.value = sortData(data);
 });
+
+// Pagination
+// Page Size
+// Page Index (state)
+
+const paginationState = ref({
+  pageSize: 10,
+  pageIndex: 0,
+});
+
+// Next page
+
+function nextPage() {
+  paginationState.value.pageIndex++;
+}
+
+// Previous page
+
+function previousPage() {
+  paginationState.value.pageIndex--;
+}
+
+const visibleContent = computed(() => {
+  return content.value.slice(
+    paginationState.value.pageIndex * paginationState.value.pageSize,
+    (paginationState.value.pageIndex + 1) * paginationState.value.pageSize
+  );
+});
+
+// Last Page
+// First page
+// Last page
+
+// How many rows to show per page
 </script>
 
 <style lang="css" scoped></style>
