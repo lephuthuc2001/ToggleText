@@ -33,14 +33,14 @@
                     :rotate="270"
                     :class="{
                       'text-gray-400': true,
-                      'text-md': true,
+                      'text-lg': true,
                     }"
                   />
                   <SortAscendingOutlined
                     v-else-if="isSortActive(column) && isSortAscending(column)"
                     :class="{
                       'text-blue-600': true,
-                      'text-md': true,
+                      'text-lg': true,
                     }"
                   />
 
@@ -48,7 +48,7 @@
                     v-else-if="isSortActive(column) && !isSortAscending(column)"
                     :class="{
                       'text-blue-600': true,
-                      'text-md': true,
+                      'text-lg': true,
                     }"
                   />
                 </button>
