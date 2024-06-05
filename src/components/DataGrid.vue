@@ -1,145 +1,144 @@
 <template>
-  <div class="overflow-auto">
-    <div class="flex gap-2 justify-end items-baseline mb-4">
-      <form @submit.prevent>
+  <div class="p-5 relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="pb-4 bg-white ml-auto">
+      <label for="table-search" class="sr-only">Search</label>
+      <div class="relative mt-1">
         <input
-          id="search"
-          name="search"
           type="text"
-          class="border border-slate-600 p-2 rounded"
+          id="table-search"
+          class="block py-2 ps-4 ml-auto text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search..."
           :value="searchTerm"
-          @input="debouncedHandleSearchTerm"
+          @input="handleSearchTermChange"
         />
-      </form>
+      </div>
     </div>
-    <table
-      role="grid"
-      class="border-collapse border-spacing-4 border border-black w-full"
-    >
-      <caption v-if="caption" class="caption-bottom">
-        {{
-          caption
-        }}
-      </caption>
-      <thead>
-        <tr class="hover:bg-slate-200">
-          <th class="border border-slate-700 px-4 h-12"></th>
-          <th
-            scope="col"
-            v-for="label in header"
-            :key="label"
-            class="border border-slate-700 px-4 h-12"
-          >
-            <button
-              class="w-full text-left text-slate-600 font-medium"
-              v-if="!find(sortCondition, { column: label })"
-              @click="
-                (event) => {
-                  sortCondition.push({
-                    column: label,
-                    order: 'asc',
-                  });
-                }
-              "
-            >
-              {{ label }}
-            </button>
+    <table class="w-full text-sm text-left rtl:text-right text-gray-50">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <template v-for="column in columns" :key="column.key">
+            <th v-if="!column.sortable" scope="col" class="px-6 py-3">
+              {{ column.label }}
+            </th>
 
-            <button
-              v-if="find(sortCondition, { column: label, order: 'asc' })"
-              class="w-full text-left"
-              @click="
-                (event) => {
-                  const index = sortCondition.findIndex(
-                    (condition) =>
-                      condition.column === label && condition.order === 'asc'
-                  );
-                  sortCondition[index].order = 'desc';
-                }
-              "
-            >
-              {{ label }} asc
-            </button>
+            <th v-else scope="col" class="px-6 py-3 h-12">
+              <div class="flex items-center justify-start gap-2">
+                {{ column.label }}
+                <button
+                  class="flex justify-center"
+                  @click="() => handleSort(column)"
+                >
+                  <SwapOutlined
+                    v-if="!isSortActive(column)"
+                    :rotate="270"
+                    :class="{
+                      'text-gray-400': true,
+                      'text-md': true,
+                    }"
+                  />
+                  <SortAscendingOutlined
+                    v-else-if="isSortActive(column) && isSortAscending(column)"
+                    :class="{
+                      'text-blue-600': true,
+                      'text-md': true,
+                    }"
+                  />
 
-            <button
-              v-if="find(sortCondition, { column: label, order: 'desc' })"
-              class="w-full text-left"
-              @click="
-                (event) => {
-                  sortCondition = sortCondition.filter(
-                    (condition) => condition.column !== label
-                  );
-                }
-              "
-            >
-              {{ label }} desc
-            </button>
-          </th>
+                  <SortDescendingOutlined
+                    v-else-if="isSortActive(column) && !isSortAscending(column)"
+                    :class="{
+                      'text-blue-600': true,
+                      'text-md': true,
+                    }"
+                  />
+                </button>
+              </div>
+            </th>
+          </template>
         </tr>
       </thead>
       <tbody>
         <tr
-          class="hover:bg-slate-200"
-          v-for="(row, index) in visibleContent"
-          :key="Object.values(row).join('-')"
+          class="bg-white border-b hover:bg-gray-50"
+          v-for="row in visibleContent"
+          :key="row.toString()"
         >
-          <td class="border border-slate-700 p-4">{{ index + 1 }}</td>
-          <td v-for="column in header" class="border border-slate-700 p-4">
-            {{ row[column] }}
+          <td
+            class="px-6 py-4 text-gray-900"
+            v-for="column in columns"
+            :key="column.key"
+          >
+            {{ column.getValue(row) }}
           </td>
         </tr>
       </tbody>
-      <tfoot v-if="content.length > paginationState.pageSize">
-        <tr>
-          <td class="border border-slate-700 p-4" :colspan="header.length + 1">
-            <div class="flex gap-2">
-              <span class="flex-grow"
-                >Page {{ paginationState.pageIndex + 1 }}</span
-              >
-              <div class="flex gap-2">
-                <button
-                  :disabled="paginationState.pageIndex === 0"
-                  class="rounded border border-black py-1 px-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  @click="previousPage"
-                >
-                  Previous
-                </button>
-                <button
-                  :disabled="
-                    content.length <
-                    paginationState.pageSize * (paginationState.pageIndex + 1)
-                  "
-                  class="rounded border border-black py-1 px-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  @click="nextPage"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
     </table>
+    <nav
+      class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 w-full"
+      aria-label="Table navigation"
+    >
+      <span
+        class="text-sm font-normal text-gray-500 mb-4 md:mb-0 block w-full md:inline md:w-auto"
+        >Showing
+        <span class="font-semibold text-gray-900">
+          {{ (paginationState.currentPage - 1) * paginationState.pageSize + 1 }}
+          -
+          {{
+            Math.min(
+              paginationState.currentPage * paginationState.pageSize,
+              processedContent.length
+            )
+          }}
+        </span>
+        of
+        <span class="font-semibold text-gray-900">{{
+          processedContent.length
+        }}</span></span
+      >
+      <ul class="inline-flex -space-x-px gap-2 rtl:space-x-reverse text-sm h-8">
+        <li>
+          <button
+            @click="previousPage"
+            :disabled="isPreviousPageDisabled"
+            href="#"
+            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+        </li>
+
+        <li>
+          <button
+            @click="nextPage"
+            :disabled="isNextPageBtnDisabled"
+            href="#"
+            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
 <script setup>
-import {
-  ref,
-  onUpdated,
-  unref,
-  toValue,
-  watchEffect,
-  watch,
-  computed,
-} from "vue";
+import { ref, watchEffect, computed, watch } from "vue";
 import useSearch from "../composables/useSearch";
 import debounce from "lodash/debounce";
 import find from "lodash/find";
 import orderBy from "lodash/orderBy";
-
-const { dataSource, caption } = defineProps({
+import { initial } from "lodash";
+import {
+  SortAscendingOutlined,
+  SortDescendingOutlined,
+  SwapOutlined,
+} from "@ant-design/icons-vue";
+const { columns, dataSource, caption } = defineProps({
+  columns: {
+    type: Array,
+    required: true,
+  },
   dataSource: {
     required: true,
     type: Array,
@@ -149,79 +148,131 @@ const { dataSource, caption } = defineProps({
   },
 });
 
-const header = Object.keys(dataSource[0]);
-const content = ref(JSON.parse(JSON.stringify(dataSource)));
-
-// Handle Search
-const { search } = useSearch(dataSource, header);
+/*
+-------------------- HANDLE SEARCH Functionality --------------------
+*/
 const searchTerm = ref("");
 
-// Refactored search term change handler
-function handleSearchTermChange(event) {
+const handleSearchTermChange = debounce((event) => {
   searchTerm.value = event.target.value;
+}, 300);
 
-  // Reset pagination
-  paginationState.value.pageIndex = 0;
-}
+const { search } = useSearch(
+  dataSource,
+  columns.filter((column) => column.searchable).map((column) => column.key)
+);
 
-const debouncedHandleSearchTerm = debounce(handleSearchTermChange, 200);
+/*
+-------------------- HANDLE SORT Functionality --------------------
+*/
 
-// Handle Sort
-const sortCondition = ref([]);
+const sortableColumnsWithInitialSort = columns.filter(
+  (column) => column.sortable && column.initialSort
+);
 
-function sortData(data) {
-  if (sortCondition.value.length === 0) {
-    return data;
+const sortState = ref({
+  columns: sortableColumnsWithInitialSort.map((column) => column.getValue),
+  orders: sortableColumnsWithInitialSort.map((column) => column.initialSort),
+});
+
+const handleSort = (column) => {
+  const index = sortState.value.columns.indexOf(column.getValue);
+
+  // if column is not in the sort state, add it
+  if (index === -1) {
+    sortState.value.columns.push(column.getValue);
+    sortState.value.orders.push("asc");
+  } else {
+    const order = sortState.value.orders[index];
+
+    // if column is in the sort state and is ascending, change to descending
+    if (order === "asc") {
+      sortState.value.orders[index] = "desc";
+    } else {
+      // if column is in the sort state and is descending, remove it
+      sortState.value.columns.splice(index, 1);
+      sortState.value.orders.splice(index, 1);
+    }
   }
+};
 
-  return orderBy(
-    data,
-    sortCondition.value.map((condition) => condition.column),
-    sortCondition.value.map((condition) => condition.order)
-  );
-}
+const isSortActive = (column) => {
+  const index = sortState.value.columns.indexOf(column.getValue);
+  return index !== -1;
+};
 
-watchEffect(function () {
-  const data = searchTerm.value
-    ? search(searchTerm.value).map((item) => item.item)
+const isSortAscending = (column) => {
+  const index = sortState.value.columns.indexOf(column.getValue);
+  return sortState.value.orders[index] === "asc";
+};
+/*
+-------------------- Content After being Processed --------------------
+*/
+
+const processedContent = computed(() => {
+  let data = searchTerm.value
+    ? search(searchTerm.value).map((searchItem) => searchItem.item)
     : dataSource;
 
-  content.value = sortData(data);
-});
+  // if sort
+  if (sortState.value.columns.length > 0) {
+    data = orderBy(data, sortState.value.columns, sortState.value.orders);
+  }
 
-// Pagination
-// Page Size
-// Page Index (state)
+  return data;
+});
+/*
+-------------------- HANDLE PAGINATION Functionality --------------------
+*/
 
 const paginationState = ref({
+  currentPage: 1,
   pageSize: 10,
-  pageIndex: 0,
 });
 
-// Next page
+const nextPage = () => {
+  paginationState.value.currentPage++;
+};
 
-function nextPage() {
-  paginationState.value.pageIndex++;
-}
+const isNextPageBtnDisabled = computed(() => {
+  const x = paginationState.value.currentPage * paginationState.value.pageSize;
+  const y = processedContent.value.length;
 
-// Previous page
+  return x >= y && x - y >= 0;
+});
 
-function previousPage() {
-  paginationState.value.pageIndex--;
-}
+const previousPage = () => {
+  paginationState.value.currentPage--;
+};
 
-const visibleContent = computed(() => {
-  return content.value.slice(
-    paginationState.value.pageIndex * paginationState.value.pageSize,
-    (paginationState.value.pageIndex + 1) * paginationState.value.pageSize
+const isPreviousPageDisabled = computed(() => {
+  return paginationState.value.currentPage === 1;
+});
+
+const visiblePages = 5;
+
+const totalPages = computed(() => {
+  return Math.ceil(
+    processedContent.value.length / paginationState.value.pageSize
   );
 });
 
-// Last Page
-// First page
-// Last page
+// Reset pagination when search term changes
+watch(searchTerm, () => {
+  paginationState.value.currentPage = 1;
+});
+/*
+ *----------------- Content --------------------
+ * What to show on the screen after applying search, sort, and pagination
+ */
 
-// How many rows to show per page
+const visibleContent = computed(() => {
+  const start =
+    (paginationState.value.currentPage - 1) * paginationState.value.pageSize;
+  const end = start + paginationState.value.pageSize;
+
+  return processedContent.value.slice(start, end);
+});
 </script>
 
 <style lang="css" scoped></style>
