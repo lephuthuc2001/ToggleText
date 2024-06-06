@@ -13,15 +13,33 @@
         />
       </div>
     </div>
-    <table class="w-full text-sm text-left rtl:text-right text-gray-50">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-50"
+      :class="styles.table"
+    >
+      <caption class="text-lg font-bold caption-top" :class="styles.caption">
+        {{
+          caption
+        }}
+      </caption>
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-        <tr>
+        <tr :class="styles.header.row">
           <template v-for="column in columns" :key="column.key">
-            <th v-if="!column.sortable" scope="col" class="px-6 py-3">
+            <th
+              v-if="!column.sortable"
+              scope="col"
+              class="px-6 py-3"
+              :class="styles.header.cell"
+            >
               {{ column.label }}
             </th>
 
-            <th v-else scope="col" class="px-6 py-3 h-12">
+            <th
+              v-else
+              scope="col"
+              class="px-6 py-3 h-12"
+              :class="styles.headerCell"
+            >
               <div class="flex items-center justify-start gap-2">
                 {{ column.label }}
                 <button
@@ -60,11 +78,13 @@
       <tbody>
         <tr
           class="bg-white border-b hover:bg-gray-50"
+          :class="styles.body.row"
           v-for="row in visibleContent"
           :key="row.toString()"
         >
           <td
             class="px-6 py-4 text-gray-900"
+            :class="styles.body.cell"
             v-for="column in columns"
             :key="column.key"
           >
@@ -123,18 +143,17 @@
 </template>
 
 <script setup>
-import { ref, watchEffect, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import useSearch from "../composables/useSearch";
 import debounce from "lodash/debounce";
-import find from "lodash/find";
 import orderBy from "lodash/orderBy";
-import { initial } from "lodash";
 import {
   SortAscendingOutlined,
   SortDescendingOutlined,
   SwapOutlined,
 } from "@ant-design/icons-vue";
-const { columns, dataSource, caption } = defineProps({
+
+const { columns, dataSource, caption, styles } = defineProps({
   columns: {
     type: Array,
     required: true,
@@ -145,6 +164,9 @@ const { columns, dataSource, caption } = defineProps({
   },
   caption: {
     type: String,
+  },
+  styles: {
+    type: Object,
   },
 });
 
@@ -247,14 +269,6 @@ const previousPage = () => {
 
 const isPreviousPageDisabled = computed(() => {
   return paginationState.value.currentPage === 1;
-});
-
-const visiblePages = 5;
-
-const totalPages = computed(() => {
-  return Math.ceil(
-    processedContent.value.length / paginationState.value.pageSize
-  );
 });
 
 // Reset pagination when search term changes
