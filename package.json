@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@tanstack/vue-query": "^5.45.0",
     "fuse.js": "^7.0.0",
     "lodash": "^4.17.21",
+    "qs": "^6.12.1",
     "vue": "^3.4.21"
   },
   "devDependencies": {
