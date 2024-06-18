@@ -4,7 +4,7 @@ const MOVIE_ACCESS_TOKEN = import.meta.env.VITE_MOVIE_ACCESS_TOKEN;
 const MOVIE_API_URL = import.meta.env.VITE_MOVIE_API_URL;
 
 const baseQueryParams = {
-  query: "",
+  query: "Jack",
   include_adult: false,
   language: "en-US",
   page: 1,

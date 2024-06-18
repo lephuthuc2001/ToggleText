@@ -13,33 +13,20 @@
         />
       </div>
     </div>
-    <table
-      class="w-full text-sm text-left rtl:text-right text-gray-50"
-      :class="styles.table"
-    >
-      <caption class="text-lg font-bold caption-top" :class="styles.caption">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-50">
+      <caption class="text-lg font-bold caption-top">
         {{
           caption
         }}
       </caption>
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-        <tr :class="styles.header.row">
+        <tr>
           <template v-for="column in columns" :key="column.key">
-            <th
-              v-if="!column.sortable"
-              scope="col"
-              class="px-6 py-3"
-              :class="styles.header.cell"
-            >
+            <th v-if="!column.sortable" scope="col" class="px-6 py-3">
               {{ column.label }}
             </th>
 
-            <th
-              v-else
-              scope="col"
-              class="px-6 py-3 h-12"
-              :class="styles.headerCell"
-            >
+            <th v-else scope="col" class="px-6 py-3 h-12">
               <div class="flex items-center justify-start gap-2">
                 {{ column.label }}
                 <button
@@ -78,13 +65,11 @@
       <tbody>
         <tr
           class="bg-white border-b hover:bg-gray-50"
-          :class="styles.body.row"
           v-for="row in visibleContent"
           :key="row.toString()"
         >
           <td
             class="px-6 py-4 text-gray-900"
-            :class="styles.body.cell"
             v-for="column in columns"
             :key="column.key"
           >
