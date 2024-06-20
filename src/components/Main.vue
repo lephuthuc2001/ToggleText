@@ -73,7 +73,7 @@
         </template>
 
         <template #header-overview="{ value }">
-          <div class="text-center text-red-700 text-lg">
+          <div class="text-center text-red-700 text-md">
             {{ value }}
           </div>
         </template>
