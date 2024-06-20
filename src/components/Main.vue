@@ -72,6 +72,11 @@
           >
         </template>
 
+        <template #header-overview="{ value }">
+          <div class="text-center text-red-700 text-lg">
+            {{ value }}
+          </div>
+        </template>
         <template #body-overview="{ value }">
           <ToggleText>
             {{ value }}

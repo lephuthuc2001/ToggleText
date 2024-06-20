@@ -23,7 +23,7 @@
                 v-if="column.sortable"
                 @click="handleSort(column.key)"
               >
-                <slot :name="'header-' + column.key" :label="column.label">
+                <slot :name="'header-' + column.key" :value="column.label">
                   {{ column.label }}
                 </slot>
                 <slot :name="'sortIcon-' + column.key">
@@ -48,7 +48,7 @@
                 </slot>
               </button>
               <div v-else>
-                <slot :name="column.key" :label="column.label">
+                <slot :name="'header-' + column.key" :value="column.label">
                   {{ column.label }}
                 </slot>
               </div>
