@@ -5,6 +5,8 @@
         :isLoading="isFetching"
         :columns="columns"
         :items="data?.results || []"
+        :itemsPerPage="5"
+        @update-sort="handleSortChange"
       >
         <template #toolBar>
           <form @submit.prevent class="max-w-md mx-auto mb-4">
@@ -51,6 +53,24 @@
             </div>
           </form>
         </template>
+
+        <template #body-vote_average="{ value }">
+          <span
+            v-if="value >= 7"
+            class="px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-full"
+            >{{ value }}</span
+          >
+          <span
+            v-else-if="value >= 5"
+            class="px-2 py-1 text-xs font-semibold text-white bg-yellow-500 rounded-full"
+            >{{ value }}</span
+          >
+          <span
+            v-else
+            class="px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full"
+            >{{ value }}</span
+          >
+        </template>
       </ServerSideDataTable>
     </div>
   </main>
@@ -63,18 +83,29 @@ import MovieService from "../services/MovieService";
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
 import { debounce } from "lodash";
 
-const query = ref("aven");
+const query = ref("");
+const sortBy = ref("");
 
 const handleQueryChange = debounce(function handleQueryChange(event) {
   query.value = event.target.value;
 }, 500);
 
+const handleSortChange = (activeSort) => {
+  sortBy.value = activeSort.columnKey + "." + activeSort.direction;
+};
+
 const { data, isFetching } = useQuery({
-  queryKey: ["movies", query],
+  queryKey: ["movies", query, sortBy],
   queryFn: ({ queryKey }) => {
-    return MovieService.getMovies({
+    const queryParams = {
       query: queryKey[1],
-    });
+    };
+
+    if (queryKey[2]) {
+      queryParams.sort_by = queryKey[2];
+    }
+
+    return MovieService.searchMovies(queryParams);
   },
   placeholderData: (previousData, previousQuery) => previousData,
 });
@@ -94,11 +125,13 @@ const columns = [
     key: "release_date",
     label: "Release Date",
     getValue: (row) => row.release_date,
+    sortable: true,
   },
   {
     key: "vote_average",
     label: "Rating",
     getValue: (row) => row.vote_average,
+    sortable: true,
   },
 ];
 </script>

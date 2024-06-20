@@ -4,16 +4,13 @@ const MOVIE_ACCESS_TOKEN = import.meta.env.VITE_MOVIE_ACCESS_TOKEN;
 const MOVIE_API_URL = import.meta.env.VITE_MOVIE_API_URL;
 
 const baseQueryParams = {
-  query: "Jack",
   include_adult: false,
   language: "en-US",
   page: 1,
   region: "US",
-  // year: "",
-  // primary_release_year: "",
 };
 
-async function getMovies(queryParams = {}) {
+async function searchMovies(queryParams = {}) {
   const options = {
     method: "GET",
     headers: {
@@ -31,6 +28,16 @@ async function getMovies(queryParams = {}) {
   return data;
 }
 
+async function discoverMovies(queryParams = {}) {
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${MOVIE_ACCESS_TOKEN}`,
+    },
+  };
+}
+
 export default {
-  getMovies,
+  searchMovies,
 };
