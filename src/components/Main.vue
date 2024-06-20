@@ -71,6 +71,12 @@
             >{{ value }}</span
           >
         </template>
+
+        <template #body-overview="{ value }">
+          <ToggleText>
+            {{ value }}
+          </ToggleText>
+        </template>
       </ServerSideDataTable>
     </div>
   </main>
@@ -82,6 +88,7 @@ import { ref } from "vue";
 import MovieService from "../services/MovieService";
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
 import { debounce } from "lodash";
+import ToggleText from "./ToggleText.vue";
 
 const query = ref("");
 const sortBy = ref("");

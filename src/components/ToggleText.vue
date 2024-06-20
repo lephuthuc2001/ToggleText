@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 // Refs
 const paragraphRef = ref(null);
@@ -48,11 +48,7 @@ onUnmounted(() => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <p
-      ref="paragraphRef"
-      class="outline-2 outline-offset-2 outline-red outline-dotted"
-      :class="{ 'line-clamp-2': isOverflowingTextHidden }"
-    >
+    <p ref="paragraphRef" :class="{ 'line-clamp-2': isOverflowingTextHidden }">
       <slot />
     </p>
 
