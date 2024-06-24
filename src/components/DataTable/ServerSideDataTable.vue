@@ -1,133 +1,148 @@
 <template>
   <div>
-    <!-- This slot is for Content -->
-    <div>
-      <slot name="toolBar"></slot>
-    </div>
     <v-progress-linear
       v-if="isLoading"
+      class="mb-4"
       color="primary"
       indeterminate
-      :height="11"
     ></v-progress-linear>
-
-    <table
-      class="table-auto w-full text-sm text-left rtl:text-right text-gray-50"
-    >
-      <thead class="text-xs text-gray-700 bg-gray-50">
+    <table>
+      <thead>
         <tr>
-          <template v-for="column in columns" :key="column.key">
-            <th scope="col" class="px-6 py-3">
-              <button
-                class="flex justify-center gap-1 items-center"
-                v-if="column.sortable"
-                @click="handleSort(column.key)"
-              >
-                <slot :name="'header-' + column.key" :value="column.label">
-                  {{ column.label }}
-                </slot>
-                <slot :name="'sortIcon-' + column.key">
-                  <v-icon
-                    v-show="
-                      isSortActive(column.key) &&
-                      getSortDirectionForColumn(column.key) ===
-                        SORT_DIRECTION.ASC
-                    "
-                    size="sm"
-                    icon="fa:fas fa-arrow-up"
-                  ></v-icon>
-                  <v-icon
-                    v-if="
-                      isSortActive(column.key) &&
-                      getSortDirectionForColumn(column.key) ===
-                        SORT_DIRECTION.DESC
-                    "
-                    size="sm"
-                    icon="fa:fas fa-arrow-down"
-                  ></v-icon>
-                </slot>
-              </button>
-              <div v-else>
-                <slot :name="'header-' + column.key" :value="column.label">
-                  {{ column.label }}
-                </slot>
-              </div>
-            </th>
-          </template>
+          <th v-for="column in columns" :key="column.key">
+            {{ column.label }}
+          </th>
         </tr>
       </thead>
-
       <tbody>
-        <tr
-          class="bg-white border-b hover:bg-gray-50"
-          v-for="row in items"
-          :key="row.id"
-        >
-          <td
-            class="px-6 py-4 text-gray-900"
-            v-for="column in columns"
-            :key="column.key"
-          >
-            <slot :name="'body-' + column.key" :value="column.getValue(row)">
-              {{ column.getValue(row) }}
-            </slot>
+        <tr v-for="item in items" :key="item.id">
+          <td v-for="column in columns" :key="column.key">
+            {{ column.getValue(item) }}
           </td>
         </tr>
       </tbody>
       <tfoot>
-        <tr></tr>
+        <tr>
+          <td :colspan="columns.length">
+            <v-select
+              v-if="itemsPerPageOptions.length > 0"
+              class="w-32"
+              label="Select"
+              :itemsPerPageOptions="itemsPerPageOptions"
+            ></v-select>
+            <div class="flex flex-row items-center justify-center gap-2">
+              <!-- Help text -->
+              <div>
+                <span class="text-sm text-gray-700">
+                  Showing
+                  <span class="font-semibold text-gray-900">
+                    {{ start + 1 }}
+                  </span>
+                  to
+                  <span class="font-semibold text-gray-900">
+                    {{ end > itemsLength ? itemsLength : end }}
+                  </span>
+                  of
+                  <span class="font-semibold text-gray-900">
+                    {{ itemsLength }}
+                  </span>
+                  Entries
+                </span>
+              </div>
+              <!-- Buttons -->
+              <div class="inline-flex">
+                <button
+                  @click="prevPage"
+                  :disabled="isPrevDisabled"
+                  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
+                >
+                  Prev
+                </button>
+                <button
+                  @click="nextPage"
+                  :disabled="isNextDisabled"
+                  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
       </tfoot>
     </table>
   </div>
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps, unref, watch } from "vue";
+import { defineProps, computed, defineEmits, ref, watch } from "vue";
 
-const emit = defineEmits(["update-sort", "update-pagination"]);
-
-const { items, columns, isLoading } = defineProps({
+const {
+  items,
+  columns,
+  page,
+  itemsPerPage,
+  itemsPerPageOptions,
+  itemsLength,
+  isLoading,
+} = defineProps({
   items: Array,
   columns: Array,
-  isLoading: Boolean,
-  onSort: Function,
+  page: {
+    type: Number,
+    default: 1,
+  },
+  itemsPerPage: {
+    type: Number,
+    default: 10,
+  },
+  itemsPerPageOptions: {
+    type: Array,
+    default: [5, 10, 20, 50],
+  },
+  itemsLength: {
+    type: Number,
+    default: undefined,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const activeSort = ref({
-  columnKey: null,
-  direction: null,
+const emit = defineEmits(["update-page"]);
+
+const internalPage = ref(page);
+
+const start = computed(() => {
+  return (internalPage.value - 1) * itemsPerPage;
 });
 
-const SORT_DIRECTION = {
-  ASC: "asc",
-  DESC: "desc",
-};
+const end = computed(() => {
+  return start.value + itemsPerPage;
+});
 
-function handleSort(columnKey) {
-  // If the column is not currently sorted or is sorted in DESC, reset to ASC.
-  const oldSort = activeSort.value.columnKey;
+const nextPage = computed(() => {
+  internalPage.value++;
 
-  if (oldSort !== columnKey) {
-    activeSort.value.columnKey = columnKey;
-    activeSort.value.direction = SORT_DIRECTION.ASC;
-  } else {
-    if (activeSort.value.direction === SORT_DIRECTION.ASC) {
-      activeSort.value.direction = SORT_DIRECTION.DESC;
-    } else {
-      activeSort.value.columnKey = null;
-      activeSort.value.direction = null;
-    }
-  }
-  emit("update-sort", unref(activeSort.value));
-}
+  emit("update-page", internalPage.value);
+});
 
-function isSortActive(columnKey) {
-  return activeSort.value.columnKey === columnKey;
-}
+const prevPage = computed(() => {
+  internalPage.value = Math.max(internalPage.value - 1, 1);
 
-function getSortDirectionForColumn(columnKey) {
-  return activeSort.value.direction;
-}
+  emit("update-page", internalPage.value);
+});
 
-const page = ref(1);
+const isPrevDisabled = computed(() => {
+  return page === 1;
+});
+
+const isNextDisabled = computed(() => {
+  return end.value >= itemsLength;
+});
+
+watch(internalPage, (newPage) => {
+  console.log("Page changed to", newPage);
+});
 </script>
