@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineProps, defineEmits } from "vue";
-import Pagination from "./components/Pagination.vue";
+import Pagination from "../components/Pagination.vue";
+
 const { items, columns } = defineProps({
   items: Array,
   columns: Array,

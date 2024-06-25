@@ -17,7 +17,7 @@
 <script setup>
 import { defineProps, computed, defineEmits, ref, watch, provide } from "vue";
 import usePagination from "./composables/usePagination";
-import Table from "./Table.vue";
+import Table from "./base/Table.vue";
 const baseStyle = {
   table: "table-fixed border-collapse caption-bottom",
   column: {
