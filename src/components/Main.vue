@@ -10,7 +10,13 @@
     :itemsLength="totalItems"
     :page="page"
     @update-page="handlePageUpdate"
-  ></ServerSideDataTable>
+  >
+    <template #body-overview="{ value }">
+      <ToggleText>
+        {{ value }}
+      </ToggleText>
+    </template>
+  </ServerSideDataTable>
 </template>
 
 <script setup>
@@ -51,32 +57,33 @@ const columns = [
     key: "title",
     label: "Title",
     getValue: (row) => row.original_title,
+    width: "20%",
   },
   {
     key: "overview",
     label: "Overview",
     getValue: (row) => row.overview,
+    width: "40%",
   },
   {
     key: "release_date",
     label: "Release Date",
     getValue: (row) => row.release_date,
     sortable: true,
+    width: "20%",
   },
   {
     key: "vote_average",
     label: "Rating",
     getValue: (row) => row.vote_average,
     sortable: true,
+    width: "20%",
   },
 ];
 
 const items = computed(() => data.value?.results);
 
 const totalItems = computed(() => data.value?.total_results);
-watch(data, () => {
-  console.log(data.value);
-});
 </script>
 
 <style scoped></style>

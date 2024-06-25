@@ -6,76 +6,26 @@
       color="primary"
       indeterminate
     ></v-progress-linear>
-    <table>
-      <thead>
-        <tr>
-          <th v-for="column in columns" :key="column.key">
-            {{ column.label }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in items" :key="item.id">
-          <td v-for="column in columns" :key="column.key">
-            {{ column.getValue(item) }}
-          </td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td :colspan="columns.length">
-            <v-select
-              v-if="itemsPerPageOptions.length > 0"
-              class="w-32"
-              label="Select"
-              :itemsPerPageOptions="itemsPerPageOptions"
-            ></v-select>
-            <div class="flex flex-row items-center justify-center gap-2">
-              <!-- Help text -->
-              <div>
-                <span class="text-sm text-gray-700">
-                  Showing
-                  <span class="font-semibold text-gray-900">
-                    {{ start + 1 }}
-                  </span>
-                  to
-                  <span class="font-semibold text-gray-900">
-                    {{ end > itemsLength ? itemsLength : end }}
-                  </span>
-                  of
-                  <span class="font-semibold text-gray-900">
-                    {{ itemsLength }}
-                  </span>
-                  Entries
-                </span>
-              </div>
-              <!-- Buttons -->
-              <div class="inline-flex">
-                <button
-                  @click="prevPage"
-                  :disabled="isPrevDisabled"
-                  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
-                >
-                  Prev
-                </button>
-                <button
-                  @click="nextPage"
-                  :disabled="isNextDisabled"
-                  class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+    <Table :items="items" :columns="columns">
+      <template v-for="(_, name) in $slots" #[name]="slotData">
+        <slot :name="name" v-bind="slotData || {}" />
+      </template>
+    </Table>
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed, defineEmits, ref, watch } from "vue";
+import { defineProps, computed, defineEmits, ref, watch, provide } from "vue";
+import usePagination from "./composables/usePagination";
+import Table from "./Table.vue";
+const baseStyle = {
+  table: "table-fixed border-collapse caption-bottom",
+  column: {
+    header:
+      "p-4 border border-slate-200 text-left text-sm font-bold text-gray-700",
+    cell: "p-4 text-sm text-gray-700 border border-slate-200",
+  },
+};
 
 const {
   items,
@@ -112,37 +62,13 @@ const {
 
 const emit = defineEmits(["update-page"]);
 
-const internalPage = ref(page);
-
-const start = computed(() => {
-  return (internalPage.value - 1) * itemsPerPage;
-});
-
-const end = computed(() => {
-  return start.value + itemsPerPage;
-});
-
-const nextPage = computed(() => {
-  internalPage.value++;
-
-  emit("update-page", internalPage.value);
-});
-
-const prevPage = computed(() => {
-  internalPage.value = Math.max(internalPage.value - 1, 1);
-
-  emit("update-page", internalPage.value);
-});
-
-const isPrevDisabled = computed(() => {
-  return page === 1;
-});
-
-const isNextDisabled = computed(() => {
-  return end.value >= itemsLength;
-});
-
-watch(internalPage, (newPage) => {
-  console.log("Page changed to", newPage);
+provide("pagination", {
+  page,
+  itemsPerPage,
+  itemsPerPageOptions,
+  itemsLength,
+  emitCallback: (page) => {
+    emit("update-page", page);
+  },
 });
 </script>
