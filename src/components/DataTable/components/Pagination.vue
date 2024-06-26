@@ -7,27 +7,30 @@ const emit = defineEmits(["update-page"]);
 const { page, itemsPerPage, itemsPerPageOptions, itemsLength, emitCallback } =
   inject("pagination");
 
-const { start, end, isPrevDisabled, isNextDisabled, prevPage, nextPage } =
-  usePagination(
-    page,
-    itemsPerPage,
-    itemsPerPageOptions,
-    itemsLength,
-    emitCallback
-  );
+const {
+  startFromEntry,
+  endAtEntry,
+  isPrevDisabled,
+  isNextDisabled,
+  prevPage,
+  nextPage,
+} = usePagination(
+  page,
+  itemsPerPage,
+  itemsPerPageOptions,
+  itemsLength,
+  emitCallback
+);
 </script>
 
 <template>
   <slot
-    :props="{
-      start,
-      end,
-      isPrevDisabled,
-      isNextDisabled,
-      prevPage,
-      nextPage,
-      itemsPerPageOptions,
-    }"
+    :startFromEntry="startFromEntry"
+    :endAtEntry="endAtEntry"
+    :isPrevDisabled="isPrevDisabled"
+    :isNextDisabled="isNextDisabled"
+    :prevPage="prevPage"
+    :nextPage="nextPage"
   >
     <v-select
       v-if="itemsPerPageOptions.length > 0"
@@ -40,11 +43,11 @@ const { start, end, isPrevDisabled, isNextDisabled, prevPage, nextPage } =
         <span class="text-sm text-gray-700">
           Showing
           <span class="font-semibold text-gray-900">
-            {{ start + 1 }}
+            {{ startFromEntry }}
           </span>
           to
           <span class="font-semibold text-gray-900">
-            {{ end > itemsLength ? itemsLength : end }}
+            {{ endAtEntry }}
           </span>
           of
           <span class="font-semibold text-gray-900">

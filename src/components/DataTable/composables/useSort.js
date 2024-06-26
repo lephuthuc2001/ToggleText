@@ -61,6 +61,7 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
     isSortActive,
     handleSort,
     getSortIcon,
+    getSortOrder,
   };
 }
 

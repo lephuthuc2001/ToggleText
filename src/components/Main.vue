@@ -17,6 +17,27 @@
         {{ value }}
       </ToggleText>
     </template>
+
+    <template #sort-vote_average="{ sortOrder }">
+      <span class="ml-1">
+        {{ sortOrder === "asc" ? "⬆️" : sortOrder === "desc" ? "⬇️" : "♻️" }}
+      </span>
+    </template>
+
+    <template
+      #pagination="{
+        startFromEntry,
+        endAtEntry,
+        isPrevDisabled,
+        isNextDisabled,
+        prevPage,
+        nextPage,
+      }"
+    >
+      <!-- <div>from {{ startFromEntry }} to {{ endAtEntry }}</div>
+      <button @click="prevPage" :disabled="isPrevDisabled">Prev</button>
+      <button @click="nextPage" :disabled="isNextDisabled">Next</button> -->
+    </template>
   </ServerSideDataTable>
 </template>
 

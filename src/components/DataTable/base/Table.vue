@@ -19,7 +19,7 @@ const baseStyle = {
 
 const { sortableColumns, isMultiSort, emitCallback } = inject("sort");
 
-const { isSortActive, handleSort, getSortIcon } = useSort(
+const { handleSort, getSortIcon, getSortOrder } = useSort(
   sortableColumns,
   isMultiSort,
   emitCallback
@@ -44,7 +44,7 @@ const { isSortActive, handleSort, getSortIcon } = useSort(
               <slot
                 v-if="column.sortable"
                 :name="'sort-' + column.key"
-                :value="column.key"
+                :sortOrder="getSortOrder(column.key)"
               >
                 {{ getSortIcon(column.key) }}
               </slot>
@@ -77,7 +77,9 @@ const { isSortActive, handleSort, getSortIcon } = useSort(
 
   <div class="mt-4">
     <Pagination>
-      <slot name="pagination" />
+      <template #default="paginationProps">
+        <slot name="pagination" v-bind="paginationProps" />
+      </template>
     </Pagination>
   </div>
 </template>
