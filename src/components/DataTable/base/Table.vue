@@ -1,6 +1,7 @@
 <script setup>
-import { ref, defineProps, defineEmits } from "vue";
+import { defineProps, inject } from "vue";
 import Pagination from "../components/Pagination.vue";
+import useSort from "../composables/useSort";
 
 const { items, columns } = defineProps({
   items: Array,
@@ -15,10 +16,18 @@ const baseStyle = {
     cell: "p-4 text-sm text-gray-700 border border-slate-200",
   },
 };
+
+const { sortableColumns, isMultiSort, emitCallback } = inject("sort");
+
+const { isSortActive, handleSort, getSortIcon } = useSort(
+  sortableColumns,
+  isMultiSort,
+  emitCallback
+);
 </script>
 
 <template>
-  <div class="max-h-96 overflow-y-auto">
+  <div class="max-h-[500px] overflow-y-auto">
     <table :class="baseStyle.table">
       <thead class="sticky-top">
         <tr>
@@ -27,7 +36,24 @@ const baseStyle = {
             v-for="column in columns"
             :key="column.key"
           >
-            <slot :name="'header-' + column.key" :value="column.label">
+            <button @click="handleSort(column.key)" v-if="column.sortable">
+              <slot :name="'header-' + column.key" :value="column.label">
+                {{ column.label }}
+              </slot>
+
+              <slot
+                v-if="column.sortable"
+                :name="'sort-' + column.key"
+                :value="column.key"
+              >
+                {{ getSortIcon(column.key) }}
+              </slot>
+            </button>
+            <slot
+              v-if="!column.sortable"
+              :name="'header-' + column.key"
+              :value="column.label"
+            >
               {{ column.label }}
             </slot>
           </th>

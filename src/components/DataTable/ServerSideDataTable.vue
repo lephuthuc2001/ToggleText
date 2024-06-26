@@ -35,6 +35,7 @@ const {
   itemsPerPageOptions,
   itemsLength,
   isLoading,
+  isMultiSort,
 } = defineProps({
   items: Array,
   columns: Array,
@@ -58,9 +59,13 @@ const {
     type: Boolean,
     default: false,
   },
+  isMultiSort: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["update-page"]);
+const emit = defineEmits(["update-page", "update-sort"]);
 
 provide("pagination", {
   page,
@@ -69,6 +74,14 @@ provide("pagination", {
   itemsLength,
   emitCallback: (page) => {
     emit("update-page", page);
+  },
+});
+
+provide("sort", {
+  sortableColumns: columns.filter((col) => col.sortable).map((col) => col.key),
+  isMultiSort,
+  emitCallback: (sortState) => {
+    emit("update-sort", sortState);
   },
 });
 </script>

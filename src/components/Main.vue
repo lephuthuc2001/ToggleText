@@ -10,6 +10,7 @@
     :itemsLength="totalItems"
     :page="page"
     @update-page="handlePageUpdate"
+    @update-sort="handleSortUpdate"
   >
     <template #body-overview="{ value }">
       <ToggleText>
@@ -30,21 +31,27 @@ import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
 
 const query = ref("love");
 
-const handleQueryChange = debounce(function handleQueryChange(event) {
-  query.value = event.target.value;
-}, 500);
-
 const page = ref(1);
 const handlePageUpdate = (newPage) => {
   page.value = newPage;
 };
 
+const sortState = ref(null);
+const handleSortUpdate = (newSortState) => {
+  if (newSortState.key) {
+    sortState.value = newSortState.key + "." + newSortState.order;
+  } else {
+    sortState.value = null;
+  }
+};
+
 const { data, isFetching } = useQuery({
-  queryKey: ["movies", query, page],
+  queryKey: ["movies", query, page, sortState],
   queryFn: ({ queryKey }) => {
     const queryParams = {
       query: queryKey[1],
       page: queryKey[2],
+      sort_by: queryKey[3],
     };
 
     return MovieService.searchMovies(queryParams);
