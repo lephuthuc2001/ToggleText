@@ -15,17 +15,8 @@
 </template>
 
 <script setup>
-import { defineProps, computed, defineEmits, ref, watch, provide } from "vue";
-import usePagination from "./composables/usePagination";
+import { defineProps, defineEmits, provide } from "vue";
 import Table from "./base/Table.vue";
-const baseStyle = {
-  table: "table-fixed border-collapse caption-bottom",
-  column: {
-    header:
-      "p-4 border border-slate-200 text-left text-sm font-bold text-gray-700",
-    cell: "p-4 text-sm text-gray-700 border border-slate-200",
-  },
-};
 
 const {
   items,
@@ -63,9 +54,13 @@ const {
     type: Boolean,
     default: false,
   },
+  searchQuery: {
+    type: String,
+    default: "",
+  },
 });
 
-const emit = defineEmits(["update-page", "update-sort"]);
+const emit = defineEmits(["update-page", "update-sort", "update-search"]);
 
 provide("pagination", {
   page,

@@ -12,6 +12,17 @@
     @update-page="handlePageUpdate"
     @update-sort="handleSortUpdate"
   >
+    <template #toolBar>
+      <div>
+        <v-text-field
+          v-model="query"
+          class="basis-48 w-40 ml-auto mb-4"
+          density="compact"
+          placeholder="Search movies"
+          hide-details
+        ></v-text-field>
+      </div>
+    </template>
     <template #body-overview="{ value }">
       <ToggleText>
         {{ value }}
@@ -34,18 +45,14 @@
         nextPage,
       }"
     >
-      <!-- <div>from {{ startFromEntry }} to {{ endAtEntry }}</div>
-      <button @click="prevPage" :disabled="isPrevDisabled">Prev</button>
-      <button @click="nextPage" :disabled="isNextDisabled">Next</button> -->
     </template>
   </ServerSideDataTable>
 </template>
 
 <script setup>
 import { useQuery } from "@tanstack/vue-query";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import MovieService from "../services/MovieService";
-import { debounce } from "lodash";
 import ToggleText from "./ToggleText.vue";
 
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";

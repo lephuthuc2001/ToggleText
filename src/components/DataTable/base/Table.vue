@@ -27,6 +27,7 @@ const { handleSort, getSortIcon, getSortOrder } = useSort(
 </script>
 
 <template>
+  <slot name="toolBar" />
   <div class="max-h-[500px] overflow-y-auto">
     <table :class="baseStyle.table">
       <thead class="sticky-top">
