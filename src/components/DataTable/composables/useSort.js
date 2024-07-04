@@ -5,7 +5,7 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
   const sortState = ref(initialSortState);
 
   const isSortActive = (column) => {
-    if (isMultiSort) {
+    if (isMultiSort.value) {
       return sortState.value.some((sort) => sort.key === column);
     }
     return sortState.value.key === column;
@@ -14,7 +14,7 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
   const getSortOrder = (column) => {
     if (!isSortActive(column)) return null;
 
-    if (isMultiSort) {
+    if (isMultiSort.value) {
       const sort = sortState.value.find((sort) => sort.key === column);
       return sort ? sort.order : null;
     }
@@ -32,11 +32,11 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
     if (!isInSortableColumns(column)) return;
 
     if (!isSortActive(column)) {
-      sortState.value = isMultiSort
+      sortState.value = isMultiSort.value
         ? [...sortState.value, { key: column, order: "asc" }]
         : { key: column, order: "asc" };
     } else {
-      if (isMultiSort) {
+      if (isMultiSort.value) {
         const sortIndex = sortState.value.findIndex(
           (sort) => sort.key === column
         );
