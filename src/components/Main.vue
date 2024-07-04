@@ -5,7 +5,7 @@
     :items="items"
     :totalItems="data?.total_results || 0"
     :isLoading="isFetching"
-    :itemsPerPage="items.length || 10"
+    :itemsPerPage="20"
     :itemsPerPageOptions="[]"
     :itemsLength="totalItems"
     :page="page"

@@ -1,4 +1,4 @@
-import { ref, computed, watch, unref } from "vue";
+import { ref, computed, watch, unref, watchEffect } from "vue";
 
 function usePagination(
   page,
@@ -31,7 +31,7 @@ function usePagination(
   });
 
   const isNextDisabled = computed(() => {
-    return end.value >= itemsLength;
+    return end.value >= itemsLength.value;
   });
 
   watch(internalPage, (newPage) => {
