@@ -1,11 +1,17 @@
 <script setup>
-import { inject } from "vue";
+import { inject, watch } from "vue";
 import usePagination from "../composables/usePagination";
 
 const emit = defineEmits(["update-page"]);
 
-const { page, itemsPerPage, itemsPerPageOptions, itemsLength, emitCallback } =
-  inject("pagination");
+const {
+  page,
+  itemsPerPage,
+  itemsPerPageOptions,
+  itemsLength,
+  searchQuery,
+  emitCallback,
+} = inject("pagination");
 
 const {
   startFromEntry,
@@ -19,6 +25,7 @@ const {
   itemsPerPage,
   itemsPerPageOptions,
   itemsLength,
+  searchQuery,
   emitCallback
 );
 </script>

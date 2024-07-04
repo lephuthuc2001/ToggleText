@@ -9,6 +9,7 @@
     :itemsPerPageOptions="[]"
     :itemsLength="totalItems"
     :page="page"
+    :searchQuery="query"
     @update-page="handlePageUpdate"
     @update-sort="handleSortUpdate"
   >
@@ -51,7 +52,7 @@
 
 <script setup>
 import { useQuery } from "@tanstack/vue-query";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import MovieService from "../services/MovieService";
 import ToggleText from "./ToggleText.vue";
 
@@ -119,6 +120,10 @@ const columns = [
 const items = computed(() => data.value?.results);
 
 const totalItems = computed(() => data.value?.total_results);
+
+watch(query, (va) => {
+  console.log("query", va);
+});
 </script>
 
 <style scoped></style>

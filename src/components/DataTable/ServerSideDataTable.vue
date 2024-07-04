@@ -15,19 +15,10 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, provide } from "vue";
+import { defineProps, defineEmits, provide, watch, toRefs } from "vue";
 import Table from "./base/Table.vue";
 
-const {
-  items,
-  columns,
-  page,
-  itemsPerPage,
-  itemsPerPageOptions,
-  itemsLength,
-  isLoading,
-  isMultiSort,
-} = defineProps({
+const props = defineProps({
   items: Array,
   columns: Array,
   page: {
@@ -60,6 +51,17 @@ const {
   },
 });
 
+const {
+  page,
+  itemsPerPage,
+  itemsPerPageOptions,
+  itemsLength,
+  isMultiSort,
+  searchQuery,
+  columns,
+  isLoading,
+} = toRefs(props);
+
 const emit = defineEmits(["update-page", "update-sort", "update-search"]);
 
 provide("pagination", {
@@ -67,13 +69,16 @@ provide("pagination", {
   itemsPerPage,
   itemsPerPageOptions,
   itemsLength,
+  searchQuery,
   emitCallback: (page) => {
     emit("update-page", page);
   },
 });
 
 provide("sort", {
-  sortableColumns: columns.filter((col) => col.sortable).map((col) => col.key),
+  sortableColumns: columns.value
+    .filter((col) => col.sortable)
+    .map((col) => col.key),
   isMultiSort,
   emitCallback: (sortState) => {
     emit("update-sort", sortState);

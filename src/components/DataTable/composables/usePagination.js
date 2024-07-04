@@ -5,12 +5,13 @@ function usePagination(
   itemsPerPage,
   itemsPerPageOptions,
   itemsLength,
+  searchQuery,
   emitCallback
 ) {
-  const internalPage = ref(page);
+  const internalPage = ref(unref(page));
 
   const start = computed(() => {
-    return (internalPage.value - 1) * itemsPerPage;
+    return (internalPage.value - 1) * itemsPerPage.value;
   });
 
   const startFromEntry = computed(() => {
@@ -18,11 +19,11 @@ function usePagination(
   });
 
   const end = computed(() => {
-    return start.value + itemsPerPage;
+    return start.value + itemsPerPage.value;
   });
 
   const endAtEntry = computed(() => {
-    return Math.min(end.value, itemsLength);
+    return Math.min(end.value, itemsLength.value);
   });
 
   const isPrevDisabled = computed(() => {
@@ -35,6 +36,10 @@ function usePagination(
 
   watch(internalPage, (newPage) => {
     emitCallback(newPage);
+  });
+
+  watch(searchQuery, (newSearchQuery) => {
+    internalPage.value = 1;
   });
 
   function nextPage() {
