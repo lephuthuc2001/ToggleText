@@ -1,53 +1,27 @@
 <template>
-  <ServerSideDataTable
-    v-if="items"
-    :columns="columns"
-    :items="items"
-    :totalItems="data?.total_results || 0"
-    :isLoading="isFetching"
-    :itemsPerPage="20"
-    :itemsPerPageOptions="[]"
-    :itemsLength="totalItems"
-    :page="page"
-    :searchQuery="query"
-    @update-page="handlePageUpdate"
-    @update-sort="handleSortUpdate"
-  >
-    <template #toolBar>
-      <div>
-        <v-text-field
-          v-model="query"
-          class="basis-48 w-40 ml-auto mb-4"
-          density="compact"
-          placeholder="Search movies"
-          hide-details
-        ></v-text-field>
-      </div>
-    </template>
-    <template #body-overview="{ value }">
-      <ToggleText>
-        {{ value }}
-      </ToggleText>
-    </template>
-
-    <template #sort-vote_average="{ sortOrder }">
-      <span class="ml-1">
-        {{ sortOrder === "asc" ? "⬆️" : sortOrder === "desc" ? "⬇️" : "♻️" }}
-      </span>
-    </template>
-
-    <template
-      #pagination="{
-        startFromEntry,
-        endAtEntry,
-        isPrevDisabled,
-        isNextDisabled,
-        prevPage,
-        nextPage,
-      }"
+  <div>
+    <ServerSideDataTable
+      :items="items"
+      :columns="columns"
+      :isLoading="isFetching"
+      :itemsPerPage="20"
+      v-model:totalItems="totalItems"
+      @update-page="handlePageUpdate"
     >
-    </template>
-  </ServerSideDataTable>
+      <template #table="{ items, columns }">
+        <Table :items="items" :columns="columns">
+          <template #body-vote_average="{ value }">
+            <span
+              class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-blue-400"
+              >{{ value }}</span
+            >
+          </template>
+        </Table>
+      </template>
+
+      <template #pagination="paginationData"> </template>
+    </ServerSideDataTable>
+  </div>
 </template>
 
 <script setup>
@@ -55,6 +29,7 @@ import { useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
 import MovieService from "../services/MovieService";
 import ToggleText from "./ToggleText.vue";
+import Table from "./DataTable/base/Table.vue";
 
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
 
@@ -120,10 +95,6 @@ const columns = [
 const items = computed(() => data.value?.results);
 
 const totalItems = computed(() => data.value?.total_results);
-
-watch(query, (va) => {
-  console.log("query", va);
-});
 </script>
 
 <style scoped></style>

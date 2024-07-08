@@ -1,17 +1,10 @@
-import { ref, computed, watch, unref, watchEffect } from "vue";
+import { ref, computed, watch } from "vue";
 
-function usePagination(
-  page,
-  itemsPerPage,
-  itemsPerPageOptions,
-  itemsLength,
-  searchQuery,
-  emitCallback
-) {
-  const internalPage = ref(unref(page));
+function usePagination(page, itemsPerPage, totalItems) {
+  const internalPage = ref(page);
 
   const start = computed(() => {
-    return (internalPage.value - 1) * itemsPerPage.value;
+    return (internalPage.value - 1) * itemsPerPage;
   });
 
   const startFromEntry = computed(() => {
@@ -19,11 +12,11 @@ function usePagination(
   });
 
   const end = computed(() => {
-    return start.value + itemsPerPage.value;
+    return start.value + itemsPerPage;
   });
 
   const endAtEntry = computed(() => {
-    return Math.min(end.value, itemsLength.value);
+    return Math.min(end.value, totalItems.value);
   });
 
   const isPrevDisabled = computed(() => {
@@ -31,15 +24,7 @@ function usePagination(
   });
 
   const isNextDisabled = computed(() => {
-    return end.value >= itemsLength.value;
-  });
-
-  watch(internalPage, (newPage) => {
-    emitCallback(newPage);
-  });
-
-  watch(searchQuery, (newSearchQuery) => {
-    internalPage.value = 1;
+    return end.value >= totalItems.value;
   });
 
   function nextPage() {
@@ -61,6 +46,7 @@ function usePagination(
     prevPage,
     isPrevDisabled,
     isNextDisabled,
+    currentPage: internalPage,
   };
 }
 

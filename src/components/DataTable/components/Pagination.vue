@@ -1,17 +1,15 @@
 <script setup>
-import { inject, watch } from "vue";
+import { defineProps, defineModel, watch, defineEmits } from "vue";
 import usePagination from "../composables/usePagination";
 
-const emit = defineEmits(["update-page"]);
+const { page, itemsPerPage } = defineProps({
+  page: Number,
+  itemsPerPage: Number,
+});
 
-const {
-  page,
-  itemsPerPage,
-  itemsPerPageOptions,
-  itemsLength,
-  searchQuery,
-  emitCallback,
-} = inject("pagination");
+const totalItems = defineModel("totalItems");
+
+const emit = defineEmits(["update-page"]);
 
 const {
   startFromEntry,
@@ -20,14 +18,13 @@ const {
   isNextDisabled,
   prevPage,
   nextPage,
-} = usePagination(
-  page,
-  itemsPerPage,
-  itemsPerPageOptions,
-  itemsLength,
-  searchQuery,
-  emitCallback
-);
+  currentPage,
+} = usePagination(page, itemsPerPage, totalItems);
+
+watch(currentPage, (newPage) => {
+  console.log(newPage);
+  emit("update-page", newPage);
+});
 </script>
 
 <template>
@@ -38,37 +35,39 @@ const {
     :isNextDisabled="isNextDisabled"
     :prevPage="prevPage"
     :nextPage="nextPage"
+    :totalItems="totalItems"
   >
-    <v-select
-      v-if="itemsPerPageOptions.length > 0"
-      class="w-32"
-      label="Select"
-      :itemsPerPageOptions="itemsPerPageOptions"
-    ></v-select>
-    <div class="flex flex-row items-center justify-center gap-2">
-      <div>
-        <span class="text-sm text-gray-700">
-          Showing
-          <span class="font-semibold text-gray-900">
-            {{ startFromEntry }}
-          </span>
-          to
-          <span class="font-semibold text-gray-900">
-            {{ endAtEntry }}
-          </span>
-          of
-          <span class="font-semibold text-gray-900">
-            {{ itemsLength }}
-          </span>
-          Entries
-        </span>
-      </div>
-      <div class="inline-flex">
+    <div class="flex flex-col items-center">
+      <!-- Help text -->
+      <span class="text-sm text-gray-70">
+        Showing
+        <span class="font-semibold text-gray-900">{{ startFromEntry }}</span> to
+        <span class="font-semibold text-gray-900">{{ endAtEntry }}</span> of
+        <span class="font-semibold text-gray-900">{{ totalItems }}</span>
+        Entries
+      </span>
+      <div class="inline-flex mt-2 xs:mt-0">
+        <!-- Buttons -->
         <button
           @click="prevPage"
           :disabled="isPrevDisabled"
           class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900"
         >
+          <svg
+            class="w-3.5 h-3.5 me-2 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 5H1m0 0 4 4M1 5l4-4"
+            />
+          </svg>
           Prev
         </button>
         <button
@@ -77,6 +76,21 @@ const {
           class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900"
         >
           Next
+          <svg
+            class="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 5h12m0 0L9 1m4 4L9 9"
+            />
+          </svg>
         </button>
       </div>
     </div>
