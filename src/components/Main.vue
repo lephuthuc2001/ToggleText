@@ -7,14 +7,27 @@
       :itemsPerPage="20"
       v-model:totalItems="totalItems"
       @update-page="handlePageUpdate"
+      @update-sort="handleSortUpdate"
     >
-      <template #table="{ items, columns }">
-        <Table :items="items" :columns="columns">
+      <template #table="{ items, columns, sortState }">
+        <Table :items="items" :columns="columns" :sortState="sortState">
+          <template #header-title="{ value }">
+            <span style="color: red; text-align: left"> {{ value }}</span>
+          </template>
           <template #body-vote_average="{ value }">
             <span
               class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-blue-400"
               >{{ value }}</span
             >
+          </template>
+
+          <template #header-release_date="{ value, sortState }">
+            <span>{{ value }}</span>
+
+            <span v-if="sortState.isSortActive">
+              {{ sortState.sortOrder === "asc" ? "↑" : "↓" }}
+            </span>
+            <span v-else> ⇅ </span>
           </template>
         </Table>
       </template>
@@ -42,6 +55,7 @@ const handlePageUpdate = (newPage) => {
 
 const sortState = ref(null);
 const handleSortUpdate = (newSortState) => {
+  console.log({ newSortState });
   if (newSortState.key) {
     sortState.value = newSortState.key + "." + newSortState.order;
   } else {

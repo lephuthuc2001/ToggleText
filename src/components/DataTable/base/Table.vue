@@ -1,11 +1,13 @@
 <script setup>
 import { defineProps } from "vue";
 
-const { items, columns } = defineProps({
+const { items, columns, sortState } = defineProps({
   items: Array,
   columns: Array,
-  sortData: Object,
+  sortState: Object,
 });
+
+const { isSortActive, handleSort, getSortOrder } = sortState;
 </script>
 
 <template>
@@ -14,9 +16,31 @@ const { items, columns } = defineProps({
       <thead class="sticky-top">
         <tr>
           <th v-for="column in columns" :key="column.key">
-            <slot :name="'header-' + column.key" :value="column.label">
-              {{ column.label }}
-            </slot>
+            <template v-if="!column.sortable">
+              <slot :name="'header-' + column.key" :value="column.label">
+                {{ column.label }}
+              </slot>
+            </template>
+            <template v-else>
+              <button @click="handleSort(column.key)">
+                <slot
+                  :name="'header-' + column.key"
+                  :value="column.label"
+                  :sortState="{
+                    isSortActive: isSortActive(column.key),
+                    sortOrder: getSortOrder(column.key),
+                  }"
+                >
+                  <span> {{ column.label }} </span>
+
+                  <span v-if="getSortOrder(column.key) === 'asc'">↑</span>
+                  <span v-else-if="getSortOrder(column.key) === 'desc'"
+                    >↓
+                  </span>
+                  <span v-else>↕</span>
+                </slot>
+              </button>
+            </template>
           </th>
         </tr>
       </thead>

@@ -7,7 +7,12 @@
       color="primary"
       indeterminate
     ></v-progress-linear>
-    <slot name="table" :items="items" :columns="columns"></slot>
+    <slot
+      name="table"
+      :items="items"
+      :columns="columns"
+      :sortState="{ isSortActive, handleSort, getSortOrder }"
+    ></slot>
 
     <Pagination
       :page="props.page"
@@ -27,8 +32,9 @@
 </template>
 
 <script setup>
-import { defineProps, defineModel, defineEmits } from "vue";
+import { defineProps, defineModel, defineEmits, watch } from "vue";
 import Pagination from "./components/Pagination.vue";
+import useSort from "./composables/useSort.js";
 
 const props = defineProps({
   items: {
@@ -48,11 +54,30 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
+  isMultiSort: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const totalItems = defineModel("totalItems", {
   type: Number,
 });
 
-const emit = defineEmits(["update-page"]);
+const emit = defineEmits(["update-page", "update-sort"]);
+
+const { isSortActive, handleSort, getSortOrder, sortState } = useSort(
+  props.columns.filter((column) => column.sortable),
+  props.isMultiSort
+);
+
+watch(
+  sortState,
+  (newSortState) => {
+    emit("update-sort", newSortState);
+  },
+  {
+    deep: true,
+  }
+);
 </script>

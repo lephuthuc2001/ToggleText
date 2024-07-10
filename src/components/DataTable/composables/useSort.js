@@ -1,11 +1,11 @@
 import { ref, watch } from "vue";
 
-function useSort(sortableColumns, isMultiSort, emitCallback) {
+function useSort(sortableColumns, isMultiSort) {
   const initialSortState = isMultiSort ? [] : { key: null, order: null };
   const sortState = ref(initialSortState);
 
   const isSortActive = (column) => {
-    if (isMultiSort.value) {
+    if (isMultiSort) {
       return sortState.value.some((sort) => sort.key === column);
     }
     return sortState.value.key === column;
@@ -14,29 +14,25 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
   const getSortOrder = (column) => {
     if (!isSortActive(column)) return null;
 
-    if (isMultiSort.value) {
+    if (isMultiSort) {
       const sort = sortState.value.find((sort) => sort.key === column);
       return sort ? sort.order : null;
     }
     return sortState.value.order;
   };
 
-  const getSortIcon = (column) => {
-    const sortOrder = getSortOrder(column);
-    return sortOrder === "asc" ? "🔼" : sortOrder === "desc" ? "🔽" : "🔃";
-  };
-
-  const isInSortableColumns = (column) => sortableColumns.includes(column);
+  const isInSortableColumns = (column) =>
+    sortableColumns.find((col) => col.key === column);
 
   const handleSort = (column) => {
     if (!isInSortableColumns(column)) return;
 
     if (!isSortActive(column)) {
-      sortState.value = isMultiSort.value
+      sortState.value = isMultiSort
         ? [...sortState.value, { key: column, order: "asc" }]
         : { key: column, order: "asc" };
     } else {
-      if (isMultiSort.value) {
+      if (isMultiSort) {
         const sortIndex = sortState.value.findIndex(
           (sort) => sort.key === column
         );
@@ -51,17 +47,15 @@ function useSort(sortableColumns, isMultiSort, emitCallback) {
           : (sortState.value = initialSortState);
       }
     }
-  };
 
-  watch(sortState, (newSortState) => emitCallback(newSortState), {
-    deep: true,
-  });
+    console.log(sortState.value);
+  };
 
   return {
     isSortActive,
     handleSort,
-    getSortIcon,
     getSortOrder,
+    sortState,
   };
 }
 
