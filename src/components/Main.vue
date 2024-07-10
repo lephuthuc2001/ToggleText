@@ -1,5 +1,8 @@
 <template>
   <div>
+    <Table :items="items" :columns="columns"></Table>
+
+    <hr style="margin-block: 2rem" />
     <ServerSideDataTable
       :items="items"
       :columns="columns"
