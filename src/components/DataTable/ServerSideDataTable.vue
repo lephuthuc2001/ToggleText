@@ -16,6 +16,7 @@
 
     <Pagination
       :page="props.page"
+      :searchQuery="props.searchQuery"
       v-model:totalItems="totalItems"
       :itemsPerPage="props.itemsPerPage"
       @update-page="
@@ -32,7 +33,14 @@
 </template>
 
 <script setup>
-import { defineProps, defineModel, defineEmits, watch } from "vue";
+import {
+  defineProps,
+  defineModel,
+  defineEmits,
+  watch,
+  computed,
+  provide,
+} from "vue";
 import Pagination from "./components/Pagination.vue";
 import useSort from "./composables/useSort.js";
 
@@ -58,18 +66,26 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  searchQuery: {
+    type: String,
+    default: "",
+  },
 });
 
 const totalItems = defineModel("totalItems", {
   type: Number,
 });
 
-const emit = defineEmits(["update-page", "update-sort"]);
+const emit = defineEmits(["update-page", "update-sort", "update-search"]);
 
 const { isSortActive, handleSort, getSortOrder, sortState } = useSort(
   props.columns.filter((column) => column.sortable),
   props.isMultiSort
 );
+
+const internalSearchQuery = computed(() => props.searchQuery);
+
+provide("searchQuery", internalSearchQuery);
 
 watch(
   sortState,

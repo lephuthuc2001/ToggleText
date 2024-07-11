@@ -22,7 +22,6 @@ const {
 } = usePagination(page, itemsPerPage, totalItems);
 
 watch(currentPage, (newPage) => {
-  console.log(newPage);
   emit("update-page", newPage);
 });
 </script>

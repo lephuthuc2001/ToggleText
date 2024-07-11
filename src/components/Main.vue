@@ -3,15 +3,31 @@
     <Table :items="items" :columns="columns"></Table>
 
     <hr style="margin-block: 2rem" />
+
     <ServerSideDataTable
       :items="items"
       :columns="columns"
       :isLoading="isFetching"
       :itemsPerPage="20"
+      :search-query="query"
       v-model:totalItems="totalItems"
       @update-page="handlePageUpdate"
       @update-sort="handleSortUpdate"
     >
+      <template #toolBar>
+        <v-responsive class="ml-auto" max-width="344">
+          <v-text-field
+            clearable
+            label="Search"
+            prepend-icon="mdi-search"
+            placeholder="Love"
+            :modelValue="query"
+            type="text"
+            @update:modelValue="handleQueryUpdate"
+          ></v-text-field>
+        </v-responsive>
+      </template>
+
       <template #table="{ items, columns, sortState }">
         <Table :items="items" :columns="columns" :sortState="sortState">
           <template #header-title="{ value }">
@@ -54,6 +70,10 @@ const query = ref("love");
 const page = ref(1);
 const handlePageUpdate = (newPage) => {
   page.value = newPage;
+};
+
+const handleQueryUpdate = (newQuery) => {
+  query.value = newQuery;
 };
 
 const sortState = ref(null);

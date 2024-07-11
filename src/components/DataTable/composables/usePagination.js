@@ -1,12 +1,17 @@
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
 
 function usePagination(page, itemsPerPage, totalItems) {
   const internalPage = ref(page);
 
+  const searchQuery = inject("searchQuery");
+
+  watch(searchQuery, () => {
+    internalPage.value = 1;
+  });
+
   const start = computed(() => {
     return (internalPage.value - 1) * itemsPerPage;
   });
-
   const startFromEntry = computed(() => {
     return start.value + 1;
   });
