@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineModel, watch, defineEmits } from "vue";
+import { defineModel, watch } from "vue";
 import usePagination from "../composables/usePagination";
 
 const { page, itemsPerPage } = defineProps({

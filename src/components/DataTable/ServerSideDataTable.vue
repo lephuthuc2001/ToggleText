@@ -33,14 +33,7 @@
 </template>
 
 <script setup>
-import {
-  defineProps,
-  defineModel,
-  defineEmits,
-  watch,
-  computed,
-  provide,
-} from "vue";
+import { defineModel, watch, computed, provide } from "vue";
 import Pagination from "./components/Pagination.vue";
 import useSort from "./composables/useSort.js";
 

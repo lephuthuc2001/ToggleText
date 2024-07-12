@@ -51,7 +51,24 @@
         </Table>
       </template>
 
-      <template #pagination="paginationData"> </template>
+      <template #pagination="paginationData">
+        <!-- <div class="flex justify-center space-x-4 mt-4">
+          <button
+            :disabled="paginationData.isPrevDisabled"
+            @click="paginationData.prevPage"
+            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Prev
+          </button>
+          <button
+            :disabled="paginationData.isNextDisabled"
+            @click="paginationData.nextPage"
+            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div> -->
+      </template>
     </ServerSideDataTable>
   </div>
 </template>
