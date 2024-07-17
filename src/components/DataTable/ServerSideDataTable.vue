@@ -7,86 +7,52 @@
       color="primary"
       indeterminate
     ></v-progress-linear>
-    <slot
-      name="table"
-      :items="items"
-      :columns="columns"
-      :sortState="{ isSortActive, handleSort, getSortOrder }"
-    ></slot>
 
-    <Pagination
-      :page="props.page"
-      :searchQuery="props.searchQuery"
-      v-model:totalItems="totalItems"
-      :itemsPerPage="props.itemsPerPage"
-      @update-page="
-        (newPage) => {
-          $emit('update-page', newPage);
-        }
-      "
+    <slot name="table" :items="items" :columns="columns" :sortState="sortState">
+      <Table :items="items" :columns="columns" :sortState="sortState" />
+    </slot>
+
+    <slot
+      name="pagination"
+      :totalItems="totalItems"
+      :itemsPerPage="itemsPerPage"
+      :internalPage="internalPage"
     >
-      <template #default="paginationData">
-        <slot name="pagination" v-bind="paginationData"></slot>
-      </template>
-    </Pagination>
+      <Pagination @update-page="updatePage" />
+    </slot>
   </div>
 </template>
 
 <script setup>
-import { defineModel, watch, computed, provide } from "vue";
+import { provide, ref, watch } from "vue";
 import Pagination from "./components/Pagination.vue";
-import useSort from "./composables/useSort.js";
+import Table from "./base/Table.vue";
+import useSort from "./composables/useSort";
 
-const props = defineProps({
-  items: {
-    type: Array,
-    required: true,
-  },
+const { columns, callQuery } = defineProps({
   columns: {
     type: Array,
     required: true,
   },
-  isLoading: Boolean,
-  page: {
-    type: Number,
-    default: 1,
-  },
-  itemsPerPage: {
-    type: Number,
-    default: 10,
-  },
-  isMultiSort: {
-    type: Boolean,
-    default: false,
-  },
-  searchQuery: {
-    type: String,
-    default: "",
+  callQuery: {
+    type: Function,
+    required: true,
   },
 });
 
-const totalItems = defineModel("totalItems", {
-  type: Number,
-});
+const internalPage = ref(1);
+const updatePage = (newPage) => {
+  internalPage.value = newPage;
+};
 
-const emit = defineEmits(["update-page", "update-sort", "update-search"]);
+const sortableColumns = columns.filter((column) => column.sortable);
+const sortState = useSort(sortableColumns);
 
-const { isSortActive, handleSort, getSortOrder, sortState } = useSort(
-  props.columns.filter((column) => column.sortable),
-  props.isMultiSort
+const { items, totalItems, itemsPerPage, isLoading } = callQuery(
+  internalPage,
+  "love",
+  sortState.sortState
 );
 
-const internalSearchQuery = computed(() => props.searchQuery);
-
-provide("searchQuery", internalSearchQuery);
-
-watch(
-  sortState,
-  (newSortState) => {
-    emit("update-sort", newSortState);
-  },
-  {
-    deep: true,
-  }
-);
+provide("paginationData", { internalPage, totalItems, itemsPerPage });
 </script>

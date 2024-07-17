@@ -1,6 +1,6 @@
-import { ref, watch } from "vue";
+import { ref } from "vue";
 
-function useSort(sortableColumns, isMultiSort) {
+function useSort(sortableColumns, isMultiSort = false) {
   const initialSortState = isMultiSort ? [] : { key: null, order: null };
   const sortState = ref(initialSortState);
 
@@ -47,14 +47,12 @@ function useSort(sortableColumns, isMultiSort) {
           : (sortState.value = initialSortState);
       }
     }
-
-    console.log(sortState.value);
   };
 
   return {
     isSortActive,
-    handleSort,
     getSortOrder,
+    handleSort,
     sortState,
   };
 }

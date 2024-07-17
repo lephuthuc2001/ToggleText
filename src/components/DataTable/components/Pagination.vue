@@ -1,16 +1,10 @@
 <script setup>
-import { defineModel, watch } from "vue";
+import { inject, watch } from "vue";
 import usePagination from "../composables/usePagination";
 
-const { page, itemsPerPage } = defineProps({
-  page: Number,
-  itemsPerPage: Number,
-});
-
-const totalItems = defineModel("totalItems");
+const { internalPage, itemsPerPage, totalItems } = inject("paginationData");
 
 const emit = defineEmits(["update-page"]);
-
 const {
   startFromEntry,
   endAtEntry,
@@ -19,10 +13,10 @@ const {
   prevPage,
   nextPage,
   currentPage,
-} = usePagination(page, itemsPerPage, totalItems);
+} = usePagination(internalPage, itemsPerPage, totalItems);
 
-watch(currentPage, (newPage) => {
-  emit("update-page", newPage);
+watch(currentPage, (newVal) => {
+  emit("update-page", newVal);
 });
 </script>
 

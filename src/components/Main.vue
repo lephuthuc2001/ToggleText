@@ -1,32 +1,9 @@
 <template>
   <div>
-    <Table :items="items" :columns="columns"></Table>
-
     <hr style="margin-block: 2rem" />
 
-    <ServerSideDataTable
-      :items="items"
-      :columns="columns"
-      :isLoading="isFetching"
-      :itemsPerPage="20"
-      :search-query="query"
-      v-model:totalItems="totalItems"
-      @update-page="handlePageUpdate"
-      @update-sort="handleSortUpdate"
-    >
-      <template #toolBar>
-        <v-responsive class="ml-auto" max-width="344">
-          <v-text-field
-            clearable
-            label="Search"
-            prepend-icon="mdi-search"
-            placeholder="Love"
-            :modelValue="query"
-            type="text"
-            @update:modelValue="handleQueryUpdate"
-          ></v-text-field>
-        </v-responsive>
-      </template>
+    <ServerSideDataTable :columns="columns" :callQuery="callQuery">
+      <template #toolBar> </template>
 
       <template #table="{ items, columns, sortState }">
         <Table :items="items" :columns="columns" :sortState="sortState">
@@ -40,82 +17,48 @@
             >
           </template>
 
-          <template #header-release_date="{ value, sortState }">
-            <span>{{ value }}</span>
-
-            <span v-if="sortState.isSortActive">
-              {{ sortState.sortOrder === "asc" ? "↑" : "↓" }}
-            </span>
-            <span v-else> ⇅ </span>
-          </template>
+          <template #header-release_date="{ value, sortState }"> </template>
         </Table>
       </template>
 
-      <template #pagination="paginationData">
-        <!-- <div class="flex justify-center space-x-4 mt-4">
-          <button
-            :disabled="paginationData.isPrevDisabled"
-            @click="paginationData.prevPage"
-            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Prev
-          </button>
-          <button
-            :disabled="paginationData.isNextDisabled"
-            @click="paginationData.nextPage"
-            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div> -->
-      </template>
+      <template #pagination="paginationData"> </template>
     </ServerSideDataTable>
   </div>
 </template>
 
 <script setup>
 import { useQuery } from "@tanstack/vue-query";
-import { computed, ref, watch } from "vue";
 import MovieService from "../services/MovieService";
-import ToggleText from "./ToggleText.vue";
 import Table from "./DataTable/base/Table.vue";
-
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
+import { computed, toValue, watch } from "vue";
 
-const query = ref("love");
+function callQuery(page = 1, query = "thuc", sortBy) {
+  const { data, isFetching } = useQuery({
+    queryKey: ["movies", query, page, sortBy],
+    queryFn: ({ queryKey }) => {
+      const sort_by = queryKey[3]?.key
+        ? queryKey[3]?.key + "." + queryKey[3].order
+        : null;
 
-const page = ref(1);
-const handlePageUpdate = (newPage) => {
-  page.value = newPage;
-};
+      let queryParams = {
+        query: queryKey[1],
+        page: queryKey[2],
+      };
 
-const handleQueryUpdate = (newQuery) => {
-  query.value = newQuery;
-};
+      if (sort_by) {
+        queryParams = { ...queryParams, sort_by };
+      }
+      return MovieService.searchMovies(queryParams);
+    },
+    placeholderData: (previousData, previousQuery) => previousData,
+  });
 
-const sortState = ref(null);
-const handleSortUpdate = (newSortState) => {
-  console.log({ newSortState });
-  if (newSortState.key) {
-    sortState.value = newSortState.key + "." + newSortState.order;
-  } else {
-    sortState.value = null;
-  }
-};
+  const items = computed(() => data.value?.results ?? []);
+  const totalItems = computed(() => data.value?.total_results ?? 0);
 
-const { data, isFetching } = useQuery({
-  queryKey: ["movies", query, page, sortState],
-  queryFn: ({ queryKey }) => {
-    const queryParams = {
-      query: queryKey[1],
-      page: queryKey[2],
-      sort_by: queryKey[3],
-    };
-
-    return MovieService.searchMovies(queryParams);
-  },
-  placeholderData: (previousData, previousQuery) => previousData,
-});
+  return { isLoading: isFetching, items, totalItems, itemsPerPage: 20 };
+}
 
 const columns = [
   {
@@ -145,10 +88,6 @@ const columns = [
     width: "20%",
   },
 ];
-
-const items = computed(() => data.value?.results);
-
-const totalItems = computed(() => data.value?.total_results);
 </script>
 
 <style scoped></style>

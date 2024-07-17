@@ -1,6 +1,4 @@
 <script setup>
-import { defineProps } from "vue";
-
 const { items, columns, sortState } = defineProps({
   items: Array,
   columns: Array,
