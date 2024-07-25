@@ -50,7 +50,6 @@ const sortState = useSort(sortableColumns);
 
 const { items, totalItems, itemsPerPage, isLoading } = callQuery(
   internalPage,
-  "love",
   sortState.sortState
 );
 
