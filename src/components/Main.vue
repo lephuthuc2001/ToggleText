@@ -3,8 +3,8 @@
     <Table :columns="studentsColumns" :items="students" />
     <hr style="margin-block: 2rem" />
     <ServerSideDataTable :columns="columns" :callQuery="callQuery">
-      <template #toolBar>
-        <div @submit.prevent class="w-80 ml-auto mb-4">
+      <template #toolBar="{ updateQuery }">
+        <div class="w-80 ml-auto mb-4">
           <label
             for="search"
             class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -36,7 +36,8 @@
               class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Search"
               required
-              v-model="search"
+              @input="updateSeach($event), updateQuery()"
+              :value="search"
             />
             <button
               type="submit"
@@ -53,39 +54,38 @@
 </template>
 
 <script setup>
-import { useQuery } from "@tanstack/vue-query";
 import MovieService from "../services/MovieService";
 import Table from "./DataTable/base/Table.vue";
 import ServerSideDataTable from "./DataTable/ServerSideDataTable.vue";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 const search = ref("thuc");
+const updateSeach = (e) => {
+  search.value = e.target.value;
+};
 
-function callQuery(page = 1, sortBy) {
-  const { data, isFetching } = useQuery({
-    queryKey: ["movies", search, page, sortBy],
-    queryFn: ({ queryKey }) => {
-      const sort_by = queryKey[3]?.key
-        ? queryKey[3]?.key + "." + queryKey[3].order
-        : null;
+async function callQuery(page = 1, sortBy) {
+  try {
+    const paramsObject = {
+      page: page,
+      query: search.value,
+    };
 
-      let queryParams = {
-        query: queryKey[1],
-        page: queryKey[2],
-      };
+    if (sortBy) {
+      paramsObject.sortBy = `${sortBy.key}.${sortBy.order}`;
+    }
 
-      if (sort_by) {
-        queryParams = { ...queryParams, sort_by };
-      }
-      return MovieService.searchMovies(queryParams);
-    },
-    placeholderData: (previousData, previousQuery) => previousData,
-  });
+    const response = await MovieService.searchMovies(paramsObject);
 
-  const items = computed(() => data.value?.results ?? []);
-  const totalItems = computed(() => data.value?.total_results ?? 0);
-
-  return { isLoading: isFetching, items, totalItems, itemsPerPage: 20 };
+    return {
+      items: response.results,
+      totalItems: response.total_results,
+      itemsPerPage: 20,
+      page: response.page,
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const columns = [

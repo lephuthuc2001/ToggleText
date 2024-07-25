@@ -55,21 +55,33 @@ const { items, columns, sortState } = defineProps({
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr
-          v-for="item in items"
-          :key="item.id"
-          class="transition duration-150 ease-in-out hover:bg-gray-50"
-        >
-          <td
-            v-for="column in columns"
-            :key="column.key"
-            class="px-6 py-3 text-sm"
+        <template v-if="items.length > 0">
+          <tr
+            v-for="item in items"
+            :key="item.id"
+            class="transition duration-150 ease-in-out hover:bg-gray-50"
           >
-            <slot :name="'body-' + column.key" :value="column.getValue(item)">
-              {{ column.getValue(item) }}
-            </slot>
-          </td>
-        </tr>
+            <td
+              v-for="column in columns"
+              :key="column.key"
+              class="px-6 py-3 text-sm"
+            >
+              <slot :name="'body-' + column.key" :value="column.getValue(item)">
+                {{ column.getValue(item) }}
+              </slot>
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <tr>
+            <td
+              :colspan="columns.length"
+              class="px-6 py-4 text-center text-sm text-gray-500"
+            >
+              No data available
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>

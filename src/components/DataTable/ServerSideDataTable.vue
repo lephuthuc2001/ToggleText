@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot name="toolBar"></slot>
+    <slot name="toolBar" :updateQuery="updateQuery"></slot>
     <v-progress-linear
       v-if="isLoading"
       class="mb-4"
@@ -18,7 +18,7 @@
       :itemsPerPage="itemsPerPage"
       :internalPage="internalPage"
     >
-      <Pagination @update-page="updatePage" />
+      <Pagination v-if="items.length > 0" @update-page="updatePage" />
     </slot>
   </div>
 </template>
@@ -40,18 +40,46 @@ const { columns, callQuery } = defineProps({
   },
 });
 
+const queryUpdatedAt = ref(0);
 const internalPage = ref(1);
-const updatePage = (newPage) => {
-  internalPage.value = newPage;
-};
+const totalItems = ref(0);
+const items = ref([]);
+const isLoading = ref(false);
+const itemsPerPage = 20;
 
 const sortableColumns = columns.filter((column) => column.sortable);
 const sortState = useSort(sortableColumns);
 
-const { items, totalItems, itemsPerPage, isLoading } = callQuery(
-  internalPage,
-  sortState.sortState
-);
+function updateQuery() {
+  queryUpdatedAt.value = Date.now();
+}
+
+function updatePage(newPage) {
+  internalPage.value = newPage;
+}
+
+async function fetchData() {
+  isLoading.value = true;
+  try {
+    const result = await callQuery(internalPage.value, sortState.sortState);
+    items.value = result.items;
+    totalItems.value = result.totalItems;
+    itemsPerPage.value = result.itemsPerPage;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+watch([internalPage, sortState.sortState, queryUpdatedAt], fetchData, {
+  immediate: true,
+  deep: true,
+});
+
+watch(queryUpdatedAt, () => {
+  internalPage.value = 1;
+});
 
 provide("paginationData", { internalPage, totalItems, itemsPerPage });
 </script>

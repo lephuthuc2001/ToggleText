@@ -1,7 +1,7 @@
 import { ref, computed, toValue } from "vue";
 
 function usePagination(page = 1, itemsPerPage = 10, totalItems) {
-  const internalPage = ref(toValue(page));
+  const internalPage = ref(page);
 
   const start = computed(() => {
     return (internalPage.value - 1) * itemsPerPage;
