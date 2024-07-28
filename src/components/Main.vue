@@ -162,11 +162,12 @@
         ></v-autocomplete>
       </v-col>
     </v-row>
-    <v-row> 
-        <v-col>
-        
-          <v-checkbox label="loremsyna  "></v-checkbox>
-        </v-col>
+    <v-row>
+      <v-col>
+        <v-checkbox
+          label="I certify that all answers given herin are true and complate to my best of my knowledge. I authorize investigation of all statements contained in this application for employment as may be necessary in arriving at an employment decision."
+        ></v-checkbox>
+      </v-col>
     </v-row>
   </v-container>
 </template>
