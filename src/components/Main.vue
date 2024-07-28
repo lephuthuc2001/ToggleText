@@ -169,6 +169,35 @@
         ></v-checkbox>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-sheet
+          height="150"
+          color="blue-grey-lighten-5
+"
+        >
+          Name & Signature
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet
+          height="150"
+          color="blue-grey-lighten-5
+"
+        >
+          Date
+        </v-sheet>
+      </v-col>
+      <v-col>
+        <v-sheet
+          height="150"
+          color="blue-grey-lighten-5
+"
+        >
+          Approval
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
