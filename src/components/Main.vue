@@ -314,6 +314,8 @@ const initialValues = {
   agreement: false,
 };
 
+const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
+
 const schema = yup.object().shape({
   personalInfomation: yup.object().shape({
     name: yup.object().shape({
@@ -331,8 +333,8 @@ const schema = yup.object().shape({
       year: yup.number().required(),
     }),
     phone: yup.object().shape({
-      home: yup.string().required(),
-      mobile: yup.string().required(),
+      home: yup.string().matches(phoneNumberRegex).required(),
+      mobile: yup.string().matches(phoneNumberRegex).required(),
     }),
   }),
   education: yup.object().shape({
