@@ -32,6 +32,9 @@ importers:
       qs:
         specifier: ^6.12.1
         version: 6.12.1
+      signature_pad:
+        specifier: ^5.0.2
+        version: 5.0.2
       vee-validate:
         specifier: ^4.13.2
         version: 4.13.2(vue@3.4.27)
@@ -870,6 +873,9 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
+
+  signature_pad@5.0.2:
+    resolution: {integrity: sha512-FSseAwRWznAQg90CnrTbC570u1QYi8gijZiyboc18SK2IUx7sYVZhNPLnJRCnwhpyOpgdqXf91XAHL4Yg41yCg==}
 
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -1754,6 +1760,8 @@ snapshots:
       object-inspect: 1.13.1
 
   signal-exit@4.1.0: {}
+
+  signature_pad@5.0.2: {}
 
   source-map-js@1.2.0: {}
 

@@ -17,6 +17,7 @@
     "fuse.js": "^7.0.0",
     "lodash": "^4.17.21",
     "qs": "^6.12.1",
+    "signature_pad": "^5.0.2",
     "vee-validate": "^4.13.2",
     "vue": "^3.4.21",
     "vuetify": "^3.6.9",
