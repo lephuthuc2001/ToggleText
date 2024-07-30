@@ -250,9 +250,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-sheet height="150" color="blue-grey-lighten-5">
-          Name & Signature
-        </v-sheet>
+        <h1 class="mb-2">Name and Signature</h1>
+        <canvas v-signature></canvas>
+
+        <v-btn aria-label="Clear" @click="signaturePad.clear()">Clear</v-btn>
       </v-col>
       <v-col>
         <v-sheet height="150" color="blue-grey-lighten-5l"> Date </v-sheet>
@@ -283,7 +284,7 @@ import * as yup from "yup";
 import LocationService from "../services/LocationService";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
-
+import SignaturePad from "signature_pad";
 const initialValues = {
   personalInfomation: {
     name: {
@@ -330,6 +331,7 @@ const initialValues = {
     },
   ],
   agreement: false,
+  signature: "",
 };
 
 const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
@@ -375,6 +377,7 @@ const schema = yup.object().shape({
     )
     .min(3),
   agreement: yup.boolean().required(),
+  signature: yup.string().required(),
 });
 
 const { handleSubmit, defineField, errors, setFieldValue } = useForm({
@@ -411,6 +414,7 @@ const [universityCity] = defineField("education.university.city");
 
 const [isAgreed] = defineField("agreement");
 
+const [signature] = defineField("signature");
 const { fields, push, remove } = useFieldArray("skills");
 
 const countries = ref([]);
@@ -441,6 +445,23 @@ watch(country, async (value) => {
   isLoadingCities.value = false;
   cities.value = states;
 });
+
+const signaturePad = ref(null);
+const vSignature = {
+  mounted(el) {
+    signaturePad.value = new SignaturePad(el, {
+      backgroundColor: "rgb(255, 255, 255)",
+    });
+
+    signaturePad.value.addEventListener("endStroke", () => {
+      console.log("endStroke");
+
+      console.log(signaturePad.value.toDataURL("image/jpeg"));
+
+      setFieldValue("signature", signaturePad.value.toDataURL("image/jpeg"));
+    });
+  },
+};
 </script>
 
 <style scoped></style>
