@@ -25,6 +25,7 @@
           <v-col cols="6">
             <v-text-field
               v-model="firstName"
+              name="firstName"
               label="First Name"
               outlined
             ></v-text-field>
@@ -32,6 +33,7 @@
           <v-col cols="6">
             <v-text-field
               v-model="lastName"
+              name="lastName"
               label="Last Name"
               outlined
             ></v-text-field>
@@ -49,6 +51,7 @@
             <v-textarea
               v-model="streetAddress"
               label="Street Address"
+              name="streetAddress"
               outlined
             ></v-textarea>
           </v-col>
@@ -62,6 +65,7 @@
                   v-model="day"
                   label="Day"
                   :items="Array.from({ length: 30 }, (_, i) => i + 1)"
+                  name="day"
                 ></v-autocomplete
               ></v-col>
               <v-col>
@@ -69,12 +73,14 @@
                   v-model="month"
                   label="Month"
                   :items="Array.from({ length: 12 }, (_, i) => i + 1)"
+                  name="month"
                 ></v-autocomplete>
               </v-col>
               <v-col>
                 <v-autocomplete
                   v-model="year"
                   label="Year"
+                  name="year"
                   :items="
                     Array.from(
                       { length: 100 },
@@ -88,14 +94,25 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field v-model="city" label="City" outlined></v-text-field>
+            <v-autocomplete
+              v-model="country"
+              label="Country"
+              name="country"
+              :items="countries"
+              :loading="isLoadingCountries"
+              outlined
+            ></v-autocomplete>
           </v-col>
           <v-col>
-            <v-text-field
-              v-model="postalCode"
-              label="Postal Code"
+            <v-autocomplete
+              v-model="city"
+              label="City"
+              name="city"
               outlined
-            ></v-text-field>
+              aria-disabled="true"
+              :items="cities"
+              :loading="isLoadingCities"
+            ></v-autocomplete>
           </v-col>
         </v-row>
       </v-col>
@@ -261,8 +278,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import * as yup from "yup";
+import LocationService from "../services/LocationService";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
 
@@ -275,7 +293,7 @@ const initialValues = {
     address: {
       streetAddress: "",
       city: "",
-      postalCode: "",
+      country: "",
     },
     dateOfBirth: {
       day: "",
@@ -325,7 +343,7 @@ const schema = yup.object().shape({
     address: yup.object().shape({
       streetAddress: yup.string().required(),
       city: yup.string().required(),
-      postalCode: yup.string().required(),
+      country: yup.string().required(),
     }),
     dateOfBirth: yup.object().shape({
       day: yup.number().required(),
@@ -359,7 +377,7 @@ const schema = yup.object().shape({
   agreement: yup.boolean().required(),
 });
 
-const { handleSubmit, defineField, errors } = useForm({
+const { handleSubmit, defineField, errors, setFieldValue } = useForm({
   validationSchema: toTypedSchema(schema),
   initialValues,
 });
@@ -374,7 +392,7 @@ const [month] = defineField("personalInfomation.dateOfBirth.month");
 const [year] = defineField("personalInfomation.dateOfBirth.year");
 
 const [city] = defineField("personalInfomation.address.city");
-const [postalCode] = defineField("personalInfomation.address.postalCode");
+const [country] = defineField("personalInfomation.address.country");
 
 const [homePhone] = defineField("personalInfomation.phone.home");
 const [mobilePhone] = defineField("personalInfomation.phone.mobile");
@@ -395,7 +413,34 @@ const [isAgreed] = defineField("agreement");
 
 const { fields, push, remove } = useFieldArray("skills");
 
-console.log(fields);
+const countries = ref([]);
+const isLoadingCountries = ref(false);
+
+const cities = ref([]);
+
+const isLoadingCities = ref(false);
+
+onMounted(async () => {
+  isLoadingCountries.value = true;
+  const countriesNameArray = await LocationService.getAllCountries();
+  isLoadingCountries.value = false;
+
+  countries.value = countriesNameArray;
+});
+
+watch(country, async (value) => {
+  setFieldValue("personalInfomation.address.city", "");
+  cities.value = [];
+  if (!value) {
+    return;
+  }
+
+  isLoadingCities.value = true;
+  const states = await LocationService.getStatesPerCountry(value);
+
+  isLoadingCities.value = false;
+  cities.value = states;
+});
 </script>
 
 <style scoped></style>
