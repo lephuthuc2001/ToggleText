@@ -253,7 +253,7 @@
         <h1 class="mb-2">Name and Signature</h1>
         <canvas v-signature></canvas>
 
-        <v-btn aria-label="Clear" @click="signaturePad.clear()">Clear</v-btn>
+        <v-btn aria-label="Clear" @click="clearSignature">Clear</v-btn>
       </v-col>
       <v-col>
         <v-sheet height="150" color="blue-grey-lighten-5l"> Date </v-sheet>
@@ -447,6 +447,12 @@ watch(country, async (value) => {
 });
 
 const signaturePad = ref(null);
+
+const clearSignature = () => {
+  signaturePad.value.clear();
+
+  setFieldValue("signature", "");
+};
 const vSignature = {
   mounted(el) {
     signaturePad.value = new SignaturePad(el, {
