@@ -394,8 +394,12 @@ const initialValues = {
 };
 
 const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
-function isOlderThan18(value) {
+
+const isOlderThan18 = (value) => {
   const { day, month, year } = value;
+  if (!day || !month || !year) {
+    return true; // Skip validation if any of the fields are missing
+  }
   const today = new Date();
   const birthDate = new Date(year, month - 1, day); // month is 0-indexed
   let age = today.getFullYear() - birthDate.getFullYear();
@@ -409,7 +413,8 @@ function isOlderThan18(value) {
   }
 
   return age >= 18;
-}
+};
+
 const schema = yup.object().shape({
   personalInfomation: yup.object().shape({
     name: yup.object().shape({
