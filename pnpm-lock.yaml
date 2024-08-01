@@ -35,6 +35,15 @@ importers:
       fuse.js:
         specifier: ^7.0.0
         version: 7.0.0
+      i18next:
+        specifier: ^23.12.2
+        version: 23.12.2
+      i18next-browser-languagedetector:
+        specifier: ^8.0.0
+        version: 8.0.0
+      i18next-vue:
+        specifier: ^4.0.0
+        version: 4.0.0(i18next@23.12.2)(vue@3.4.27)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -111,6 +120,10 @@ packages:
     resolution: {integrity: sha512-EOv5IK8arwh3LI47dz1b0tKUb/1uhHAnHJOrjgtQMIpu1uXd9mlFrJg9IUgGUgZ41Ch0K8REPTYpO7B76b4vJg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+
+  '@babel/runtime@7.25.0':
+    resolution: {integrity: sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==}
+    engines: {node: '>=6.9.0'}
 
   '@babel/types@7.24.5':
     resolution: {integrity: sha512-6mQNsaLeXTw0nxYUYu+NSa4Hx4BlF1x1x8/PMFbiR+GBSr+2DkECc69b8hgy2frEodNcvPffeH8YfWd3LI6jhQ==}
@@ -672,6 +685,18 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  i18next-browser-languagedetector@8.0.0:
+    resolution: {integrity: sha512-zhXdJXTTCoG39QsrOCiOabnWj2jecouOqbchu3EfhtSHxIB5Uugnm9JaizenOy39h7ne3+fLikIjeW88+rgszw==}
+
+  i18next-vue@4.0.0:
+    resolution: {integrity: sha512-yaKWMyFGweyA4EF7JXSGRAvZQ1CJTKjim0iPBsSjFQuuI6lK7cJf6dWK7uO9leB2EnB5JPd8UVtYLTjHXlCVPw==}
+    peerDependencies:
+      i18next: '>=23'
+      vue: ^3.3.4
+
+  i18next@23.12.2:
+    resolution: {integrity: sha512-XIeh5V+bi8SJSWGL3jqbTEBW5oD6rbP5L+E7dVQh1MNTxxYef0x15rhJVcRb7oiuq4jLtgy2SD8eFlf6P2cmqg==}
+
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -859,6 +884,9 @@ packages:
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
+
+  regenerator-runtime@0.14.1:
+    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
 
   remove-accents@0.5.0:
     resolution: {integrity: sha512-8g3/Otx1eJaVD12e31UbJj1YzdtVvzH85HV7t+9MJYk/u3XmkOUJ5Ys9wQrf9PCPK8+xn4ymzqYCiZl6QWKn+A==}
@@ -1099,6 +1127,10 @@ snapshots:
   '@babel/parser@7.24.5':
     dependencies:
       '@babel/types': 7.24.5
+
+  '@babel/runtime@7.25.0':
+    dependencies:
+      regenerator-runtime: 0.14.1
 
   '@babel/types@7.24.5':
     dependencies:
@@ -1593,6 +1625,19 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  i18next-browser-languagedetector@8.0.0:
+    dependencies:
+      '@babel/runtime': 7.25.0
+
+  i18next-vue@4.0.0(i18next@23.12.2)(vue@3.4.27):
+    dependencies:
+      i18next: 23.12.2
+      vue: 3.4.27
+
+  i18next@23.12.2:
+    dependencies:
+      '@babel/runtime': 7.25.0
+
   is-binary-path@2.1.0:
     dependencies:
       binary-extensions: 2.3.0
@@ -1739,6 +1784,8 @@ snapshots:
   readdirp@3.6.0:
     dependencies:
       picomatch: 2.3.1
+
+  regenerator-runtime@0.14.1: {}
 
   remove-accents@0.5.0: {}
 
