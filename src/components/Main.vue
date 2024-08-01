@@ -46,14 +46,14 @@
       </v-row>
       <v-row>
         <v-col cols="2">
-          <h2>Address</h2>
+          <h2>{{ $t("address", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
           <v-row>
             <v-col cols="7">
               <v-textarea
                 v-model="streetAddress"
-                label="Street Address"
+                :label="$t('streetAddress', { ns: 'applicationForm' })"
                 name="streetAddress"
                 :error-messages="
                   errors['personalInfomation.address.streetAddress']
@@ -63,7 +63,9 @@
             </v-col>
             <v-col cols="5">
               <v-row>
-                <v-col> DATE OF BIRTH </v-col>
+                <v-col>
+                  {{ $t("dateOfBirth", { ns: "applicationForm" }) }}
+                </v-col>
               </v-row>
               <v-row no-gutters>
                 <v-col>
@@ -80,7 +82,7 @@
                 <v-col>
                   <v-autocomplete
                     v-model="day"
-                    label="Day"
+                    :label="$t('day', { ns: 'applicationForm' })"
                     :items="Array.from({ length: 30 }, (_, i) => i + 1)"
                     name="day"
                     :error-messages="
@@ -91,7 +93,7 @@
                 <v-col>
                   <v-autocomplete
                     v-model="month"
-                    label="Month"
+                    :label="$t('month', { ns: 'applicationForm' })"
                     :items="Array.from({ length: 12 }, (_, i) => i + 1)"
                     name="month"
                     :error-messages="
@@ -102,7 +104,7 @@
                 <v-col>
                   <v-autocomplete
                     v-model="year"
-                    label="Year"
+                    :label="$t('year', { ns: 'applicationForm' })"
                     name="year"
                     :items="
                       Array.from(
@@ -122,7 +124,7 @@
             <v-col>
               <v-autocomplete
                 v-model="country"
-                label="Country"
+                :label="$t('country', { ns: 'applicationForm' })"
                 name="country"
                 :items="countries"
                 :loading="isLoadingCountries"
@@ -133,7 +135,7 @@
             <v-col>
               <v-autocomplete
                 v-model="city"
-                label="City"
+                :label="$t('city', { ns: 'applicationForm' })"
                 name="city"
                 outlined
                 aria-disabled="true"
@@ -147,14 +149,14 @@
       </v-row>
       <v-row>
         <v-col cols="2">
-          <h2>Phone</h2>
+          <h2>{{ $t("phone", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="homePhone"
-                label="Home"
+                :label="$t('home', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['personalInfomation.phone.home']"
               ></v-text-field>
@@ -162,7 +164,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="mobilePhone"
-                label="Mobile"
+                :label="$t('mobile', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['personalInfomation.phone.mobile']"
               ></v-text-field>
@@ -175,20 +177,20 @@
           <h1
             class="text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
           >
-            EDUCATION
+            {{ $t("education", { ns: "applicationForm" }) }}
           </h1>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="2">
-          <h2>High School</h2>
+          <h2>{{ $t("highSchool", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="highSchoolName"
-                label="Name"
+                :label="$t('highSchoolName', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['education.highSchool.name']"
               ></v-text-field>
@@ -196,7 +198,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="highSchoolCity"
-                label="City"
+                :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['education.highSchool.city']"
               ></v-text-field>
@@ -206,14 +208,14 @@
       </v-row>
       <v-row>
         <v-col cols="2">
-          <h2>University</h2>
+          <h2>{{ $t("university", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
               <v-text-field
                 v-model="universityName"
-                label="Name"
+                :label="$t('universityName', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['education.university.name']"
               ></v-text-field>
@@ -221,7 +223,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="universityCity"
-                label="City"
+                :label="$t('universityLocation', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="errors['education.university.city']"
               ></v-text-field>
@@ -234,14 +236,14 @@
           <h1
             class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
           >
-            Skills
+            {{ $t("skill", { ns: "applicationForm", count: 2 }) }}
           </h1>
         </v-col>
         <v-col cols="5">
           <h1
             class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
           >
-            Levels
+            {{ $t("level", { ns: "applicationForm", count: 2 }) }}
           </h1>
         </v-col>
       </v-row>
@@ -260,7 +262,7 @@
         <v-col cols="6">
           <v-text-field
             v-model="field.value.name"
-            label="Skill"
+            :label="$t('skill', { ns: 'applicationForm', count: 1 })"
             outlined
             :error-messages="errors[`skills[${idx}].name`]"
           ></v-text-field>
@@ -268,8 +270,10 @@
         <v-col cols="5">
           <v-autocomplete
             v-model="field.value.level"
-            label="Level"
-            :items="['Beginner', 'Intermediate', 'Advanced']"
+            :label="$t('level', { ns: 'applicationForm', count: 1 })"
+            :items="levelsOptions"
+            item-title="title"
+            item-value="value"
             outlined
             :error-messages="errors[`skills[${idx}].level`]"
           ></v-autocomplete>
@@ -302,13 +306,13 @@
             v-model="isAgreed"
             name="agreement"
             :error-messages="errors['agreement']"
-            label="I certify that all answers given herin are true and complate to my best of my knowledge. I authorize investigation of all statements contained in this application for employment as may be necessary in arriving at an employment decision."
+            :label="$t('agreement', { ns: 'applicationForm' })"
           ></v-checkbox>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <h1 class="mb-2">Name and Signature</h1>
+          <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
           <v-alert
             v-if="errors['signature']"
             :text="errors['signature']"
@@ -318,13 +322,19 @@
           ></v-alert>
           <canvas v-signature></canvas>
 
-          <v-btn aria-label="Clear" @click="clearSignature">Clear</v-btn>
+          <v-btn aria-label="Clear" @click="clearSignature">
+            <v-icon icon="fa-solid fa-refresh" />
+          </v-btn>
         </v-col>
         <v-col>
-          <v-sheet height="150" color="blue-grey-lighten-5l"> Date </v-sheet>
+          <v-sheet height="150" color="blue-grey-lighten-5l">
+            {{ $t("date", { ns: "applicationForm" }) }}
+          </v-sheet>
         </v-col>
         <v-col>
-          <v-sheet height="150" color="blue-grey-lighten-5"> Approval </v-sheet>
+          <v-sheet height="150" color="blue-grey-lighten-5">
+            {{ $t("approval", { ns: "applicationForm" }) }}
+          </v-sheet>
         </v-col>
       </v-row>
       <v-row>
@@ -335,7 +345,7 @@
             variant="elevated"
             color="blue-darken-2"
             type="submit"
-            >Submit</v-btn
+            >{{ $t("submit", { ns: "applicationForm" }) }}</v-btn
           >
         </v-col>
       </v-row>
@@ -351,6 +361,10 @@ import LocationService from "../services/LocationService";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
 import SignaturePad from "signature_pad";
+import { useTranslation } from "i18next-vue";
+
+const { t, i18next } = useTranslation();
+
 const initialValues = {
   personalInfomation: {
     name: {
@@ -533,6 +547,29 @@ const [isAgreed] = defineField("agreement");
 const [signature] = defineField("signature");
 
 const { fields, push, remove } = useFieldArray("skills");
+
+const levelsOptions = computed(function () {
+  return [
+    {
+      title: t("beginner", {
+        ns: "applicationForm",
+      }),
+      value: "Beginner",
+    },
+    {
+      title: t("intermediate", {
+        ns: "applicationForm",
+      }),
+      value: "Intermediate",
+    },
+    {
+      title: t("advanced", {
+        ns: "applicationForm",
+      }),
+      value: "Advanced",
+    },
+  ];
+});
 
 const countries = ref([]);
 const isLoadingCountries = ref(false);
