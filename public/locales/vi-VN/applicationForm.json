@@ -24,6 +24,8 @@
   "universityLocation": "Địa điểm trường đại học",
   "skill_one": "Kỹ năng",
   "skill_other": "Kỹ năng",
+  "skillName": "Tên kỹ năng",
+  "skillLevel": "Trình độ kỹ năng",
   "level_one": "Trình độ",
   "level_other": "Trình độ",
   "beginner": "Mới bắt đầu",
@@ -35,6 +37,12 @@
   "date": "Ngày Tháng",
   "approval": "Phê duyệt",
   "validation": {
-    "required": "{{field}} là bắt buộc"
+    "required": "{{field}} là bắt buộc",
+    "matches": "{{field}} phải tuân theo quy tắc này {{regex}}",
+    "array-min": "{{field}} ít nhất phải có {{expected}} mục",
+    "custom": {
+      "agreement": "Bạn phải đồng ý với các điều khoản và điều kiện",
+      "signature": "Bạn phải cung cấp chữ ký"
+    }
   }
 }

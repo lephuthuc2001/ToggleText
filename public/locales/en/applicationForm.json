@@ -24,6 +24,8 @@
   "universityLocation": "University Location",
   "skill_one": "Skill",
   "skill_other": "Skills",
+  "skillName": "Skill Name",
+  "skillLevel": "Skill Level",
   "level_one": "Level",
   "level_other": "Levels",
   "beginner": "Beginner",
@@ -49,13 +51,19 @@
     "education.highSchool.location": "highSchoolLocation",
     "education.university.name": "universityName",
     "education.university.location": "universityLocation",
-    "skills": "skills",
+    "skills": "skill_other",
     "agreement": "agreement",
     "signature": "signature",
-    "skills[{{index}}].name": "skillName",
-    "skills[{{index}}].level": "skillLevel"
+    "skillName": "skillName",
+    "skillLevel": "skillLevel"
   },
   "validation": {
-    "required": "{{field}} is required"
+    "required": "{{field}} is required",
+    "matches": "{{field}} must match the pattern {{regex}}",
+    "array-min": "{{field}} must have at least {{expected}} items",
+    "custom": {
+      "agreement": "You must agree to the terms and conditions",
+      "signature": "You must provide a signature"
+    }
   }
 }

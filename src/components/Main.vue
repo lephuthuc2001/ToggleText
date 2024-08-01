@@ -98,7 +98,9 @@
                   <v-autocomplete
                     v-model="month"
                     :label="$t('month', { ns: 'applicationForm' })"
-                    :items="Array.from({ length: 12 }, (_, i) => i + 1)"
+                    :items="
+                      Array.from({ length: 12 }, (_, i) => (i + 1).toString())
+                    "
                     name="month"
                     :error-messages="
                       localizedErrors['personalInfomation.dateOfBirth.month']
@@ -111,9 +113,8 @@
                     :label="$t('year', { ns: 'applicationForm' })"
                     name="year"
                     :items="
-                      Array.from(
-                        { length: 100 },
-                        (_, i) => new Date().getFullYear() - 100 + i
+                      Array.from({ length: 100 }, (_, i) =>
+                        (new Date().getFullYear() - 100 + i).toString()
                       )
                     "
                     :error-messages="
@@ -209,7 +210,7 @@
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-model="highSchoolCity"
+                v-model="highSchoolLocation"
                 :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="
@@ -236,7 +237,7 @@
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-model="universityCity"
+                v-model="universityLocation"
                 :label="$t('universityLocation', { ns: 'applicationForm' })"
                 outlined
                 :error-messages="
@@ -348,7 +349,7 @@
           </v-sheet>
         </v-col>
         <v-col>
-          <v-sheet height="150" color="blue-grey-lighten-5">
+          <v-sheet height="150" color="blue-grey-lighten-5l">
             {{ $t("approval", { ns: "applicationForm" }) }}
           </v-sheet>
         </v-col>
@@ -380,6 +381,7 @@ import { useForm, useFieldArray, FieldArray } from "vee-validate";
 import SignaturePad from "signature_pad";
 import { useTranslation } from "i18next-vue";
 import { setLocale } from "yup";
+import { set } from "lodash";
 
 const { t, i18next } = useTranslation();
 
@@ -407,11 +409,11 @@ const initialValues = {
   education: {
     highSchool: {
       name: "",
-      city: "",
+      location: "",
     },
     university: {
       name: "",
-      city: "",
+      location: "",
     },
   },
   skills: [
@@ -436,11 +438,18 @@ const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
 
 const isOlderThan18 = (value) => {
   const { day, month, year } = value;
-  if (!day || !month || !year) {
-    return true; // Skip validation if any of the fields are missing
+
+  // Convert day, month, and year to integers
+  const dayInt = parseInt(day, 10);
+  const monthInt = parseInt(month, 10);
+  const yearInt = parseInt(year, 10);
+
+  if (!dayInt || !monthInt || !yearInt) {
+    return true; // Skip validation if any of the fields are missing or invalid
   }
+
   const today = new Date();
-  const birthDate = new Date(year, month - 1, day); // month is 0-indexed
+  const birthDate = new Date(yearInt, monthInt - 1, dayInt); // month is 0-indexed
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
 
@@ -453,6 +462,7 @@ const isOlderThan18 = (value) => {
 
   return age >= 18;
 };
+
 i18next.on("languageChanged", () => {
   resetForm();
 });
@@ -484,7 +494,7 @@ setLocale({
   },
   array: {
     min: ({ path, min }) => ({
-      validationRule: "field_too_short",
+      validationRule: "validation.array-min",
       details: { min, path },
     }),
   },
@@ -504,15 +514,12 @@ const schema = yup.object().shape({
     dateOfBirth: yup
       .object()
       .shape({
-        day: yup.number().typeError().required(),
-        month: yup.number().typeError().required(),
-        year: yup.number().typeError().required(),
+        day: yup.string().required(),
+        month: yup.string().required(),
+        year: yup.string().required(),
       })
-      .test(
-        "is-older-than-18",
-        "You must be at least 18 years old",
-        isOlderThan18
-      ),
+      .test("isOlderThan18", "You must be older than 18", isOlderThan18)
+      .required(),
     phone: yup.object().shape({
       home: yup.string().matches(phoneNumberRegex).required(),
       mobile: yup.string().matches(phoneNumberRegex).required(),
@@ -532,10 +539,10 @@ const schema = yup.object().shape({
     .array()
     .of(
       yup.object().shape({
-        name: yup.string().required("Skill name is required"),
+        name: yup.string().required(),
         level: yup
           .string()
-          .required("Skill level is required")
+          .required()
           .oneOf(
             ["Beginner", "Intermediate", "Advanced"],
             "Invalid skill level"
@@ -554,6 +561,23 @@ const { handleSubmit, defineField, errors, setFieldValue, resetForm } = useForm(
   }
 );
 
+function isSkillDetail(str) {
+  const regex = /^skills\[\d+\]\.(level|name)$/;
+  const match = regex.exec(str);
+  if (match) {
+    return {
+      isMatch: true,
+      isName: match[1] === "name",
+      isLevel: match[1] === "level",
+    };
+  }
+  return {
+    isMatch: false,
+    isName: false,
+    isLevel: false,
+  };
+}
+
 const localizedErrors = computed(function () {
   const output = {};
 
@@ -565,7 +589,16 @@ const localizedErrors = computed(function () {
     if (typeof value === "object") {
       const { validationRule, details } = value;
 
-      const field = t("path." + details.path, {
+      let formPath = "path." + details.path;
+
+      const isSkill = isSkillDetail(details.path);
+      if (isSkill.isMatch) {
+        formPath = isSkill.isName
+          ? "path." + "skillName"
+          : "path." + "skillLevel";
+      }
+
+      const field = t(formPath, {
         ns: "applicationForm",
         lng: "en",
       });
@@ -574,14 +607,37 @@ const localizedErrors = computed(function () {
         ns: "applicationForm",
       });
 
-      const message = t(validationRule, {
-        ns: "applicationForm",
-        field: fieldName,
-      });
+      let message;
+
+      if (validationRule === "validation.required") {
+        message = t(validationRule, {
+          ns: "applicationForm",
+          field: fieldName,
+        });
+      }
+
+      if (validationRule === "validation.matches") {
+        message = t(validationRule, {
+          ns: "applicationForm",
+          field: fieldName,
+          regex: details.regex,
+        });
+      }
+
+      if (validationRule === "validation.array-min") {
+        message = t(validationRule, {
+          ns: "applicationForm",
+          field: fieldName,
+          expected: details.min,
+        });
+      }
 
       output[key] = message;
     } else {
-      output[key] = value;
+      const message = t("validation.custom." + key, {
+        ns: "applicationForm",
+      });
+      output[key] = message;
     }
   });
 
