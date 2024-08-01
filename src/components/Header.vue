@@ -5,10 +5,9 @@
     </h1>
     <hr />
   </header>
+  {{}}
   <v-app-bar :elevation="2">
-    <v-app-bar-title>
-      {{ $t("websiteTitle", { ns: "general" }) }}</v-app-bar-title
-    >
+    <v-app-bar-title> {{ $t("websiteTitle") }}</v-app-bar-title>
 
     <template v-slot:append>
       <v-btn

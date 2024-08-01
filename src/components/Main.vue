@@ -1,340 +1,347 @@
 <template>
-  <v-container tag="form" @submit.prevent="onSubmit">
-    <v-row>
-      <v-col>
-        <h1 class="text-center text-sky-800 text-6xl uppercase font-bold">
-          Job Application
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <h1
-          class="text-center text-2xl bg-sky-800 text-white font-bold uppercase py-2"
-        >
-          PERSONAL INFORMATION
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <h2>Name</h2>
-      </v-col>
-      <v-col cols="10">
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              v-model="firstName"
-              name="firstName"
-              label="First Name"
-              :error-messages="errors['personalInfomation.name.firstName']"
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              v-model="lastName"
-              name="lastName"
-              label="Last Name"
-              :error-messages="errors['personalInfomation.name.lastName']"
-              outlined
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <h2>Address</h2>
-      </v-col>
-      <v-col cols="10">
-        <v-row>
-          <v-col cols="7">
-            <v-textarea
-              v-model="streetAddress"
-              label="Street Address"
-              name="streetAddress"
-              :error-messages="
-                errors['personalInfomation.address.streetAddress']
-              "
-              outlined
-            ></v-textarea>
-          </v-col>
-          <v-col cols="5">
-            <v-row>
-              <v-col> DATE OF BIRTH </v-col>
-            </v-row>
-            <v-row no-gutters>
-              <v-col>
-                <v-alert
-                  v-if="errors['personalInfomation.dateOfBirth']"
-                  :text="errors['personalInfomation.dateOfBirth']"
-                  type="error"
-                  variant="outlined"
-                  density="compact"
-                ></v-alert>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-autocomplete
-                  v-model="day"
-                  label="Day"
-                  :items="Array.from({ length: 30 }, (_, i) => i + 1)"
-                  name="day"
-                  :error-messages="errors['personalInfomation.dateOfBirth.day']"
-                ></v-autocomplete
-              ></v-col>
-              <v-col>
-                <v-autocomplete
-                  v-model="month"
-                  label="Month"
-                  :items="Array.from({ length: 12 }, (_, i) => i + 1)"
-                  name="month"
-                  :error-messages="
-                    errors['personalInfomation.dateOfBirth.month']
-                  "
-                ></v-autocomplete>
-              </v-col>
-              <v-col>
-                <v-autocomplete
-                  v-model="year"
-                  label="Year"
-                  name="year"
-                  :items="
-                    Array.from(
-                      { length: 100 },
-                      (_, i) => new Date().getFullYear() - 100 + i
-                    )
-                  "
-                  :error-messages="
-                    errors['personalInfomation.dateOfBirth.year']
-                  "
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-autocomplete
-              v-model="country"
-              label="Country"
-              name="country"
-              :items="countries"
-              :loading="isLoadingCountries"
-              outlined
-              :error-messages="errors['personalInfomation.address.country']"
-            ></v-autocomplete>
-          </v-col>
-          <v-col>
-            <v-autocomplete
-              v-model="city"
-              label="City"
-              name="city"
-              outlined
-              aria-disabled="true"
-              :items="cities"
-              :loading="isLoadingCities"
-              :error-messages="errors['personalInfomation.address.city']"
-            ></v-autocomplete>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <h2>Phone</h2>
-      </v-col>
-      <v-col cols="10">
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              v-model="homePhone"
-              label="Home"
-              outlined
-              :error-messages="errors['personalInfomation.phone.home']"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              v-model="mobilePhone"
-              label="Mobile"
-              outlined
-              :error-messages="errors['personalInfomation.phone.mobile']"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <h1
-          class="text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
-        >
-          EDUCATION
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <h2>High School</h2>
-      </v-col>
-      <v-col cols="10">
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              v-model="highSchoolName"
-              label="Name"
-              outlined
-              :error-messages="errors['education.highSchool.name']"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              v-model="highSchoolCity"
-              label="City"
-              outlined
-              :error-messages="errors['education.highSchool.city']"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <h2>University</h2>
-      </v-col>
-      <v-col cols="10">
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              v-model="universityName"
-              label="Name"
-              outlined
-              :error-messages="errors['education.university.name']"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              v-model="universityCity"
-              label="City"
-              outlined
-              :error-messages="errors['education.university.city']"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="7">
-        <h1
-          class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
-        >
-          Skills
-        </h1>
-      </v-col>
-      <v-col cols="5">
-        <h1
-          class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
-        >
-          Levels
-        </h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-alert
-          v-if="errors['skills']"
-          :text="errors['skills']"
-          type="error"
-          variant="outlined"
-          density="compact"
-        ></v-alert>
-      </v-col>
-    </v-row>
-    <v-row v-for="(field, idx) in fields" :key="field.key">
-      <v-col cols="6">
-        <v-text-field
-          v-model="field.value.name"
-          label="Skill"
-          outlined
-          :error-messages="errors[`skills[${idx}].name`]"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="5">
-        <v-autocomplete
-          v-model="field.value.level"
-          label="Level"
-          :items="['Beginner', 'Intermediate', 'Advanced']"
-          outlined
-          :error-messages="errors[`skills[${idx}].level`]"
-        ></v-autocomplete>
-      </v-col>
-      <v-col cols="1">
-        <v-btn
-          aria-label="Remove"
-          @click="remove(idx)"
-          color="red"
-          size="small"
-        >
-          <v-icon icon="fa-solid fa-trash" />
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn aria-label="Add" @click="push({ name: '', level: 'Beginner' })">
-          <v-icon icon="fa-solid fa-plus"
-        /></v-btn>
-      </v-col>
-    </v-row>
+  <v-main>
+    <v-container tag="form" @submit.prevent="onSubmit">
+      <v-row>
+        <v-col>
+          <h1 class="text-center text-sky-800 text-6xl uppercase font-bold">
+            {{ $t("title", { ns: "applicationForm" }) }}
+          </h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <h1
+            class="text-center text-2xl bg-sky-800 text-white font-bold uppercase py-2"
+          >
+            {{ $t("personalInformation", { ns: "applicationForm" }) }}
+          </h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <h2>{{ $t("name", { ns: "applicationForm" }) }}</h2>
+        </v-col>
+        <v-col cols="10">
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-model="firstName"
+                name="firstName"
+                :label="$t('firstName', { ns: 'applicationForm' })"
+                :error-messages="errors['personalInfomation.name.firstName']"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                v-model="lastName"
+                name="lastName"
+                :label="$t('lastName', { ns: 'applicationForm' })"
+                :error-messages="errors['personalInfomation.name.lastName']"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <h2>Address</h2>
+        </v-col>
+        <v-col cols="10">
+          <v-row>
+            <v-col cols="7">
+              <v-textarea
+                v-model="streetAddress"
+                label="Street Address"
+                name="streetAddress"
+                :error-messages="
+                  errors['personalInfomation.address.streetAddress']
+                "
+                outlined
+              ></v-textarea>
+            </v-col>
+            <v-col cols="5">
+              <v-row>
+                <v-col> DATE OF BIRTH </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col>
+                  <v-alert
+                    v-if="errors['personalInfomation.dateOfBirth']"
+                    :text="errors['personalInfomation.dateOfBirth']"
+                    type="error"
+                    variant="outlined"
+                    density="compact"
+                  ></v-alert>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-autocomplete
+                    v-model="day"
+                    label="Day"
+                    :items="Array.from({ length: 30 }, (_, i) => i + 1)"
+                    name="day"
+                    :error-messages="
+                      errors['personalInfomation.dateOfBirth.day']
+                    "
+                  ></v-autocomplete
+                ></v-col>
+                <v-col>
+                  <v-autocomplete
+                    v-model="month"
+                    label="Month"
+                    :items="Array.from({ length: 12 }, (_, i) => i + 1)"
+                    name="month"
+                    :error-messages="
+                      errors['personalInfomation.dateOfBirth.month']
+                    "
+                  ></v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    v-model="year"
+                    label="Year"
+                    name="year"
+                    :items="
+                      Array.from(
+                        { length: 100 },
+                        (_, i) => new Date().getFullYear() - 100 + i
+                      )
+                    "
+                    :error-messages="
+                      errors['personalInfomation.dateOfBirth.year']
+                    "
+                  ></v-autocomplete>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-autocomplete
+                v-model="country"
+                label="Country"
+                name="country"
+                :items="countries"
+                :loading="isLoadingCountries"
+                outlined
+                :error-messages="errors['personalInfomation.address.country']"
+              ></v-autocomplete>
+            </v-col>
+            <v-col>
+              <v-autocomplete
+                v-model="city"
+                label="City"
+                name="city"
+                outlined
+                aria-disabled="true"
+                :items="cities"
+                :loading="isLoadingCities"
+                :error-messages="errors['personalInfomation.address.city']"
+              ></v-autocomplete>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <h2>Phone</h2>
+        </v-col>
+        <v-col cols="10">
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-model="homePhone"
+                label="Home"
+                outlined
+                :error-messages="errors['personalInfomation.phone.home']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                v-model="mobilePhone"
+                label="Mobile"
+                outlined
+                :error-messages="errors['personalInfomation.phone.mobile']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <h1
+            class="text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
+          >
+            EDUCATION
+          </h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <h2>High School</h2>
+        </v-col>
+        <v-col cols="10">
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-model="highSchoolName"
+                label="Name"
+                outlined
+                :error-messages="errors['education.highSchool.name']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                v-model="highSchoolCity"
+                label="City"
+                outlined
+                :error-messages="errors['education.highSchool.city']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <h2>University</h2>
+        </v-col>
+        <v-col cols="10">
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-model="universityName"
+                label="Name"
+                outlined
+                :error-messages="errors['education.university.name']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                v-model="universityCity"
+                label="City"
+                outlined
+                :error-messages="errors['education.university.city']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="7">
+          <h1
+            class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
+          >
+            Skills
+          </h1>
+        </v-col>
+        <v-col cols="5">
+          <h1
+            class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
+          >
+            Levels
+          </h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-alert
+            v-if="errors['skills']"
+            :text="errors['skills']"
+            type="error"
+            variant="outlined"
+            density="compact"
+          ></v-alert>
+        </v-col>
+      </v-row>
+      <v-row v-for="(field, idx) in fields" :key="field.key">
+        <v-col cols="6">
+          <v-text-field
+            v-model="field.value.name"
+            label="Skill"
+            outlined
+            :error-messages="errors[`skills[${idx}].name`]"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="5">
+          <v-autocomplete
+            v-model="field.value.level"
+            label="Level"
+            :items="['Beginner', 'Intermediate', 'Advanced']"
+            outlined
+            :error-messages="errors[`skills[${idx}].level`]"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="1">
+          <v-btn
+            aria-label="Remove"
+            @click="remove(idx)"
+            color="red"
+            size="small"
+          >
+            <v-icon icon="fa-solid fa-trash" />
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            aria-label="Add"
+            @click="push({ name: '', level: 'Beginner' })"
+          >
+            <v-icon icon="fa-solid fa-plus"
+          /></v-btn>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <v-checkbox
-          v-model="isAgreed"
-          name="agreement"
-          :error-messages="errors['agreement']"
-          label="I certify that all answers given herin are true and complate to my best of my knowledge. I authorize investigation of all statements contained in this application for employment as may be necessary in arriving at an employment decision."
-        ></v-checkbox>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <h1 class="mb-2">Name and Signature</h1>
-        <v-alert
-          v-if="errors['signature']"
-          :text="errors['signature']"
-          type="error"
-          variant="outlined"
-          density="compact"
-        ></v-alert>
-        <canvas v-signature></canvas>
+      <v-row>
+        <v-col>
+          <v-checkbox
+            v-model="isAgreed"
+            name="agreement"
+            :error-messages="errors['agreement']"
+            label="I certify that all answers given herin are true and complate to my best of my knowledge. I authorize investigation of all statements contained in this application for employment as may be necessary in arriving at an employment decision."
+          ></v-checkbox>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <h1 class="mb-2">Name and Signature</h1>
+          <v-alert
+            v-if="errors['signature']"
+            :text="errors['signature']"
+            type="error"
+            variant="outlined"
+            density="compact"
+          ></v-alert>
+          <canvas v-signature></canvas>
 
-        <v-btn aria-label="Clear" @click="clearSignature">Clear</v-btn>
-      </v-col>
-      <v-col>
-        <v-sheet height="150" color="blue-grey-lighten-5l"> Date </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet height="150" color="blue-grey-lighten-5"> Approval </v-sheet>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn
-          aria-label="Submit"
-          size="large"
-          variant="elevated"
-          color="blue-darken-2"
-          type="submit"
-          >Submit</v-btn
-        >
-      </v-col>
-    </v-row>
-    errors: {{ errors }}
-  </v-container>
+          <v-btn aria-label="Clear" @click="clearSignature">Clear</v-btn>
+        </v-col>
+        <v-col>
+          <v-sheet height="150" color="blue-grey-lighten-5l"> Date </v-sheet>
+        </v-col>
+        <v-col>
+          <v-sheet height="150" color="blue-grey-lighten-5"> Approval </v-sheet>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            aria-label="Submit"
+            size="large"
+            variant="elevated"
+            color="blue-darken-2"
+            type="submit"
+            >Submit</v-btn
+          >
+        </v-col>
+      </v-row>
+      errors: {{ errors }}
+    </v-container>
+  </v-main>
 </template>
 
 <script setup>
