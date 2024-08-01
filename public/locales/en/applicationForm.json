@@ -33,5 +33,29 @@
   "signature": "Name and Signature",
   "submit": "Submit",
   "date": "Date",
-  "approval": "Approval"
+  "approval": "Approval",
+  "path": {
+    "personalInfomation.name.firstName": "firstName",
+    "personalInfomation.name.lastName": "lastName",
+    "personalInfomation.address.streetAddress": "streetAddress",
+    "personalInfomation.dateOfBirth.day": "day",
+    "personalInfomation.dateOfBirth.month": "month",
+    "personalInfomation.dateOfBirth.year": "year",
+    "personalInfomation.address.city": "city",
+    "personalInfomation.address.country": "country",
+    "personalInfomation.phone.home": "home",
+    "personalInfomation.phone.mobile": "mobile",
+    "education.highSchool.name": "highSchoolName",
+    "education.highSchool.location": "highSchoolLocation",
+    "education.university.name": "universityName",
+    "education.university.location": "universityLocation",
+    "skills": "skills",
+    "agreement": "agreement",
+    "signature": "signature",
+    "skills[{{index}}].name": "skillName",
+    "skills[{{index}}].level": "skillLevel"
+  },
+  "validation": {
+    "required": "{{field}} is required"
+  }
 }

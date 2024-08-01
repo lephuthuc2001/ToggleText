@@ -28,7 +28,9 @@
                 v-model="firstName"
                 name="firstName"
                 :label="$t('firstName', { ns: 'applicationForm' })"
-                :error-messages="errors['personalInfomation.name.firstName']"
+                :error-messages="
+                  localizedErrors['personalInfomation.name.firstName']
+                "
                 outlined
               ></v-text-field>
             </v-col>
@@ -37,7 +39,9 @@
                 v-model="lastName"
                 name="lastName"
                 :label="$t('lastName', { ns: 'applicationForm' })"
-                :error-messages="errors['personalInfomation.name.lastName']"
+                :error-messages="
+                  localizedErrors['personalInfomation.name.lastName']
+                "
                 outlined
               ></v-text-field>
             </v-col>
@@ -56,7 +60,7 @@
                 :label="$t('streetAddress', { ns: 'applicationForm' })"
                 name="streetAddress"
                 :error-messages="
-                  errors['personalInfomation.address.streetAddress']
+                  localizedErrors['personalInfomation.address.streetAddress']
                 "
                 outlined
               ></v-textarea>
@@ -70,8 +74,8 @@
               <v-row no-gutters>
                 <v-col>
                   <v-alert
-                    v-if="errors['personalInfomation.dateOfBirth']"
-                    :text="errors['personalInfomation.dateOfBirth']"
+                    v-if="localizedErrors['personalInfomation.dateOfBirth']"
+                    :text="localizedErrors['personalInfomation.dateOfBirth']"
                     type="error"
                     variant="outlined"
                     density="compact"
@@ -86,7 +90,7 @@
                     :items="Array.from({ length: 30 }, (_, i) => i + 1)"
                     name="day"
                     :error-messages="
-                      errors['personalInfomation.dateOfBirth.day']
+                      localizedErrors['personalInfomation.dateOfBirth.day']
                     "
                   ></v-autocomplete
                 ></v-col>
@@ -97,7 +101,7 @@
                     :items="Array.from({ length: 12 }, (_, i) => i + 1)"
                     name="month"
                     :error-messages="
-                      errors['personalInfomation.dateOfBirth.month']
+                      localizedErrors['personalInfomation.dateOfBirth.month']
                     "
                   ></v-autocomplete>
                 </v-col>
@@ -113,7 +117,7 @@
                       )
                     "
                     :error-messages="
-                      errors['personalInfomation.dateOfBirth.year']
+                      localizedErrors['personalInfomation.dateOfBirth.year']
                     "
                   ></v-autocomplete>
                 </v-col>
@@ -129,7 +133,9 @@
                 :items="countries"
                 :loading="isLoadingCountries"
                 outlined
-                :error-messages="errors['personalInfomation.address.country']"
+                :error-messages="
+                  localizedErrors['personalInfomation.address.country']
+                "
               ></v-autocomplete>
             </v-col>
             <v-col>
@@ -141,7 +147,9 @@
                 aria-disabled="true"
                 :items="cities"
                 :loading="isLoadingCities"
-                :error-messages="errors['personalInfomation.address.city']"
+                :error-messages="
+                  localizedErrors['personalInfomation.address.city']
+                "
               ></v-autocomplete>
             </v-col>
           </v-row>
@@ -158,7 +166,9 @@
                 v-model="homePhone"
                 :label="$t('home', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['personalInfomation.phone.home']"
+                :error-messages="
+                  localizedErrors['personalInfomation.phone.home']
+                "
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -166,7 +176,9 @@
                 v-model="mobilePhone"
                 :label="$t('mobile', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['personalInfomation.phone.mobile']"
+                :error-messages="
+                  localizedErrors['personalInfomation.phone.mobile']
+                "
               ></v-text-field>
             </v-col>
           </v-row>
@@ -192,7 +204,7 @@
                 v-model="highSchoolName"
                 :label="$t('highSchoolName', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['education.highSchool.name']"
+                :error-messages="localizedErrors['education.highSchool.name']"
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -200,7 +212,9 @@
                 v-model="highSchoolCity"
                 :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['education.highSchool.city']"
+                :error-messages="
+                  localizedErrors['education.highSchool.location']
+                "
               ></v-text-field>
             </v-col>
           </v-row>
@@ -217,7 +231,7 @@
                 v-model="universityName"
                 :label="$t('universityName', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['education.university.name']"
+                :error-messages="localizedErrors['education.university.name']"
               ></v-text-field>
             </v-col>
             <v-col cols="6">
@@ -225,7 +239,9 @@
                 v-model="universityCity"
                 :label="$t('universityLocation', { ns: 'applicationForm' })"
                 outlined
-                :error-messages="errors['education.university.city']"
+                :error-messages="
+                  localizedErrors['education.university.location']
+                "
               ></v-text-field>
             </v-col>
           </v-row>
@@ -250,8 +266,8 @@
       <v-row>
         <v-col>
           <v-alert
-            v-if="errors['skills']"
-            :text="errors['skills']"
+            v-if="localizedErrors['skills']"
+            :text="localizedErrors['skills']"
             type="error"
             variant="outlined"
             density="compact"
@@ -264,7 +280,7 @@
             v-model="field.value.name"
             :label="$t('skill', { ns: 'applicationForm', count: 1 })"
             outlined
-            :error-messages="errors[`skills[${idx}].name`]"
+            :error-messages="localizedErrors[`skills[${idx}].name`]"
           ></v-text-field>
         </v-col>
         <v-col cols="5">
@@ -275,7 +291,7 @@
             item-title="title"
             item-value="value"
             outlined
-            :error-messages="errors[`skills[${idx}].level`]"
+            :error-messages="localizedErrors[`skills[${idx}].level`]"
           ></v-autocomplete>
         </v-col>
         <v-col cols="1">
@@ -305,7 +321,7 @@
           <v-checkbox
             v-model="isAgreed"
             name="agreement"
-            :error-messages="errors['agreement']"
+            :error-messages="localizedErrors['agreement']"
             :label="$t('agreement', { ns: 'applicationForm' })"
           ></v-checkbox>
         </v-col>
@@ -314,8 +330,8 @@
         <v-col>
           <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
           <v-alert
-            v-if="errors['signature']"
-            :text="errors['signature']"
+            v-if="localizedErrors['signature']"
+            :text="localizedErrors['signature']"
             type="error"
             variant="outlined"
             density="compact"
@@ -350,6 +366,7 @@
         </v-col>
       </v-row>
       errors: {{ errors }}
+      <div>localizedErrors: {{ localizedErrors }}</div>
     </v-container>
   </v-main>
 </template>
@@ -362,6 +379,7 @@ import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
 import SignaturePad from "signature_pad";
 import { useTranslation } from "i18next-vue";
+import { setLocale } from "yup";
 
 const { t, i18next } = useTranslation();
 
@@ -435,33 +453,60 @@ const isOlderThan18 = (value) => {
 
   return age >= 18;
 };
+i18next.on("languageChanged", () => {
+  resetForm();
+});
+
+setLocale({
+  mixed: {
+    required: ({ path }) => {
+      return {
+        validationRule: "validation.required",
+        details: { path },
+      };
+    },
+  },
+  string: {
+    matches: ({ path, regex }) => ({
+      validationRule: "validation.matches",
+      details: { path, regex },
+    }),
+  },
+  number: {
+    min: ({ min, path }) => ({
+      validationRule: "field_too_short",
+      details: { min, path },
+    }),
+    max: ({ max, path }) => ({
+      validationRule: "field_too_big",
+      details: { max, path },
+    }),
+  },
+  array: {
+    min: ({ path, min }) => ({
+      validationRule: "field_too_short",
+      details: { min, path },
+    }),
+  },
+});
 
 const schema = yup.object().shape({
   personalInfomation: yup.object().shape({
     name: yup.object().shape({
-      firstName: yup.string().required("First name is required"),
-      lastName: yup.string().required("Last name is required"),
+      firstName: yup.string().required(),
+      lastName: yup.string().required(),
     }),
     address: yup.object().shape({
-      streetAddress: yup.string().required("Street address is required"),
-      city: yup.string().required("City is required"),
-      country: yup.string().required("Country is required"),
+      streetAddress: yup.string().required(),
+      city: yup.string().required(),
+      country: yup.string().required(),
     }),
     dateOfBirth: yup
       .object()
       .shape({
-        day: yup
-          .number()
-          .typeError("Day is required")
-          .required("Day is required"),
-        month: yup
-          .number()
-          .typeError("Month is required")
-          .required("Month is required"),
-        year: yup
-          .number()
-          .typeError("Year is required")
-          .required("Year is required"),
+        day: yup.number().typeError().required(),
+        month: yup.number().typeError().required(),
+        year: yup.number().typeError().required(),
       })
       .test(
         "is-older-than-18",
@@ -469,24 +514,18 @@ const schema = yup.object().shape({
         isOlderThan18
       ),
     phone: yup.object().shape({
-      home: yup
-        .string()
-        .matches(phoneNumberRegex, "Invalid phone number")
-        .required("Home phone is required"),
-      mobile: yup
-        .string()
-        .matches(phoneNumberRegex, "Invalid phone number")
-        .required("Mobile phone is required"),
+      home: yup.string().matches(phoneNumberRegex).required(),
+      mobile: yup.string().matches(phoneNumberRegex).required(),
     }),
   }),
   education: yup.object().shape({
     highSchool: yup.object().shape({
-      name: yup.string().required("High school name is required"),
-      city: yup.string().required("High school city is required"),
+      name: yup.string().required(),
+      location: yup.string().required(),
     }),
     university: yup.object().shape({
-      name: yup.string().required("University name is required"),
-      city: yup.string().required("University city is required"),
+      name: yup.string().required(),
+      location: yup.string().required(),
     }),
   }),
   skills: yup
@@ -503,7 +542,7 @@ const schema = yup.object().shape({
           ),
       })
     )
-    .min(3, "You must have at least 3 skills"),
+    .min(3),
   agreement: yup.boolean().oneOf([true], "You must agree to the terms"),
   signature: yup.string().required("You must sign the application"),
 });
@@ -514,6 +553,40 @@ const { handleSubmit, defineField, errors, setFieldValue, resetForm } = useForm(
     initialValues,
   }
 );
+
+const localizedErrors = computed(function () {
+  const output = {};
+
+  if (Object.keys(errors.value).length === 0) {
+    return output;
+  }
+
+  Object.entries(errors.value).forEach(([key, value]) => {
+    if (typeof value === "object") {
+      const { validationRule, details } = value;
+
+      const field = t("path." + details.path, {
+        ns: "applicationForm",
+        lng: "en",
+      });
+
+      const fieldName = t(field, {
+        ns: "applicationForm",
+      });
+
+      const message = t(validationRule, {
+        ns: "applicationForm",
+        field: fieldName,
+      });
+
+      output[key] = message;
+    } else {
+      output[key] = value;
+    }
+  });
+
+  return output;
+});
 
 const [firstName] = defineField("personalInfomation.name.firstName");
 const [lastName] = defineField("personalInfomation.name.lastName");
@@ -537,10 +610,10 @@ const onSubmit = handleSubmit((values) => {
 });
 
 const [highSchoolName] = defineField("education.highSchool.name");
-const [highSchoolCity] = defineField("education.highSchool.city");
+const [highSchoolLocation] = defineField("education.highSchool.location");
 
 const [universityName] = defineField("education.university.name");
-const [universityCity] = defineField("education.university.city");
+const [universityLocation] = defineField("education.university.location");
 
 const [isAgreed] = defineField("agreement");
 

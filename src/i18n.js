@@ -2,7 +2,8 @@ import i18next from "i18next";
 import I18NextVue from "i18next-vue";
 import LanguageDetector from "i18next-browser-languagedetector";
 import HttpApi from "i18next-http-backend";
-i18next
+
+export const i18nextPromise = i18next
   // detect user language
   // learn more: https://github.com/i18next/i18next-browser-languageDetector
   .use(HttpApi)
