@@ -20,6 +20,7 @@
     "fuse.js": "^7.0.0",
     "i18next": "^23.12.2",
     "i18next-browser-languagedetector": "^8.0.0",
+    "i18next-http-backend": "^2.5.2",
     "i18next-vue": "^4.0.0",
     "lodash": "^4.17.21",
     "qs": "^6.12.1",
