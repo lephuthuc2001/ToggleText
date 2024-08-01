@@ -42,7 +42,8 @@
     "array-min": "{{field}} ít nhất phải có {{expected}} mục",
     "custom": {
       "agreement": "Bạn phải đồng ý với các điều khoản và điều kiện",
-      "signature": "Bạn phải cung cấp chữ ký"
+      "signature": "Bạn phải cung cấp chữ ký",
+      "dateOfBirth": "Bạn phải trên 18 tuổi"
     }
   }
 }

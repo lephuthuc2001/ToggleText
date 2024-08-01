@@ -63,7 +63,8 @@
     "array-min": "{{field}} must have at least {{expected}} items",
     "custom": {
       "agreement": "You must agree to the terms and conditions",
-      "signature": "You must provide a signature"
+      "signature": "You must provide a signature",
+      "dateOfBirth": "You must be over 18 years old"
     }
   }
 }
