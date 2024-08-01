@@ -366,8 +366,6 @@
           >
         </v-col>
       </v-row>
-      errors: {{ errors }}
-      <div>localizedErrors: {{ localizedErrors }}</div>
     </v-container>
   </v-main>
 </template>
