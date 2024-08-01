@@ -1,7 +1,9 @@
 <template>
-  <Header />
-  <Main />
-  <Footer />
+  <v-app>
+    <Header />
+    <Main />
+    <Footer />
+  </v-app>
 </template>
 
 <script setup>

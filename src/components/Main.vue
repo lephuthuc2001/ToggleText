@@ -511,6 +511,7 @@ const [mobilePhone] = defineField("personalInfomation.phone.mobile");
 const onSubmit = handleSubmit((values) => {
   alert(JSON.stringify(values));
 
+  console.log(values);
   resetForm();
 });
 
@@ -525,8 +526,6 @@ const [isAgreed] = defineField("agreement");
 const [signature] = defineField("signature");
 
 const { fields, push, remove } = useFieldArray("skills");
-
-const hasMoreThanThreeSkills = computed(() => fields.value.length > 3);
 
 const countries = ref([]);
 const isLoadingCountries = ref(false);

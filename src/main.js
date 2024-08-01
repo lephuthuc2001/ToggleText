@@ -3,6 +3,7 @@ import "@fortawesome/fontawesome-free/css/all.css"; // Ensure your project is ca
 import "./style.css";
 import App from "./App.vue";
 import "vuetify/styles";
+import i18n from "./i18n";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
@@ -21,7 +22,7 @@ const vuetify = createVuetify({
   },
 });
 
-const app = createApp(App);
+const app = i18n(createApp(App));
 
 app.use(VueQueryPlugin);
 app.use(vuetify);
