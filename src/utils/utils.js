@@ -48,3 +48,15 @@ export function getLastPartOfString(str) {
   const parts = str.split(".");
   return parts[parts.length - 1];
 }
+
+export function getDateRangeForDateOfBirthInput() {
+  const today = new Date();
+
+  const dayRange = Array.from({ length: 30 }, (_, i) => (i + 1).toString());
+  const monthRange = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+  const yearRange = Array.from({ length: 100 }, (_, i) =>
+    (today.getFullYear() - 70 + i).toString()
+  );
+
+  return { dayRange, monthRange, yearRange };
+}

@@ -1,5 +1,6 @@
 <template>
   <v-main>
+    <div></div>
     <v-container tag="form" @submit.prevent="onSubmit">
       <v-row>
         <v-col>
@@ -82,47 +83,12 @@
                   ></v-alert>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col>
-                  <v-autocomplete
-                    v-model="day"
-                    :label="$t('day', { ns: 'applicationForm' })"
-                    :items="Array.from({ length: 30 }, (_, i) => i + 1)"
-                    name="day"
-                    :error-messages="
-                      localizedErrors['personalInfomation.dateOfBirth.day']
-                    "
-                  ></v-autocomplete
-                ></v-col>
-                <v-col>
-                  <v-autocomplete
-                    v-model="month"
-                    :label="$t('month', { ns: 'applicationForm' })"
-                    :items="
-                      Array.from({ length: 12 }, (_, i) => (i + 1).toString())
-                    "
-                    name="month"
-                    :error-messages="
-                      localizedErrors['personalInfomation.dateOfBirth.month']
-                    "
-                  ></v-autocomplete>
-                </v-col>
-                <v-col>
-                  <v-autocomplete
-                    v-model="year"
-                    :label="$t('year', { ns: 'applicationForm' })"
-                    name="year"
-                    :items="
-                      Array.from({ length: 100 }, (_, i) =>
-                        (new Date().getFullYear() - 100 + i).toString()
-                      )
-                    "
-                    :error-messages="
-                      localizedErrors['personalInfomation.dateOfBirth.year']
-                    "
-                  ></v-autocomplete>
-                </v-col>
-              </v-row>
+              <DateOfBirthInput
+                :errorMessage="
+                  localizedErrors['personalInfomation.dateOfBirth']
+                "
+                v-model="dateOfBirth"
+              ></DateOfBirthInput>
             </v-col>
           </v-row>
           <v-row>
@@ -378,6 +344,7 @@ import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
 import SignaturePad from "signature_pad";
 import { useTranslation } from "i18next-vue";
+import DateOfBirthInput from "./Form/DateOfBirthInput.vue";
 import { setLocale } from "yup";
 import {
   phoneNumberRegex,
@@ -437,10 +404,6 @@ const initialValues = {
   signature: "",
 };
 
-i18next.on("languageChanged", () => {
-  resetForm();
-});
-
 setLocale({
   mixed: {
     required: ({ path }) => {
@@ -474,6 +437,10 @@ setLocale({
   },
 });
 
+function isDateOfBirthComplete(value) {
+  const { day, month, year } = value;
+  return day && month && year;
+}
 const schema = yup.object().shape({
   personalInfomation: yup.object().shape({
     name: yup.object().shape({
@@ -492,8 +459,8 @@ const schema = yup.object().shape({
         month: yup.string().required(),
         year: yup.string().required(),
       })
-      .test("isOlderThan18", "You must be older than 18", isOlderThan18)
-      .required(),
+      .required()
+      .test("isOlderThan18", "You must be older than 18", isOlderThan18),
     phone: yup.object().shape({
       home: yup.string().matches(phoneNumberRegex).required(),
       mobile: yup.string().matches(phoneNumberRegex).required(),
@@ -528,12 +495,17 @@ const schema = yup.object().shape({
   signature: yup.string().required("You must sign the application"),
 });
 
-const { handleSubmit, defineField, errors, setFieldValue, resetForm } = useForm(
-  {
-    validationSchema: toTypedSchema(schema),
-    initialValues,
-  }
-);
+const {
+  handleSubmit,
+  defineField,
+  errors,
+  setFieldValue,
+  resetForm,
+  values: formData,
+} = useForm({
+  validationSchema: toTypedSchema(schema),
+  initialValues,
+});
 
 const localizedErrors = computed(function () {
   const output = {};
@@ -608,9 +580,7 @@ const [streetAddress] = defineField("personalInfomation.address.streetAddress");
 const [city] = defineField("personalInfomation.address.city");
 const [country] = defineField("personalInfomation.address.country");
 
-const [day] = defineField("personalInfomation.dateOfBirth.day");
-const [month] = defineField("personalInfomation.dateOfBirth.month");
-const [year] = defineField("personalInfomation.dateOfBirth.year");
+const [dateOfBirth] = defineField("personalInfomation.dateOfBirth");
 
 const [homePhone] = defineField("personalInfomation.phone.home");
 const [mobilePhone] = defineField("personalInfomation.phone.mobile");
@@ -693,6 +663,12 @@ const clearSignature = () => {
 
   setFieldValue("signature", "");
 };
+
+i18next.on("languageChanged", () => {
+  resetForm();
+  clearSignature();
+});
+
 const vSignature = {
   mounted(el) {
     signaturePad.value = new SignaturePad(el, {
