@@ -296,18 +296,10 @@
       <v-row>
         <v-col>
           <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
-          <v-alert
-            v-if="localizedErrors['signature']"
-            :text="localizedErrors['signature']"
-            type="error"
-            variant="outlined"
-            density="compact"
-          ></v-alert>
-          <canvas v-signature></canvas>
-
-          <v-btn aria-label="Clear" @click="clearSignature">
-            <v-icon icon="fa-solid fa-refresh" />
-          </v-btn>
+          <SignatureInput
+            v-model="signature"
+            :error-message="localizedErrors['signature']"
+          ></SignatureInput>
         </v-col>
         <v-col>
           <v-sheet height="150" color="blue-grey-lighten-5l">
@@ -352,6 +344,7 @@ import {
   isSkillDetail,
   getLastPartOfString,
 } from "../utils/utils";
+import SignatureInput from "./Form/SignatureInput.vue";
 
 const { t, i18next } = useTranslation();
 
@@ -600,7 +593,15 @@ const [universityLocation] = defineField("education.university.location");
 
 const [isAgreed] = defineField("agreement");
 
-const [signature] = defineField("signature");
+const [signature] = defineField("signature", {
+  validateOnBlur: false,
+  // Validates when `change` event is emitted from the element/component
+  validateOnChange: false,
+  // Validates when `input` event is emitted from the element/component
+  validateOnInput: false,
+  // Validates when the returned model value changes
+  validateOnModelUpdate: true,
+});
 
 const { fields, push, remove } = useFieldArray("skills");
 
@@ -656,30 +657,9 @@ watch(country, async (value) => {
   cities.value = states;
 });
 
-const signaturePad = ref(null);
-
-const clearSignature = () => {
-  signaturePad.value.clear();
-
-  setFieldValue("signature", "");
-};
-
 i18next.on("languageChanged", () => {
   resetForm();
-  clearSignature();
 });
-
-const vSignature = {
-  mounted(el) {
-    signaturePad.value = new SignaturePad(el, {
-      backgroundColor: "rgb(255, 255, 255)",
-    });
-
-    signaturePad.value.addEventListener("endStroke", () => {
-      setFieldValue("signature", signaturePad.value.toDataURL("image/jpeg"));
-    });
-  },
-};
 </script>
 
 <style scoped></style>
