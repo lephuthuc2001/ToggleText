@@ -1,6 +1,5 @@
 <template>
   <v-main>
-    <div></div>
     <v-container tag="form" @submit.prevent="onSubmit">
       <v-row>
         <v-col>
@@ -54,7 +53,9 @@
           <h2>{{ $t("address", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
-          <v-row>
+          <AddressInput v-model="address" />
+
+          <!-- <v-row>
             <v-col cols="7">
               <v-textarea
                 v-model="streetAddress"
@@ -119,7 +120,7 @@
                 "
               ></v-autocomplete>
             </v-col>
-          </v-row>
+          </v-row> -->
         </v-col>
       </v-row>
       <v-row>
@@ -345,6 +346,7 @@ import {
   getLastPartOfString,
 } from "../utils/utils";
 import SignatureInput from "./Form/SignatureInput.vue";
+import AddressInput from "./Form/AddressInput.vue";
 
 const { t, i18next } = useTranslation();
 
@@ -569,9 +571,11 @@ const localizedErrors = computed(function () {
 const [firstName] = defineField("personalInfomation.name.firstName");
 const [lastName] = defineField("personalInfomation.name.lastName");
 
-const [streetAddress] = defineField("personalInfomation.address.streetAddress");
-const [city] = defineField("personalInfomation.address.city");
-const [country] = defineField("personalInfomation.address.country");
+// const [streetAddress] = defineField("personalInfomation.address.streetAddress");
+// const [city] = defineField("personalInfomation.address.city");
+// const [country] = defineField("personalInfomation.address.country");
+
+const [address] = defineField("personalInfomation.address");
 
 const [dateOfBirth] = defineField("personalInfomation.dateOfBirth");
 
@@ -628,34 +632,34 @@ const levelsOptions = computed(function () {
   ];
 });
 
-const countries = ref([]);
-const isLoadingCountries = ref(false);
+// const countries = ref([]);
+// const isLoadingCountries = ref(false);
 
-const cities = ref([]);
+// const cities = ref([]);
 
-const isLoadingCities = ref(false);
+// const isLoadingCities = ref(false);
 
-onMounted(async () => {
-  isLoadingCountries.value = true;
-  const countriesNameArray = await LocationService.getAllCountries();
-  isLoadingCountries.value = false;
+// onMounted(async () => {
+//   isLoadingCountries.value = true;
+//   const countriesNameArray = await LocationService.getAllCountries();
+//   isLoadingCountries.value = false;
 
-  countries.value = countriesNameArray;
-});
+//   countries.value = countriesNameArray;
+// });
 
-watch(country, async (value) => {
-  setFieldValue("personalInfomation.address.city", "");
-  cities.value = [];
-  if (!value) {
-    return;
-  }
+// watch(country, async (value) => {
+//   setFieldValue("personalInfomation.address.city", "");
+//   cities.value = [];
+//   if (!value) {
+//     return;
+//   }
 
-  isLoadingCities.value = true;
-  const states = await LocationService.getStatesPerCountry(value);
+//   isLoadingCities.value = true;
+//   const states = await LocationService.getStatesPerCountry(value);
 
-  isLoadingCities.value = false;
-  cities.value = states;
-});
+//   isLoadingCities.value = false;
+//   cities.value = states;
+// });
 
 i18next.on("languageChanged", () => {
   resetForm();
