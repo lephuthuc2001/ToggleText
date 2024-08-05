@@ -54,73 +54,6 @@
         </v-col>
         <v-col cols="10">
           <AddressInput v-model="address" />
-
-          <!-- <v-row>
-            <v-col cols="7">
-              <v-textarea
-                v-model="streetAddress"
-                :label="$t('streetAddress', { ns: 'applicationForm' })"
-                name="streetAddress"
-                :error-messages="
-                  localizedErrors['personalInfomation.address.streetAddress']
-                "
-                outlined
-              ></v-textarea>
-            </v-col>
-            <v-col cols="5">
-              <v-row>
-                <v-col>
-                  {{ $t("dateOfBirth", { ns: "applicationForm" }) }}
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col>
-                  <v-alert
-                    v-if="localizedErrors['personalInfomation.dateOfBirth']"
-                    :text="localizedErrors['personalInfomation.dateOfBirth']"
-                    type="error"
-                    variant="outlined"
-                    density="compact"
-                  ></v-alert>
-                </v-col>
-              </v-row>
-              <DateOfBirthInput
-                :errorMessage="
-                  localizedErrors['personalInfomation.dateOfBirth']
-                "
-                v-model="dateOfBirth"
-              ></DateOfBirthInput>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-autocomplete
-                v-model="country"
-                :label="$t('country', { ns: 'applicationForm' })"
-                name="country"
-                :items="countries"
-                :loading="isLoadingCountries"
-                outlined
-                :error-messages="
-                  localizedErrors['personalInfomation.address.country']
-                "
-              ></v-autocomplete>
-            </v-col>
-            <v-col>
-              <v-autocomplete
-                v-model="city"
-                :label="$t('city', { ns: 'applicationForm' })"
-                name="city"
-                outlined
-                aria-disabled="true"
-                :items="cities"
-                :loading="isLoadingCities"
-                :error-messages="
-                  localizedErrors['personalInfomation.address.city']
-                "
-              ></v-autocomplete>
-            </v-col>
-          </v-row> -->
         </v-col>
       </v-row>
       <v-row>
@@ -242,58 +175,10 @@
           </h1>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-alert
-            v-if="localizedErrors['skills']"
-            :text="localizedErrors['skills']"
-            type="error"
-            variant="outlined"
-            density="compact"
-          ></v-alert>
-        </v-col>
-      </v-row>
-      <v-row v-for="(field, idx) in fields" :key="field.key">
-        <v-col cols="6">
-          <v-text-field
-            v-model="field.value.name"
-            :label="$t('skill', { ns: 'applicationForm', count: 1 })"
-            outlined
-            :error-messages="localizedErrors[`skills[${idx}].name`]"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="5">
-          <v-autocomplete
-            v-model="field.value.level"
-            :label="$t('level', { ns: 'applicationForm', count: 1 })"
-            :items="levelsOptions"
-            item-title="title"
-            item-value="value"
-            outlined
-            :error-messages="localizedErrors[`skills[${idx}].level`]"
-          ></v-autocomplete>
-        </v-col>
-        <v-col cols="1">
-          <v-btn
-            aria-label="Remove"
-            @click="remove(idx)"
-            color="red"
-            size="small"
-          >
-            <v-icon icon="fa-solid fa-trash" />
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-            aria-label="Add"
-            @click="push({ name: '', level: 'Beginner' })"
-          >
-            <v-icon icon="fa-solid fa-plus"
-          /></v-btn>
-        </v-col>
-      </v-row>
+      <SkillsLevelsInput
+        v-model="skills"
+        :errorMessage="localizedErrors['skills']"
+      />
 
       <v-row>
         <v-col>
@@ -341,12 +226,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
+import { computed } from "vue";
 import * as yup from "yup";
-import LocationService from "../services/LocationService";
 import { toTypedSchema } from "@vee-validate/yup";
 import { useForm, useFieldArray, FieldArray } from "vee-validate";
-import SignaturePad from "signature_pad";
 import { useTranslation } from "i18next-vue";
 import DateOfBirthInput from "./Form/DateOfBirthInput.vue";
 import { setLocale } from "yup";
@@ -358,6 +241,7 @@ import {
 } from "../utils/utils";
 import SignatureInput from "./Form/SignatureInput.vue";
 import AddressInput from "./Form/AddressInput.vue";
+import SkillsLevelsInput from "./Form/SkillsLevelsInput.vue";
 
 const { t, i18next } = useTranslation();
 
@@ -443,10 +327,6 @@ setLocale({
   },
 });
 
-function isDateOfBirthComplete(value) {
-  const { day, month, year } = value;
-  return day && month && year;
-}
 const schema = yup.object().shape({
   personalInfomation: yup.object().shape({
     name: yup.object().shape({
@@ -501,14 +381,7 @@ const schema = yup.object().shape({
   signature: yup.string().required("You must sign the application"),
 });
 
-const {
-  handleSubmit,
-  defineField,
-  errors,
-  setFieldValue,
-  resetForm,
-  values: formData,
-} = useForm({
+const { handleSubmit, defineField, errors, resetForm } = useForm({
   validationSchema: toTypedSchema(schema),
   initialValues,
 });
@@ -582,10 +455,6 @@ const localizedErrors = computed(function () {
 const [firstName] = defineField("personalInfomation.name.firstName");
 const [lastName] = defineField("personalInfomation.name.lastName");
 
-// const [streetAddress] = defineField("personalInfomation.address.streetAddress");
-// const [city] = defineField("personalInfomation.address.city");
-// const [country] = defineField("personalInfomation.address.country");
-
 const [address] = defineField("personalInfomation.address");
 
 const [dateOfBirth] = defineField("personalInfomation.dateOfBirth");
@@ -618,59 +487,7 @@ const [signature] = defineField("signature", {
   validateOnModelUpdate: true,
 });
 
-const { fields, push, remove } = useFieldArray("skills");
-
-const levelsOptions = computed(function () {
-  return [
-    {
-      title: t("beginner", {
-        ns: "applicationForm",
-      }),
-      value: "Beginner",
-    },
-    {
-      title: t("intermediate", {
-        ns: "applicationForm",
-      }),
-      value: "Intermediate",
-    },
-    {
-      title: t("advanced", {
-        ns: "applicationForm",
-      }),
-      value: "Advanced",
-    },
-  ];
-});
-
-// const countries = ref([]);
-// const isLoadingCountries = ref(false);
-
-// const cities = ref([]);
-
-// const isLoadingCities = ref(false);
-
-// onMounted(async () => {
-//   isLoadingCountries.value = true;
-//   const countriesNameArray = await LocationService.getAllCountries();
-//   isLoadingCountries.value = false;
-
-//   countries.value = countriesNameArray;
-// });
-
-// watch(country, async (value) => {
-//   setFieldValue("personalInfomation.address.city", "");
-//   cities.value = [];
-//   if (!value) {
-//     return;
-//   }
-
-//   isLoadingCities.value = true;
-//   const states = await LocationService.getStatesPerCountry(value);
-
-//   isLoadingCities.value = false;
-//   cities.value = states;
-// });
+const skills = useFieldArray("skills");
 
 i18next.on("languageChanged", () => {
   resetForm();
