@@ -125,6 +125,17 @@
       </v-row>
       <v-row>
         <v-col cols="2">
+          <h2>{{ $t("dateOfBirth", { ns: "applicationForm" }) }}</h2>
+        </v-col>
+        <v-col cols="10">
+          <DateOfBirthInput
+            :errorMessage="localizedErrors['personalInfomation.dateOfBirth']"
+            v-model="dateOfBirth"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2">
           <h2>{{ $t("phone", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
