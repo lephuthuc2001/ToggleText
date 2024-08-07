@@ -32,6 +32,9 @@ importers:
       '@vee-validate/yup':
         specifier: ^4.13.2
         version: 4.13.2(vue@3.4.27)
+      '@vee-validate/zod':
+        specifier: ^4.13.2
+        version: 4.13.2(vue@3.4.27)
       fuse.js:
         specifier: ^7.0.0
         version: 7.0.0
@@ -68,6 +71,9 @@ importers:
       yup:
         specifier: ^1.4.0
         version: 1.4.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@fortawesome/fontawesome-free':
         specifier: ^6.5.2
@@ -447,6 +453,9 @@ packages:
 
   '@vee-validate/yup@4.13.2':
     resolution: {integrity: sha512-ai0UL46S3GKO8wxnjTN6ksbxmpRrgOxKZlVO0GVqMAF52ZXW92wcADk5qUtuuW+kWe3cePuK6MH305J+kT9scw==}
+
+  '@vee-validate/zod@4.13.2':
+    resolution: {integrity: sha512-y1aqelutD6btX2ayZk3w8udClAykptphlGLwu0vlCqY2r9mrJqMn1EKqtcwXAvEom+ceTcHJOwGr2FUA7i+ZEg==}
 
   '@vitejs/plugin-vue@5.0.4':
     resolution: {integrity: sha512-WS3hevEszI6CEVEx28F8RjTX97k3KsrcY6kvTg7+Whm5y3oYvcqzVeGCU3hxSAn4uY2CLCkeokkGKpoctccilQ==}
@@ -1131,6 +1140,9 @@ packages:
   yup@1.4.0:
     resolution: {integrity: sha512-wPbgkJRCqIf+OHyiTBQoJiP5PFuAXaWiJK6AmYkzQAh5/c2K9hzSApBZG5wV9KoKSePF7sAxmNSvh/13YHkFDg==}
 
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
@@ -1373,6 +1385,14 @@ snapshots:
       type-fest: 4.23.0
       vee-validate: 4.13.2(vue@3.4.27)
       yup: 1.4.0
+    transitivePeerDependencies:
+      - vue
+
+  '@vee-validate/zod@4.13.2(vue@3.4.27)':
+    dependencies:
+      type-fest: 4.23.0
+      vee-validate: 4.13.2(vue@3.4.27)
+      zod: 3.23.8
     transitivePeerDependencies:
       - vue
 
@@ -2052,3 +2072,5 @@ snapshots:
       tiny-case: 1.0.3
       toposort: 2.0.2
       type-fest: 2.19.0
+
+  zod@3.23.8: {}
