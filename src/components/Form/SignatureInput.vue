@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
-    <canvas v-signature></canvas>
+    <canvas v-signature="updateSignature"></canvas>
     <div class="error-message">
       {{ errorMessage }}
     </div>
@@ -15,37 +15,23 @@
 </template>
 
 <script setup>
+// Imports
+import { useField } from "vee-validate";
 import SignaturePad from "signature_pad";
 import { ref, watch } from "vue";
 import i18next from "i18next";
 
+// Directive Definition
 const signaturePad = ref(null);
 
-const model = defineModel({
-  required: true,
-});
-
-const props = defineProps({
-  errorMessage: {
-    type: String,
-  },
-});
-
-function clearCanvas() {
-  signaturePad.value.clear();
-  model.value = "";
-}
-
-i18next.on("languageChanged", clearCanvas);
-
 const vSignature = {
-  mounted(el) {
+  mounted(el, binding) {
     signaturePad.value = new SignaturePad(el, {
       backgroundColor: "rgb(255, 255, 255)",
     });
 
     signaturePad.value.addEventListener("endStroke", () => {
-      model.value = signaturePad.value.toDataURL("image/jpeg");
+      binding.value(signaturePad.value.toDataURL("image/jpeg"));
     });
   },
   unmounted() {
@@ -53,6 +39,30 @@ const vSignature = {
     signaturePad.value.off();
   },
 };
+
+// Setup Logic
+const props = defineProps({
+  formPath: {
+    type: String,
+    required: true,
+    default: "signature",
+  },
+});
+
+const { value, errorMessage } = useField(() => props.formPath);
+
+function clearCanvas() {
+  if (signaturePad.value) {
+    signaturePad.value.clear();
+  }
+  value.value = "";
+}
+
+function updateSignature(dataUrl) {
+  value.value = dataUrl;
+}
+
+i18next.on("languageChanged", clearCanvas);
 </script>
 
 <style scoped>

@@ -3,38 +3,37 @@
     <v-col>
       <v-row>
         <v-col>
-          <v-textarea
-            v-model="model.streetAddress"
+          <BaseTextareaInput
             :label="$t('streetAddress', { ns: 'applicationForm' })"
             name="street-address"
-            auto-grow
-          ></v-textarea>
+            :formPath="`${props.formPath}.streetAddress`"
+          ></BaseTextareaInput>
         </v-col>
         <v-col>
-          <v-text-field
-            v-model="model.postcode"
+          <BaseTextInput
             :label="$t('postcode', { ns: 'applicationForm' })"
             name="postcode"
-          ></v-text-field>
+            :formPath="`${props.formPath}.postcode`"
+          ></BaseTextInput>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-autocomplete
-            v-model="model.city"
+          <BaseSelectInput
             :label="$t('city', { ns: 'applicationForm' })"
             name="city"
             :items="cities"
             :loading="isLoadingCities"
-          ></v-autocomplete>
+            :formPath="`${props.formPath}.city`"
+          ></BaseSelectInput>
         </v-col>
         <v-col>
-          <v-autocomplete
-            v-model="model.country"
+          <BaseSelectInput
             :label="$t('country', { ns: 'applicationForm' })"
             name="country"
             :items="countries"
-          ></v-autocomplete>
+            :formPath="`${props.formPath}.country`"
+          ></BaseSelectInput>
         </v-col>
       </v-row>
     </v-col>
@@ -44,10 +43,19 @@
 <script setup>
 import { defineModel, ref, onMounted, watch, toRef, computed } from "vue";
 import LocationService from "../../services/LocationService";
-const model = defineModel({
-  required: true,
-  type: Object,
+import { useField } from "vee-validate";
+import BaseTextareaInput from "./base/BaseTextareaInput.vue";
+import BaseTextInput from "./base/BaseTextInput.vue";
+import BaseSelectInput from "./base/BaseSelectInput.vue";
+
+const props = defineProps({
+  formPath: {
+    type: String,
+    required: true,
+  },
 });
+
+const { value, errorMessage } = useField(() => props.formPath);
 
 const countries = ref([]);
 const isLoadingCountries = ref(false);
@@ -64,7 +72,7 @@ onMounted(async () => {
   countries.value = countriesNameArray;
 });
 
-const country = computed(() => model.value.country);
+const country = computed(() => value.value.country);
 
 watch(
   country,
@@ -77,7 +85,7 @@ watch(
       return;
     }
 
-    model.value.city = "";
+    value.value.city = "";
     cities.value = [];
     isLoadingCities.value = true;
     LocationService.getStatesPerCountry(newCountry).then((citiesArray) => {

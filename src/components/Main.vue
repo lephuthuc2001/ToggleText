@@ -24,26 +24,20 @@
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
-              <v-text-field
-                v-model="firstName"
+              <BaseTextInput
                 name="firstName"
                 :label="$t('firstName', { ns: 'applicationForm' })"
-                :error-messages="
-                  localizedErrors['personalInfomation.name.firstName']
-                "
-                outlined
-              ></v-text-field>
+                formPath="personalInfomation.name.firstName"
+                :errorMessage="errors['personalInfomation.name.firstName']"
+              />
             </v-col>
             <v-col cols="6">
-              <v-text-field
-                v-model="lastName"
+              <BaseTextInput
                 name="lastName"
                 :label="$t('lastName', { ns: 'applicationForm' })"
-                :error-messages="
-                  localizedErrors['personalInfomation.name.lastName']
-                "
-                outlined
-              ></v-text-field>
+                formPath="personalInfomation.name.lastName"
+                :errorMessage="errors['personalInfomation.name.lastName']"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -53,7 +47,7 @@
           <h2>{{ $t("address", { ns: "applicationForm" }) }}</h2>
         </v-col>
         <v-col cols="10">
-          <AddressInput v-model="address" />
+          <AddressInput formPath="personalInfomation.address" />
         </v-col>
       </v-row>
       <v-row>
@@ -62,8 +56,8 @@
         </v-col>
         <v-col cols="10">
           <DateOfBirthInput
-            :errorMessage="localizedErrors['personalInfomation.dateOfBirth']"
             v-model="dateOfBirth"
+            formPath="personalInfomation.dateOfBirth"
           />
         </v-col>
       </v-row>
@@ -74,24 +68,20 @@
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
-              <v-text-field
-                v-model="homePhone"
+              <BaseTextInput
+                name="home"
                 :label="$t('home', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="
-                  localizedErrors['personalInfomation.phone.home']
-                "
-              ></v-text-field>
+                formPath="personalInfomation.phone.home"
+                :errorMessage="errors['personalInfomation.phone.home']"
+              />
             </v-col>
             <v-col cols="6">
-              <v-text-field
-                v-model="mobilePhone"
+              <BaseTextInput
+                name="mobile"
                 :label="$t('mobile', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="
-                  localizedErrors['personalInfomation.phone.mobile']
-                "
-              ></v-text-field>
+                formPath="personalInfomation.phone.mobile"
+                :errorMessage="errors['personalInfomation.phone.mobile']"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -112,22 +102,20 @@
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
-              <v-text-field
-                v-model="highSchoolName"
+              <BaseTextInput
+                name="highSchoolName"
                 :label="$t('highSchoolName', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="localizedErrors['education.highSchool.name']"
-              ></v-text-field>
+                formPath="education.highSchool.name"
+                :errorMessage="errors['education.highSchool.name']"
+              />
             </v-col>
             <v-col cols="6">
-              <v-text-field
-                v-model="highSchoolLocation"
+              <BaseTextInput
+                name="highSchoolLocation"
                 :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="
-                  localizedErrors['education.highSchool.location']
-                "
-              ></v-text-field>
+                formPath="education.highSchool.location"
+                :errorMessage="errors['education.highSchool.location']"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -139,22 +127,20 @@
         <v-col cols="10">
           <v-row>
             <v-col cols="6">
-              <v-text-field
-                v-model="universityName"
+              <BaseTextInput
+                name="universityName"
                 :label="$t('universityName', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="localizedErrors['education.university.name']"
-              ></v-text-field>
+                formPath="education.university.name"
+                :errorMessage="errors['education.university.name']"
+              />
             </v-col>
             <v-col cols="6">
-              <v-text-field
-                v-model="universityLocation"
+              <BaseTextInput
+                name="universityLocation"
                 :label="$t('universityLocation', { ns: 'applicationForm' })"
-                outlined
-                :error-messages="
-                  localizedErrors['education.university.location']
-                "
-              ></v-text-field>
+                formPath="education.university.location"
+                :errorMessage="errors['education.university.location']"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -175,28 +161,25 @@
           </h1>
         </v-col>
       </v-row>
-      <SkillsLevelsInput
-        v-model="skills"
-        :errorMessage="localizedErrors['skills']"
-      />
+      <SkillsLevelsInput formPath="skills" />
 
       <v-row>
         <v-col>
           <v-checkbox
             v-model="isAgreed"
             name="agreement"
-            :error-messages="localizedErrors['agreement']"
-            :label="$t('agreement', { ns: 'applicationForm' })"
-          ></v-checkbox>
+            :errorMessages="errors['agreement']"
+          >
+            <template #label>
+              {{ $t("agreement", { ns: "applicationForm" }) }}
+            </template>
+          </v-checkbox>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
           <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
-          <SignatureInput
-            v-model="signature"
-            :error-message="localizedErrors['signature']"
-          ></SignatureInput>
+          <SignatureInput v-model="signature"></SignatureInput>
         </v-col>
         <v-col>
           <v-sheet height="150" color="blue-grey-lighten-5l">
@@ -226,22 +209,16 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import * as yup from "yup";
-import { toTypedSchema } from "@vee-validate/yup";
-import { useForm, useFieldArray, FieldArray } from "vee-validate";
+import { z } from "zod";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
 import { useTranslation } from "i18next-vue";
 import DateOfBirthInput from "./Form/DateOfBirthInput.vue";
-import { setLocale } from "yup";
-import {
-  phoneNumberRegex,
-  isOlderThan18,
-  isSkillDetail,
-  getLastPartOfString,
-} from "../utils/utils";
+import { phoneNumberRegex, isOlderThan18 } from "../utils/utils";
 import SignatureInput from "./Form/SignatureInput.vue";
 import AddressInput from "./Form/AddressInput.vue";
 import SkillsLevelsInput from "./Form/SkillsLevelsInput.vue";
+import BaseTextInput from "./Form/base/BaseTextInput.vue";
 
 const { t, i18next } = useTranslation();
 
@@ -253,6 +230,7 @@ const initialValues = {
     },
     address: {
       streetAddress: "",
+      postcode: "",
       city: "",
       country: "",
     },
@@ -294,173 +272,115 @@ const initialValues = {
   signature: "",
 };
 
-setLocale({
-  mixed: {
-    required: ({ path }) => {
-      return {
-        validationRule: "validation.required",
-        details: { path },
-      };
-    },
-  },
-  string: {
-    matches: ({ path, regex }) => ({
-      validationRule: "validation.matches",
-      details: { path, regex },
+const zodSchema = z.object({
+  personalInfomation: z.object({
+    name: z.object({
+      firstName: z.string().min(2, {
+        message: "First name must be at least 2 characters",
+      }),
+      lastName: z.string().min(2, {
+        message: "Last name must be at least 2 characters",
+      }),
     }),
-  },
-  number: {
-    min: ({ min, path }) => ({
-      validationRule: "field_too_short",
-      details: { min, path },
+    address: z.object({
+      streetAddress: z.string().min(1, {
+        message: "Street address must be at least 1 character",
+      }),
+      postcode: z.string().min(1, {
+        message: "Postcode must be at least 1 character",
+      }),
+      city: z.string().min(1, {
+        message: "City is required",
+      }),
+      country: z.string().min(1, {
+        message: "Country is required",
+      }),
     }),
-    max: ({ max, path }) => ({
-      validationRule: "field_too_big",
-      details: { max, path },
-    }),
-  },
-  array: {
-    min: ({ path, min }) => ({
-      validationRule: "validation.array-min",
-      details: { min, path },
-    }),
-  },
-});
-
-const schema = yup.object().shape({
-  personalInfomation: yup.object().shape({
-    name: yup.object().shape({
-      firstName: yup.string().required(),
-      lastName: yup.string().required(),
-    }),
-    address: yup.object().shape({
-      streetAddress: yup.string().required(),
-      city: yup.string().required(),
-      country: yup.string().required(),
-    }),
-    dateOfBirth: yup
-      .object()
-      .shape({
-        day: yup.string().required(),
-        month: yup.string().required(),
-        year: yup.string().required(),
+    dateOfBirth: z
+      .object({
+        day: z.string().min(1, {
+          message: "Day is required",
+        }),
+        month: z.string().min(1, {
+          message: "Month is required",
+        }),
+        year: z.string().min(1, {
+          message: "Year is required",
+        }),
       })
-      .required()
-      .test("isOlderThan18", "You must be older than 18", isOlderThan18),
-    phone: yup.object().shape({
-      home: yup.string().matches(phoneNumberRegex).required(),
-      mobile: yup.string().matches(phoneNumberRegex).required(),
+      .refine(
+        (value) => {
+          console.log(value);
+          return isOlderThan18(value);
+        },
+        {
+          message: "You must be older than 18",
+        }
+      ),
+    phone: z.object({
+      home: z.string().min().regex(phoneNumberRegex, {
+        message: "Invalid phone number",
+      }),
+      mobile: z
+        .string()
+        .regex(phoneNumberRegex, { message: "Invalid phone number" }),
     }),
   }),
-  education: yup.object().shape({
-    highSchool: yup.object().shape({
-      name: yup.string().required(),
-      location: yup.string().required(),
+  education: z.object({
+    highSchool: z.object({
+      name: z.string().min(1, {
+        message: "High school name must be at least 1 character",
+      }),
+      location: z.string().min(1, {
+        message: "High school location must be at least 1 character",
+      }),
     }),
-    university: yup.object().shape({
-      name: yup.string().required(),
-      location: yup.string().required(),
+    university: z.object({
+      name: z.string().min(1, {
+        message: "University name must be at least 1 character",
+      }),
+      location: z.string().min(1, {
+        message: "University location must be at least 1 character",
+      }),
     }),
   }),
-  skills: yup
-    .array()
-    .of(
-      yup.object().shape({
-        name: yup.string().required(),
-        level: yup
-          .string()
-          .required()
-          .oneOf(
-            ["Beginner", "Intermediate", "Advanced"],
-            "Invalid skill level"
-          ),
+  skills: z
+    .array(
+      z.object({
+        name: z.string().min(1, {
+          message: "Skill name must be at least 1 character",
+        }),
+        level: z.enum(["Beginner", "Intermediate", "Advanced"], {
+          message:
+            "Skill level must be one of the following: Beginner, Intermediate, Advanced",
+        }),
       })
     )
-    .min(3),
-  agreement: yup.boolean().oneOf([true], "You must agree to the terms"),
-  signature: yup.string().required("You must sign the application"),
+    .min(3, {
+      message: "You must have at least 3 skills",
+    }),
+  agreement: z.boolean().refine(
+    (value) => {
+      return value;
+    },
+    {
+      message: "You must agree to the terms",
+    }
+  ),
+  signature: z.string().refine(
+    (value) => {
+      return value.length > 0;
+    },
+    {
+      message: "You must sign the application",
+    }
+  ),
 });
 
 const { handleSubmit, defineField, errors, resetForm } = useForm({
-  validationSchema: toTypedSchema(schema),
+  validationSchema: toTypedSchema(zodSchema),
   initialValues,
 });
-
-const localizedErrors = computed(function () {
-  const output = {};
-
-  if (Object.keys(errors.value).length === 0) {
-    return output;
-  }
-
-  Object.entries(errors.value).forEach(([key, value]) => {
-    if (typeof value === "object") {
-      const { validationRule, details } = value;
-
-      let formPath = "path." + details.path;
-
-      const isSkill = isSkillDetail(details.path);
-      if (isSkill.isMatch) {
-        formPath = isSkill.isName
-          ? "path." + "skillName"
-          : "path." + "skillLevel";
-      }
-
-      const field = t(formPath, {
-        ns: "applicationForm",
-        lng: "en",
-      });
-
-      const fieldName = t(field, {
-        ns: "applicationForm",
-      });
-
-      let message;
-
-      if (validationRule === "validation.required") {
-        message = t(validationRule, {
-          ns: "applicationForm",
-          field: fieldName,
-        });
-      }
-
-      if (validationRule === "validation.matches") {
-        message = t(validationRule, {
-          ns: "applicationForm",
-          field: fieldName,
-          regex: details.regex,
-        });
-      }
-
-      if (validationRule === "validation.array-min") {
-        message = t(validationRule, {
-          ns: "applicationForm",
-          field: fieldName,
-          expected: details.min,
-        });
-      }
-
-      output[key] = message;
-    } else {
-      const message = t("validation.custom." + getLastPartOfString(key), {
-        ns: "applicationForm",
-      });
-      output[key] = message;
-    }
-  });
-
-  return output;
-});
-
-const [firstName] = defineField("personalInfomation.name.firstName");
-const [lastName] = defineField("personalInfomation.name.lastName");
-
-const [address] = defineField("personalInfomation.address");
-
-const [dateOfBirth] = defineField("personalInfomation.dateOfBirth");
-
-const [homePhone] = defineField("personalInfomation.phone.home");
-const [mobilePhone] = defineField("personalInfomation.phone.mobile");
 
 const onSubmit = handleSubmit((values) => {
   alert(JSON.stringify(values));
@@ -469,25 +389,7 @@ const onSubmit = handleSubmit((values) => {
   resetForm();
 });
 
-const [highSchoolName] = defineField("education.highSchool.name");
-const [highSchoolLocation] = defineField("education.highSchool.location");
-
-const [universityName] = defineField("education.university.name");
-const [universityLocation] = defineField("education.university.location");
-
 const [isAgreed] = defineField("agreement");
-
-const [signature] = defineField("signature", {
-  validateOnBlur: false,
-  // Validates when `change` event is emitted from the element/component
-  validateOnChange: false,
-  // Validates when `input` event is emitted from the element/component
-  validateOnInput: false,
-  // Validates when the returned model value changes
-  validateOnModelUpdate: true,
-});
-
-const skills = useFieldArray("skills");
 
 i18next.on("languageChanged", () => {
   resetForm();

@@ -1,47 +1,62 @@
 <template>
+  <v-row v-if="errorMessage">
+    <v-col>
+      <ErrorMessage :errorMessage="errorMessage" />
+    </v-col>
+  </v-row>
   <v-row>
     <v-col>
-      <v-autocomplete
-        v-model="model.day"
+      <BaseSelectInput
         :label="$t('day', { ns: 'applicationForm' })"
         :items="dayRange"
         name="day"
-      ></v-autocomplete
+        :formPath="dayInputFormPath"
+      ></BaseSelectInput
     ></v-col>
+
     <v-col>
-      <v-autocomplete
-        v-model="model.month"
+      <BaseSelectInput
         :label="$t('month', { ns: 'applicationForm' })"
         :items="monthRange"
         name="month"
-      ></v-autocomplete>
+        :formPath="monthInputFormPath"
+      ></BaseSelectInput>
     </v-col>
     <v-col>
-      <v-autocomplete
-        v-model="model.year"
+      <BaseSelectInput
         :label="$t('year', { ns: 'applicationForm' })"
         name="year"
         :items="yearRange"
-      ></v-autocomplete>
+        :formPath="yearInputFormPath"
+      ></BaseSelectInput>
     </v-col>
   </v-row>
 </template>
 
 <script setup>
-import { defineProps, defineModel } from "vue";
+import { defineProps, defineModel, computed } from "vue";
+import { useField } from "vee-validate";
 import { getDateRangeForDateOfBirthInput } from "../../utils/utils";
-const { errorMessage } = defineProps({
+import BaseSelectInput from "./base/BaseSelectInput.vue";
+import ErrorMessage from "./ErrorMessage.vue";
+
+const props = defineProps({
   errorMessage: {
     type: String,
+  },
+  formPath: {
+    type: String,
+    required: true,
   },
 });
 
 const { dayRange, monthRange, yearRange } = getDateRangeForDateOfBirthInput();
 
-const model = defineModel({
-  type: Object,
-  required: true,
-});
+const dayInputFormPath = computed(() => `${props.formPath}.day`);
+const monthInputFormPath = computed(() => `${props.formPath}.month`);
+const yearInputFormPath = computed(() => `${props.formPath}.year`);
+
+const { value, errorMessage } = useField(() => props.formPath);
 </script>
 
 <style lang="scss" scoped></style>

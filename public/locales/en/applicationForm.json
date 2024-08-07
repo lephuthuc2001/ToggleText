@@ -36,6 +36,7 @@
   "submit": "Submit",
   "date": "Date",
   "approval": "Approval",
+  "postcode": "Postcode",
   "path": {
     "personalInfomation.name.firstName": "firstName",
     "personalInfomation.name.lastName": "lastName",
@@ -64,7 +65,8 @@
     "custom": {
       "agreement": "You must agree to the terms and conditions",
       "signature": "You must provide a signature",
-      "dateOfBirth": "You must be over 18 years old"
+      "dateOfBirth": "You must be over 18 years old",
+      "phone": "Phone number must be valid without string"
     }
   }
 }

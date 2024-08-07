@@ -36,6 +36,7 @@
   "submit": "Gửi",
   "date": "Ngày Tháng",
   "approval": "Phê duyệt",
+  "postcode": "Mã bưu chính",
   "validation": {
     "required": "{{field}} là bắt buộc",
     "matches": "{{field}} phải tuân theo quy tắc này {{regex}}",

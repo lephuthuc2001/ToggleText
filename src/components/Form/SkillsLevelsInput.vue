@@ -1,32 +1,24 @@
 <template>
-  <v-row>
+  <v-row v-if="errorMessage">
     <v-col>
-      <v-alert
-        v-if="errorMessage"
-        :text="errorMessage"
-        type="error"
-        variant="outlined"
-        density="compact"
-      ></v-alert>
+      <ErrorMessage :errorMessage="errorMessage" />
     </v-col>
   </v-row>
   <v-row v-for="(field, idx) in fields" :key="field.key">
     <v-col cols="6">
-      <v-text-field
-        v-model="field.value.name"
+      <BaseTextInput
         :label="$t('skill', { ns: 'applicationForm', count: 1 })"
-        outlined
-      ></v-text-field>
+        name="skill"
+        :formPath="`${props.formPath}` + `[${idx}].name`"
+      ></BaseTextInput>
     </v-col>
     <v-col cols="5">
-      <v-autocomplete
-        v-model="field.value.level"
+      <BaseSelectInput
         :label="$t('level', { ns: 'applicationForm', count: 1 })"
+        name="level"
         :items="levelsOptions"
-        item-title="title"
-        item-value="value"
-        outlined
-      ></v-autocomplete>
+        :formPath="`${props.formPath}` + `[${idx}].level`"
+      ></BaseSelectInput>
     </v-col>
     <v-col cols="1">
       <v-btn aria-label="Remove" @click="remove(idx)" color="red" size="small">
@@ -44,21 +36,24 @@
 </template>
 
 <script setup>
-import { defineModel, computed } from "vue";
+import { computed } from "vue";
 import { useTranslation } from "i18next-vue";
+import { useFieldArray } from "vee-validate";
+import { useFieldError } from "vee-validate";
+import ErrorMessage from "./ErrorMessage.vue";
+import BaseTextInput from "./base/BaseTextInput.vue";
+import BaseSelectInput from "./base/BaseSelectInput.vue";
+
 const { t } = useTranslation();
-const model = defineModel({
-  type: Object,
-});
-
-const { fields, push, remove } = model.value;
-
-const { errorMessage } = defineProps({
-  errorMessage: {
+const props = defineProps({
+  formPath: {
     type: String,
-    default: "",
+    required: true,
   },
 });
+
+const { fields, push, remove } = useFieldArray(() => props.formPath);
+const errorMessage = useFieldError(() => props.formPath);
 
 const levelsOptions = computed(function () {
   return [
