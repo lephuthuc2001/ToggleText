@@ -111,10 +111,6 @@ const country = computed(() => value.value.country);
 watch(
   country,
   (newCountry, oldCountry) => {
-    console.log({
-      newCountry,
-      oldCountry,
-    });
     if (newCountry === oldCountry) {
       return;
     }
@@ -123,7 +119,6 @@ watch(
     cities.value = [];
     isLoadingCities.value = true;
     LocationService.getStatesPerCountry(newCountry).then((citiesArray) => {
-      console.log("citiesArray", citiesArray);
       cities.value = citiesArray;
       isLoadingCities.value = false;
     });

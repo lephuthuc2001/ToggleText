@@ -220,6 +220,7 @@ import { z } from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { useTranslation } from "i18next-vue";
+import isEmpty from "lodash/isEmpty";
 
 // Utility imports
 import { phoneNumberRegex, isOlderThan18 } from "../../utils/utils";
@@ -311,13 +312,9 @@ const zodSchema = z.object({
         .min(1, {
           message: "streetAddress.required",
         }),
-      postcode: z
-        .string({
-          message: "postcode.required",
-        })
-        .min(1, {
-          message: "postcode.required",
-        }),
+      postcode: z.string({
+        message: "postcode.required",
+      }),
       city: z
         .string({
           message: "city.required",
@@ -470,16 +467,25 @@ const localizedErrors = computed(() => {
     output[formPath] = t(message, { ns: "applicationForm" });
   });
 
-  console.log(output);
-
   return output;
 });
 
-const onSubmit = handleSubmit((values) => {
-  alert(JSON.stringify(values));
+const onSubmit = handleSubmit((values, actions) => {
+  if (
+    values["personalInfomation"]["address"]["country"] === "United States" &&
+    isEmpty(values["personalInfomation"]["address"]["postcode"])
+  ) {
+    actions.setFieldError(
+      "personalInfomation.address.postcode",
+      "postcode.required"
+    );
+    return;
+  } else {
+  }
 
   console.log(values);
-  resetForm();
+
+  actions.resetForm();
 });
 
 i18next.on("languageChanged", () => {
