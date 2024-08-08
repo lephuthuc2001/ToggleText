@@ -37,14 +37,24 @@
   "date": "Ngày Tháng",
   "approval": "Phê duyệt",
   "postcode": "Mã bưu chính",
-  "validation": {
-    "required": "{{field}} là bắt buộc",
-    "matches": "{{field}} phải tuân theo quy tắc này {{regex}}",
-    "array-min": "{{field}} ít nhất phải có {{expected}} mục",
-    "custom": {
-      "agreement": "Bạn phải đồng ý với các điều khoản và điều kiện",
-      "signature": "Bạn phải cung cấp chữ ký",
-      "dateOfBirth": "Bạn phải trên 18 tuổi"
-    }
-  }
+  "firstName.required": "Tên phải có ít nhất 2 ký tự.",
+  "lastName.required": "Họ phải có ít nhất 2 ký tự.",
+  "streetAddress.required": "Địa chỉ đường là bắt buộc.",
+  "postcode.required": "Mã bưu điện là bắt buộc.",
+  "city.required": "Thành phố là bắt buộc.",
+  "country.required": "Quốc gia là bắt buộc.",
+  "day.required": "Ngày là bắt buộc.",
+  "month.required": "Tháng là bắt buộc.",
+  "year.required": "Năm là bắt buộc.",
+  "olderThan18": "Bạn phải trên 18 tuổi.",
+  "phoneNumber.invalid": "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại hợp lệ, bao gồm mã quốc gia nếu có. Ví dụ: +1234567890, (123) 456-7890, 123-456-7890.",
+  "highSchoolName.required": "Tên trường trung học là bắt buộc.",
+  "highSchoolLocation.required": "Địa điểm trường trung học là bắt buộc.",
+  "universityName.required": "Tên trường đại học là bắt buộc.",
+  "universityLocation.required": "Địa điểm trường đại học là bắt buộc.",
+  "skillName.required": "Tên kỹ năng là bắt buộc.",
+  "skillLevel.invalid": "Trình độ kỹ năng phải là một trong các mức: Sơ cấp, Trung cấp, Cao cấp.",
+  "skills.atLeastThree": "Bạn phải có ít nhất ba kỹ năng.",
+  "agreement.required": "Bạn phải đồng ý với các điều khoản.",
+  "signature.required": "Chữ ký là bắt buộc."
 }

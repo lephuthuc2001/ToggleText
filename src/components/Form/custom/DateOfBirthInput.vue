@@ -1,7 +1,9 @@
 <template>
   <v-row v-if="errorMessage">
     <v-col>
-      <ErrorMessage :errorMessage="errorMessage" />
+      <ErrorMessage
+        :errorMessage="props.localizedErrors[formPath] ?? errorMessage"
+      />
     </v-col>
   </v-row>
   <v-row>
@@ -11,6 +13,7 @@
         :items="dayRange"
         name="day"
         :formPath="dayInputFormPath"
+        :errorMessage="dayErrorMessage"
       ></BaseSelectInput
     ></v-col>
 
@@ -20,6 +23,7 @@
         :items="monthRange"
         name="month"
         :formPath="monthInputFormPath"
+        :errorMessage="monthErrorMessage"
       ></BaseSelectInput>
     </v-col>
     <v-col>
@@ -28,6 +32,7 @@
         name="year"
         :items="yearRange"
         :formPath="yearInputFormPath"
+        :errorMessage="yearErrorMessage"
       ></BaseSelectInput>
     </v-col>
   </v-row>
@@ -53,13 +58,27 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  localizedErrors: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const { dayRange, monthRange, yearRange } = getDateRangeForDateOfBirthInput();
 
-const dayInputFormPath = computed(() => `${props.formPath}.day`);
-const monthInputFormPath = computed(() => `${props.formPath}.month`);
-const yearInputFormPath = computed(() => `${props.formPath}.year`);
+const dayInputFormPath = `${props.formPath}.day`;
+const monthInputFormPath = `${props.formPath}.month`;
+const yearInputFormPath = `${props.formPath}.year`;
+
+const dayErrorMessage = computed(() => {
+  return props.localizedErrors[dayInputFormPath];
+});
+const monthErrorMessage = computed(() => {
+  return props.localizedErrors[monthInputFormPath];
+});
+const yearErrorMessage = computed(() => {
+  return props.localizedErrors[yearInputFormPath];
+});
 
 const { value, errorMessage } = useField(() => props.formPath);
 </script>

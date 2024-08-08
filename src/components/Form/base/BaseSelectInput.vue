@@ -6,7 +6,7 @@
     :items="props.items"
     :item-title="props.itemTitle"
     :item-value="props.itemValue"
-    :error-messages="props.localizedErrorMessage ?? errorMessage"
+    :error-messages="props.errorMessage ?? errorMessage"
     :loading="props.loading"
   ></v-autocomplete>
 </template>
@@ -43,7 +43,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  localizedErrorMessage: {
+  errorMessage: {
     type: String,
     default: undefined,
   },

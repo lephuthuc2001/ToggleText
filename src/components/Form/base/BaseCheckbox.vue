@@ -4,7 +4,7 @@
     @update:modelValue="handleChange"
     :label="props.label"
     :name="props.name"
-    :error-messages="props.localizedErrorMessage ?? errorMessage"
+    :error-messages="props.errorMessage ?? errorMessage"
   ></v-checkbox>
 </template>
 
@@ -24,7 +24,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  localizedErrorMessage: {
+  errorMessage: {
     type: String,
     default: undefined,
   },

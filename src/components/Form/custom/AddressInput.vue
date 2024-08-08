@@ -6,14 +6,16 @@
           <BaseTextareaInput
             :label="$t('streetAddress', { ns: 'applicationForm' })"
             name="street-address"
-            :formPath="`${props.formPath}.streetAddress`"
+            :formPath="streetAddressFormPath"
+            :errorMessage="streetAddressErrorMessage"
           ></BaseTextareaInput>
         </v-col>
         <v-col>
           <BaseTextInput
             :label="$t('postcode', { ns: 'applicationForm' })"
             name="postcode"
-            :formPath="`${props.formPath}.postcode`"
+            :formPath="postCodeFormPath"
+            :errorMessage="postCodeErrorMessage"
           ></BaseTextInput>
         </v-col>
       </v-row>
@@ -24,7 +26,8 @@
             name="city"
             :items="cities"
             :loading="isLoadingCities"
-            :formPath="`${props.formPath}.city`"
+            :formPath="cityFormPath"
+            :errorMessage="cityErrorMessage"
           ></BaseSelectInput>
         </v-col>
         <v-col>
@@ -32,7 +35,8 @@
             :label="$t('country', { ns: 'applicationForm' })"
             name="country"
             :items="countries"
-            :formPath="`${props.formPath}.country`"
+            :formPath="countryFormPath"
+            :errorMessage="countryErrorMessage"
           ></BaseSelectInput>
         </v-col>
       </v-row>
@@ -46,6 +50,7 @@ import { ref, onMounted, watch, computed } from "vue";
 
 // Library imports
 import { useField } from "vee-validate";
+import { isEmpty } from "lodash";
 
 // Local imports
 import LocationService from "../../../services/LocationService";
@@ -58,6 +63,30 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  localizedErrors: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const streetAddressFormPath = `${props.formPath}.streetAddress`;
+const streetAddressErrorMessage = computed(() => {
+  return props.localizedErrors[streetAddressFormPath];
+});
+
+const postCodeFormPath = `${props.formPath}.postcode`;
+const postCodeErrorMessage = computed(() => {
+  return props.localizedErrors[postCodeFormPath];
+});
+
+const cityFormPath = `${props.formPath}.city`;
+const cityErrorMessage = computed(() => {
+  return props.localizedErrors[cityFormPath];
+});
+
+const countryFormPath = `${props.formPath}.country`;
+const countryErrorMessage = computed(() => {
+  return props.localizedErrors[countryFormPath];
 });
 
 const { value, errorMessage } = useField(() => props.formPath);

@@ -27,7 +27,9 @@
               name="firstName"
               :label="$t('firstName', { ns: 'applicationForm' })"
               formPath="personalInfomation.name.firstName"
-              :errorMessage="errors['personalInfomation.name.firstName']"
+              :errorMessage="
+                localizedErrors['personalInfomation.name.firstName']
+              "
             />
           </v-col>
           <v-col cols="6">
@@ -35,7 +37,9 @@
               name="lastName"
               :label="$t('lastName', { ns: 'applicationForm' })"
               formPath="personalInfomation.name.lastName"
-              :errorMessage="errors['personalInfomation.name.lastName']"
+              :errorMessage="
+                localizedErrors['personalInfomation.name.lastName']
+              "
             />
           </v-col>
         </v-row>
@@ -46,7 +50,10 @@
         <h2>{{ $t("address", { ns: "applicationForm" }) }}</h2>
       </v-col>
       <v-col cols="10">
-        <AddressInput formPath="personalInfomation.address" />
+        <AddressInput
+          :localizedErrors="localizedErrors"
+          formPath="personalInfomation.address"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -55,7 +62,7 @@
       </v-col>
       <v-col cols="10">
         <DateOfBirthInput
-          v-model="dateOfBirth"
+          :localizedErrors="localizedErrors"
           formPath="personalInfomation.dateOfBirth"
         />
       </v-col>
@@ -71,7 +78,7 @@
               name="home"
               :label="$t('home', { ns: 'applicationForm' })"
               formPath="personalInfomation.phone.home"
-              :errorMessage="errors['personalInfomation.phone.home']"
+              :errorMessage="localizedErrors['personalInfomation.phone.home']"
             />
           </v-col>
           <v-col cols="6">
@@ -79,7 +86,7 @@
               name="mobile"
               :label="$t('mobile', { ns: 'applicationForm' })"
               formPath="personalInfomation.phone.mobile"
-              :errorMessage="errors['personalInfomation.phone.mobile']"
+              :errorMessage="localizedErrors['personalInfomation.phone.mobile']"
             />
           </v-col>
         </v-row>
@@ -105,7 +112,7 @@
               name="highSchoolName"
               :label="$t('highSchoolName', { ns: 'applicationForm' })"
               formPath="education.highSchool.name"
-              :errorMessage="errors['education.highSchool.name']"
+              :errorMessage="localizedErrors['education.highSchool.name']"
             />
           </v-col>
           <v-col cols="6">
@@ -113,7 +120,7 @@
               name="highSchoolLocation"
               :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
               formPath="education.highSchool.location"
-              :errorMessage="errors['education.highSchool.location']"
+              :errorMessage="localizedErrors['education.highSchool.location']"
             />
           </v-col>
         </v-row>
@@ -130,7 +137,7 @@
               name="universityName"
               :label="$t('universityName', { ns: 'applicationForm' })"
               formPath="education.university.name"
-              :errorMessage="errors['education.university.name']"
+              :errorMessage="localizedErrors['education.university.name']"
             />
           </v-col>
           <v-col cols="6">
@@ -138,7 +145,7 @@
               name="universityLocation"
               :label="$t('universityLocation', { ns: 'applicationForm' })"
               formPath="education.university.location"
-              :errorMessage="errors['education.university.location']"
+              :errorMessage="localizedErrors['education.university.location']"
             />
           </v-col>
         </v-row>
@@ -160,7 +167,7 @@
         </h1>
       </v-col>
     </v-row>
-    <SkillsLevelsInput formPath="skills" />
+    <SkillsLevelsInput :localizedErrors="localizedErrors" formPath="skills" />
 
     <v-row>
       <v-col>
@@ -168,13 +175,17 @@
           name="agreement"
           :label="$t('agreement', { ns: 'applicationForm' })"
           formPath="agreement"
+          :errorMessage="localizedErrors['agreement']"
         />
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
-        <SignatureInput v-model="signature"></SignatureInput>
+        <SignatureInput
+          :errorMessage="localizedErrors['signature']"
+          formPath="signature"
+        ></SignatureInput>
       </v-col>
       <v-col>
         <v-sheet height="150" color="blue-grey-lighten-5l">
@@ -200,6 +211,7 @@
       </v-col>
     </v-row>
   </v-container>
+  {{ localizedErrors }}
 </template>
 
 <script setup>
@@ -219,8 +231,9 @@ import AddressInput from "./custom/AddressInput.vue";
 import SkillsLevelsInput from "./custom/SkillsLevelsInput.vue";
 import BaseTextInput from "./base/BaseTextInput.vue";
 import BaseCheckbox from "./base/BaseCheckbox.vue";
+import { computed } from "vue";
 
-const { i18next } = useTranslation();
+const { t, i18next } = useTranslation();
 
 const initialValues = {
   personalInfomation: {
@@ -275,89 +288,149 @@ const initialValues = {
 const zodSchema = z.object({
   personalInfomation: z.object({
     name: z.object({
-      firstName: z.string().min(2, {
-        message: "First name must be at least 2 characters" + i18next.language,
-      }),
-      lastName: z.string().min(2, {
-        message: "Last name must be at least 2 characters",
-      }),
+      firstName: z
+        .string({
+          message: "firstName.required",
+        })
+        .min(2, {
+          message: "firstName.required",
+        }),
+      lastName: z
+        .string({
+          message: "lastName.required",
+        })
+        .min(2, {
+          message: "lastName.required",
+        }),
     }),
     address: z.object({
-      streetAddress: z.string().min(1, {
-        message: "Street address must be at least 1 character",
-      }),
-      postcode: z.string().min(1, {
-        message: "Postcode must be at least 1 character",
-      }),
-      city: z.string().min(1, {
-        message: "City is required",
-      }),
-      country: z.string().min(1, {
-        message: "Country is required",
-      }),
+      streetAddress: z
+        .string({
+          message: "streetAddress.required",
+        })
+        .min(1, {
+          message: "streetAddress.required",
+        }),
+      postcode: z
+        .string({
+          message: "postcode.required",
+        })
+        .min(1, {
+          message: "postcode.required",
+        }),
+      city: z
+        .string({
+          message: "city.required",
+        })
+        .min(1, {
+          message: "city.required",
+        }),
+      country: z
+        .string({
+          message: "country.required",
+        })
+        .min(1, {
+          message: "country.required",
+        }),
     }),
     dateOfBirth: z
       .object({
-        day: z.string().min(1, {
-          message: "Day is required",
-        }),
-        month: z.string().min(1, {
-          message: "Month is required",
-        }),
-        year: z.string().min(1, {
-          message: "Year is required",
-        }),
+        day: z
+          .string({
+            message: "day.required",
+          })
+          .min(1, {
+            message: "day.required",
+          }),
+        month: z
+          .string({
+            message: "month.required",
+          })
+          .min(1, {
+            message: "month.required",
+          }),
+        year: z
+          .string({
+            message: "year.required",
+          })
+          .min(1, {
+            message: "year.required",
+          }),
       })
       .refine(
         (value) => {
-          console.log(value);
           return isOlderThan18(value);
         },
         {
-          message: "You must be older than 18",
+          message: "olderThan18",
         }
       ),
     phone: z.object({
-      home: z.string().min().regex(phoneNumberRegex, {
-        message: "Invalid phone number",
-      }),
+      home: z
+        .string({
+          message: "phoneNumber.invalid",
+        })
+        .regex(phoneNumberRegex, {
+          message: "phoneNumber.invalid",
+        }),
       mobile: z
-        .string()
-        .regex(phoneNumberRegex, { message: "Invalid phone number" }),
+        .string({
+          message: "phoneNumber.invalid",
+        })
+        .regex(phoneNumberRegex, { message: "phoneNumber.invalid" }),
     }),
   }),
   education: z.object({
     highSchool: z.object({
-      name: z.string().min(1, {
-        message: "High school name must be at least 1 character",
-      }),
-      location: z.string().min(1, {
-        message: "High school location must be at least 1 character",
-      }),
+      name: z
+        .string({
+          message: "highSchoolName.required",
+        })
+        .min(1, {
+          message: "highSchoolName.required",
+        }),
+      location: z
+        .string({
+          message: "highSchoolLocation.required",
+        })
+        .min(1, {
+          message: "highSchoolLocation.required",
+        }),
     }),
     university: z.object({
-      name: z.string().min(1, {
-        message: "University name must be at least 1 character",
-      }),
-      location: z.string().min(1, {
-        message: "University location must be at least 1 character",
-      }),
+      name: z
+        .string({
+          message: "universityName.required",
+        })
+        .min(1, {
+          message: "universityName.required",
+        }),
+      location: z
+        .string({
+          message: "universityLocation.required",
+        })
+        .min(1, {
+          message: "universityLocation.required",
+        }),
     }),
   }),
   skills: z
     .array(
       z.object({
-        name: z.string().min(1, {
-          message: "Skill name must be at least 1 character",
-        }),
+        name: z
+          .string({
+            message: "skillName.required",
+          })
+          .min(1, {
+            message: "skillName.required",
+          }),
         level: z.enum(["Beginner", "Intermediate", "Advanced"], {
-          message:
-            "Skill level must be one of the following: Beginner, Intermediate, Advanced",
+          message: "skillLevel.invalid",
         }),
       })
     )
     .min(3, {
-      message: "You must have at least 3 skills",
+      message: "skills.atLeastThree",
     }),
   agreement: z
     .boolean()
@@ -367,7 +440,7 @@ const zodSchema = z.object({
         return value;
       },
       {
-        message: "You must agree to the terms",
+        message: "agreement.required",
       }
     ),
   signature: z.string().refine(
@@ -375,7 +448,7 @@ const zodSchema = z.object({
       return value.length > 0;
     },
     {
-      message: "You must sign the application",
+      message: "signature.required",
     }
   ),
 });
@@ -383,6 +456,23 @@ const zodSchema = z.object({
 const { handleSubmit, errors, resetForm } = useForm({
   validationSchema: toTypedSchema(zodSchema),
   initialValues,
+});
+
+const localizedErrors = computed(() => {
+  const output = {};
+
+  // If there are no errors, return an empty object
+  if (Object.keys(errors.value).length === 0) {
+    return output;
+  }
+
+  Object.entries(errors.value).forEach(([formPath, message]) => {
+    output[formPath] = t(message, { ns: "applicationForm" });
+  });
+
+  console.log(output);
+
+  return output;
 });
 
 const onSubmit = handleSubmit((values) => {

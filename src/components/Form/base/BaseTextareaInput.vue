@@ -3,7 +3,7 @@
     v-model="value"
     :name="props.name"
     :label="props.label"
-    :error-messages="props.localizedErrorMessage ?? errorMessage"
+    :error-messages="props.errorMessage ?? errorMessage"
   ></v-textarea>
 </template>
 
@@ -22,7 +22,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  localizedErrorMessage: {
+  errorMessage: {
     type: String,
     default: undefined,
   },

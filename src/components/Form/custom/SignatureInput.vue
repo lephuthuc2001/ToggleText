@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4">
     <canvas v-signature="updateSignature"></canvas>
     <div class="error-message">
-      {{ errorMessage }}
+      {{ props.errorMessage ?? errorMessage }}
     </div>
     <v-row>
       <v-col>
@@ -50,15 +50,19 @@ const props = defineProps({
     required: true,
     default: "signature",
   },
+  errorMessage: {
+    type: String,
+    default: undefined,
+  },
 });
 
-const { value, errorMessage } = useField(() => props.formPath);
+const { value, errorMessage, resetField } = useField(() => props.formPath);
 
 function clearCanvas() {
   if (signaturePad.value) {
     signaturePad.value.clear();
   }
-  value.value = "";
+  resetField();
 }
 
 function updateSignature(dataUrl) {

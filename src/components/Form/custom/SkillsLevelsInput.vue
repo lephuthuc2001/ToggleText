@@ -1,7 +1,9 @@
 <template>
   <v-row v-if="errorMessage">
     <v-col>
-      <ErrorMessage :errorMessage="errorMessage" />
+      <ErrorMessage
+        :errorMessage="props.localizedErrors[formPath] ?? errorMessage"
+      />
     </v-col>
   </v-row>
   <v-row v-for="(field, idx) in fields" :key="field.key">
@@ -10,6 +12,7 @@
         :label="$t('skill', { ns: 'applicationForm', count: 1 })"
         name="skill"
         :formPath="`${props.formPath}` + `[${idx}].name`"
+        :errorMessage="localizedErrors[`${props.formPath}` + `[${idx}].name`]"
       ></BaseTextInput>
     </v-col>
     <v-col cols="5">
@@ -18,6 +21,7 @@
         name="level"
         :items="levelsOptions"
         :formPath="`${props.formPath}` + `[${idx}].level`"
+        :errorMessage="localizedErrors[`${props.formPath}` + `[${idx}].level`]"
       ></BaseSelectInput>
     </v-col>
     <v-col cols="1">
@@ -54,9 +58,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  localizedErrors: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const { fields, push, remove } = useFieldArray(() => props.formPath);
+
 const errorMessage = useFieldError(() => props.formPath);
 
 const levelsOptions = computed(function () {
