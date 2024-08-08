@@ -16,9 +16,12 @@
 
 <script setup>
 // Imports
+// Vue-related imports
+import { ref, watch } from "vue";
+
+// Library imports
 import { useField } from "vee-validate";
 import SignaturePad from "signature_pad";
-import { ref, watch } from "vue";
 import i18next from "i18next";
 
 // Directive Definition

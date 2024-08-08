@@ -34,11 +34,16 @@
 </template>
 
 <script setup>
+// Vue-related imports
 import { defineProps, defineModel, computed } from "vue";
+
+// Library imports
 import { useField } from "vee-validate";
-import { getDateRangeForDateOfBirthInput } from "../../utils/utils";
-import BaseSelectInput from "./base/BaseSelectInput.vue";
-import ErrorMessage from "./ErrorMessage.vue";
+
+// Local imports
+import { getDateRangeForDateOfBirthInput } from "../../../utils/utils";
+import BaseSelectInput from "../base/BaseSelectInput.vue";
+import ErrorMessage from "../base/ErrorMessage.vue";
 
 const props = defineProps({
   errorMessage: {

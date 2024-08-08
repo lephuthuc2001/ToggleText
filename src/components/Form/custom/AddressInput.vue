@@ -41,12 +41,17 @@
 </template>
 
 <script setup>
-import { defineModel, ref, onMounted, watch, toRef, computed } from "vue";
-import LocationService from "../../services/LocationService";
+// Vue-related imports
+import { ref, onMounted, watch, computed } from "vue";
+
+// Library imports
 import { useField } from "vee-validate";
-import BaseTextareaInput from "./base/BaseTextareaInput.vue";
-import BaseTextInput from "./base/BaseTextInput.vue";
-import BaseSelectInput from "./base/BaseSelectInput.vue";
+
+// Local imports
+import LocationService from "../../../services/LocationService";
+import BaseTextInput from "../base/BaseTextInput.vue";
+import BaseSelectInput from "../base/BaseSelectInput.vue";
+import BaseTextareaInput from "../base/BaseTextareaInput.vue";
 
 const props = defineProps({
   formPath: {

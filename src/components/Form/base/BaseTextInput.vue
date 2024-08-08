@@ -3,7 +3,7 @@
     v-model="value"
     :name="props.name"
     :label="props.label"
-    :error-messages="errorMessage"
+    :error-messages="props.localizedErrorMessage ?? errorMessage"
   ></v-text-field>
 </template>
 <script setup>
@@ -20,6 +20,10 @@ const props = defineProps({
   formPath: {
     type: String,
     required: true,
+  },
+  localizedErrorMessage: {
+    type: String,
+    default: undefined,
   },
 });
 // The `name` is returned in a function because we want to make sure it stays reactive

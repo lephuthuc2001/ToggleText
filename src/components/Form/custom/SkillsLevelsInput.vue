@@ -36,13 +36,17 @@
 </template>
 
 <script setup>
+// Vue-related imports
 import { computed } from "vue";
+
+// Library imports
 import { useTranslation } from "i18next-vue";
-import { useFieldArray } from "vee-validate";
-import { useFieldError } from "vee-validate";
-import ErrorMessage from "./ErrorMessage.vue";
-import BaseTextInput from "./base/BaseTextInput.vue";
-import BaseSelectInput from "./base/BaseSelectInput.vue";
+import { useFieldArray, useFieldError } from "vee-validate";
+
+// Relative imports
+import ErrorMessage from "../base/ErrorMessage.vue";
+import BaseTextInput from "../base/BaseTextInput.vue";
+import BaseSelectInput from "../base/BaseSelectInput.vue";
 
 const { t } = useTranslation();
 const props = defineProps({
