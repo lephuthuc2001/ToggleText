@@ -26,9 +26,9 @@
             <BaseTextInput
               name="firstName"
               :label="$t('firstName', { ns: 'applicationForm' })"
-              formPath="personalInfomation.name.firstName"
+              formPath="personalInformation.name.firstName"
               :errorMessage="
-                localizedErrors['personalInfomation.name.firstName']
+                localizedErrors['personalInformation.name.firstName']
               "
             />
           </v-col>
@@ -36,9 +36,9 @@
             <BaseTextInput
               name="lastName"
               :label="$t('lastName', { ns: 'applicationForm' })"
-              formPath="personalInfomation.name.lastName"
+              formPath="personalInformation.name.lastName"
               :errorMessage="
-                localizedErrors['personalInfomation.name.lastName']
+                localizedErrors['personalInformation.name.lastName']
               "
             />
           </v-col>
@@ -52,7 +52,7 @@
       <v-col cols="10">
         <AddressInput
           :localizedErrors="localizedErrors"
-          formPath="personalInfomation.address"
+          formPath="personalInformation.address"
         />
       </v-col>
     </v-row>
@@ -63,7 +63,7 @@
       <v-col cols="10">
         <DateOfBirthInput
           :localizedErrors="localizedErrors"
-          formPath="personalInfomation.dateOfBirth"
+          formPath="personalInformation.dateOfBirth"
         />
       </v-col>
     </v-row>
@@ -77,16 +77,18 @@
             <BaseTextInput
               name="home"
               :label="$t('home', { ns: 'applicationForm' })"
-              formPath="personalInfomation.phone.home"
-              :errorMessage="localizedErrors['personalInfomation.phone.home']"
+              formPath="personalInformation.phone.home"
+              :errorMessage="localizedErrors['personalInformation.phone.home']"
             />
           </v-col>
           <v-col cols="6">
             <BaseTextInput
               name="mobile"
               :label="$t('mobile', { ns: 'applicationForm' })"
-              formPath="personalInfomation.phone.mobile"
-              :errorMessage="localizedErrors['personalInfomation.phone.mobile']"
+              formPath="personalInformation.phone.mobile"
+              :errorMessage="
+                localizedErrors['personalInformation.phone.mobile']
+              "
             />
           </v-col>
         </v-row>
@@ -219,7 +221,11 @@
 <script setup>
 // Library imports
 import { z } from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
+import * as yup from "yup";
+import * as v from "valibot";
+import { toTypedSchema as zodToTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema as yupToTypedSchema } from "@vee-validate/yup";
+import { toTypedSchema as valibotToTypedSchema } from "@vee-validate/valibot";
 import { useForm } from "vee-validate";
 import { useTranslation } from "i18next-vue";
 import isEmpty from "lodash/isEmpty";
@@ -239,7 +245,7 @@ import { computed } from "vue";
 const { t, i18next } = useTranslation();
 
 const initialValues = {
-  personalInfomation: {
+  personalInformation: {
     name: {
       firstName: "",
       lastName: "",
@@ -288,182 +294,303 @@ const initialValues = {
   signature: "",
 };
 
-const zodSchema = z.object({
-  personalInfomation: z.object({
-    name: z.object({
-      firstName: z
-        .string({
-          message: "firstName.required",
+const zodSchema = zodToTypedSchema(
+  z.object({
+    personalInformation: z.object({
+      name: z.object({
+        firstName: z
+          .string({
+            message: "firstName.required",
+          })
+          .min(2),
+        lastName: z
+          .string({
+            message: "lastName.required",
+          })
+          .min(2, {
+            message: "lastName.required",
+          }),
+      }),
+      address: z
+        .object({
+          streetAddress: z
+            .string({
+              message: "streetAddress.required",
+            })
+            .min(1, {
+              message: "streetAddress.required",
+            }),
+          postcode: z.string({
+            message: "postcode.required",
+          }),
+          city: z
+            .string({
+              message: "city.required",
+            })
+            .min(1, {
+              message: "city.required",
+            }),
+          country: z
+            .string({
+              message: "country.required",
+            })
+            .min(1, {
+              message: "country.required",
+            }),
         })
-        .min(2),
-      lastName: z
-        .string({
-          message: "lastName.required",
-        })
-        .min(2, {
-          message: "lastName.required",
-        }),
-    }),
-    address: z
-      .object({
-        streetAddress: z
-          .string({
-            message: "streetAddress.required",
-          })
-          .min(1, {
-            message: "streetAddress.required",
-          }),
-        postcode: z.string({
-          message: "postcode.required",
-        }),
-        city: z
-          .string({
-            message: "city.required",
-          })
-          .min(1, {
-            message: "city.required",
-          }),
-        country: z
-          .string({
-            message: "country.required",
-          })
-          .min(1, {
-            message: "country.required",
-          }),
-      })
-      .refine(
-        ({ postcode, country }) => {
-          if (country === "United States" && isEmpty(postcode)) {
-            return false;
+        .refine(
+          ({ postcode, country }) => {
+            if (country === "United States" && isEmpty(postcode)) {
+              return false;
+            }
+            return true;
+          },
+          {
+            message: "postcode.required",
           }
-          return true;
-        },
-        {
-          message: "postcode.required",
-        }
-      ),
-    dateOfBirth: z
-      .object({
-        day: z
+        ),
+      dateOfBirth: z
+        .object({
+          day: z
+            .string({
+              message: "day.required",
+            })
+            .min(1, {
+              message: "day.required",
+            }),
+          month: z
+            .string({
+              message: "month.required",
+            })
+            .min(1, {
+              message: "month.required",
+            }),
+          year: z
+            .string({
+              message: "year.required",
+            })
+            .min(1, {
+              message: "year.required",
+            }),
+        })
+        .refine(
+          (value) => {
+            return isOlderThan18(value);
+          },
+          {
+            message: "olderThan18",
+          }
+        ),
+      phone: z.object({
+        home: z
           .string({
-            message: "day.required",
+            message: "phoneNumber.invalid",
           })
-          .min(1, {
-            message: "day.required",
+          .regex(phoneNumberRegex, {
+            message: "phoneNumber.invalid",
           }),
-        month: z
+        mobile: z
           .string({
-            message: "month.required",
+            message: "phoneNumber.invalid",
           })
-          .min(1, {
-            message: "month.required",
-          }),
-        year: z
-          .string({
-            message: "year.required",
-          })
-          .min(1, {
-            message: "year.required",
-          }),
-      })
-      .refine(
-        (value) => {
-          return isOlderThan18(value);
-        },
-        {
-          message: "olderThan18",
-        }
-      ),
-    phone: z.object({
-      home: z
-        .string({
-          message: "phoneNumber.invalid",
-        })
-        .regex(phoneNumberRegex, {
-          message: "phoneNumber.invalid",
-        }),
-      mobile: z
-        .string({
-          message: "phoneNumber.invalid",
-        })
-        .regex(phoneNumberRegex, { message: "phoneNumber.invalid" }),
+          .regex(phoneNumberRegex, { message: "phoneNumber.invalid" }),
+      }),
     }),
-  }),
-  education: z.object({
-    highSchool: z.object({
-      name: z
-        .string({
-          message: "highSchoolName.required",
-        })
-        .min(1, {
-          message: "highSchoolName.required",
-        }),
-      location: z
-        .string({
-          message: "highSchoolLocation.required",
-        })
-        .min(1, {
-          message: "highSchoolLocation.required",
-        }),
-    }),
-    university: z.object({
-      name: z
-        .string({
-          message: "universityName.required",
-        })
-        .min(1, {
-          message: "universityName.required",
-        }),
-      location: z
-        .string({
-          message: "universityLocation.required",
-        })
-        .min(1, {
-          message: "universityLocation.required",
-        }),
-    }),
-  }),
-  skills: z
-    .array(
-      z.object({
+    education: z.object({
+      highSchool: z.object({
         name: z
           .string({
-            message: "skillName.required",
+            message: "highSchoolName.required",
           })
           .min(1, {
-            message: "skillName.required",
+            message: "highSchoolName.required",
           }),
-        level: z.enum(["Beginner", "Intermediate", "Advanced"], {
-          message: "skillLevel.invalid",
-        }),
-      })
-    )
-    .min(3, {
-      message: "skills.atLeastThree",
+        location: z
+          .string({
+            message: "highSchoolLocation.required",
+          })
+          .min(1, {
+            message: "highSchoolLocation.required",
+          }),
+      }),
+      university: z.object({
+        name: z
+          .string({
+            message: "universityName.required",
+          })
+          .min(1, {
+            message: "universityName.required",
+          }),
+        location: z
+          .string({
+            message: "universityLocation.required",
+          })
+          .min(1, {
+            message: "universityLocation.required",
+          }),
+      }),
     }),
-  agreement: z
-    .boolean()
-    .default(false)
-    .refine(
+    skills: z
+      .array(
+        z.object({
+          name: z
+            .string({
+              message: "skillName.required",
+            })
+            .min(1, {
+              message: "skillName.required",
+            }),
+          level: z.enum(["Beginner", "Intermediate", "Advanced"], {
+            message: "skillLevel.invalid",
+          }),
+        })
+      )
+      .min(3, {
+        message: "skills.atLeastThree",
+      }),
+    agreement: z
+      .boolean()
+      .default(false)
+      .refine(
+        (value) => {
+          return value;
+        },
+        {
+          message: "agreement.required",
+        }
+      ),
+    signature: z.string().refine(
       (value) => {
-        return value;
+        return value.length > 0;
       },
       {
-        message: "agreement.required",
+        message: "signature.required",
       }
     ),
-  signature: z.string().refine(
-    (value) => {
-      return value.length > 0;
-    },
-    {
-      message: "signature.required",
-    }
-  ),
-});
+  })
+);
+
+const yupSchema = yupToTypedSchema(
+  yup.object().shape({
+    personalInformation: yup.object().shape({
+      name: yup.object().shape({
+        firstName: yup.string().required("firstName.required"),
+        lastName: yup.string().required("lastName.required"),
+      }),
+      address: yup.object().shape({
+        streetAddress: yup.string().required("streetAddress.required"),
+        postcode: yup.string().when("country", {
+          is: "United States",
+          then: (postcode) => postcode.required("postcode.required"),
+          otherwise: (addressSchema) => addressSchema.nullable(),
+        }),
+        city: yup.string().required("city.required"),
+        country: yup.string().required("country.required"),
+      }),
+      dateOfBirth: yup
+        .object()
+        .shape({
+          day: yup.string().required("day.required"),
+          month: yup.string().required("month.required"),
+          year: yup.string().required("year.required"),
+        })
+        .test("is-older-than-18", "olderThan18", function (value) {
+          return isOlderThan18(value);
+        }),
+      phone: yup.object().shape({
+        home: yup.string().matches(phoneNumberRegex, "phoneNumber.invalid"),
+
+        mobile: yup.string().matches(phoneNumberRegex, "phoneNumber.invalid"),
+      }),
+    }),
+    education: yup.object().shape({
+      highSchool: yup.object().shape({
+        name: yup.string().required("highSchoolName.required"),
+        location: yup.string().required("highSchoolLocation.required"),
+      }),
+      university: yup.object().shape({
+        name: yup.string().required("universityName.required"),
+        location: yup.string().required("universityLocation.required"),
+      }),
+    }),
+    skills: yup
+      .array()
+      .of(
+        yup.object().shape({
+          name: yup.string().required("skillName.required"),
+          level: yup
+            .mixed()
+            .oneOf(
+              ["Beginner", "Intermediate", "Advanced"],
+              "skillLevel.invalid"
+            )
+            .required("skillLevel.invalid"),
+        })
+      )
+      .min(3, "skills.atLeastThree"),
+    agreement: yup.boolean().oneOf([true], "agreement.required"),
+    signature: yup.string().required("signature.required"),
+  })
+);
+
+const valibotSchema = valibotToTypedSchema(
+  v.object({
+    personalInformation: v.object({
+      name: v.object({
+        firstName: v.pipe(v.string(), v.nonEmpty("firstName.required")),
+        lastName: v.pipe(v.string(), v.nonEmpty("lastName.required")),
+      }),
+      address: v.pipe(
+        v.object({
+          streetAddress: v.pipe(
+            v.string(),
+            v.nonEmpty("streetAddress.required")
+          ),
+          postcode: v.string(),
+          city: v.pipe(v.string(), v.nonEmpty("city.required")),
+          country: v.pipe(v.string(), v.nonEmpty("country.required")),
+        }),
+        v.forward(
+          v.partialCheck(
+            [
+              ["personalInformation.address.postcode"],
+              ["personalInformation.address.country"],
+            ],
+            (address) => {
+              if (
+                address.country === "United States" &&
+                isEmpty(address.postcode)
+              ) {
+                return false;
+              }
+              return true;
+            },
+            "postcode.required"
+          ),
+          ["postcode"]
+        )
+      ),
+      dateOfBirth: v.object({
+        day: v.pipe(v.string(), v.nonEmpty("day.required")),
+        month: v.pipe(v.string(), v.nonEmpty("month.required")),
+        year: v.pipe(v.string(), v.nonEmpty("year.required")),
+      }),
+      phone: v.object({
+        home: v.pipe(
+          v.string(),
+          v.regex(phoneNumberRegex, "phoneNumber.invalid")
+        ),
+        mobile: v.pipe(
+          v.string(),
+          v.regex(phoneNumberRegex, "phoneNumber.invalid")
+        ),
+      }),
+    }),
+  })
+);
 
 const { handleSubmit, errors, resetForm } = useForm({
-  validationSchema: toTypedSchema(zodSchema),
+  validationSchema: valibotSchema,
   initialValues,
 });
 
