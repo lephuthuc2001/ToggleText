@@ -29,6 +29,9 @@ importers:
       '@tanstack/vue-query':
         specifier: ^5.45.0
         version: 5.45.0(vue@3.4.27)
+      '@vee-validate/valibot':
+        specifier: ^4.13.2
+        version: 4.13.2(vue@3.4.27)
       '@vee-validate/yup':
         specifier: ^4.13.2
         version: 4.13.2(vue@3.4.27)
@@ -59,6 +62,9 @@ importers:
       signature_pad:
         specifier: ^5.0.2
         version: 5.0.2
+      valibot:
+        specifier: ^0.37.0
+        version: 0.37.0
       vee-validate:
         specifier: ^4.13.2
         version: 4.13.2(vue@3.4.27)
@@ -450,6 +456,9 @@ packages:
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+
+  '@vee-validate/valibot@4.13.2':
+    resolution: {integrity: sha512-Vz/sAJc0i1Z1zsXbER15/7EUcD2mYHCaBrmmFs6oFBSDFoDXwJYjPMSklHqyOUVEt15wBVd9HU52f+4cD/5kxw==}
 
   '@vee-validate/yup@4.13.2':
     resolution: {integrity: sha512-ai0UL46S3GKO8wxnjTN6ksbxmpRrgOxKZlVO0GVqMAF52ZXW92wcADk5qUtuuW+kWe3cePuK6MH305J+kT9scw==}
@@ -1035,6 +1044,17 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
+  valibot@0.33.3:
+    resolution: {integrity: sha512-/fuY1DlX8uiQ7aphlzrrI2DbG0YJk84JMgvz2qKpUIdXRNsS53varfo4voPjSrjUr5BSV2K0miSEJUOlA5fQFg==}
+
+  valibot@0.37.0:
+    resolution: {integrity: sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   vee-validate@4.13.2:
     resolution: {integrity: sha512-HlpR/6MJ92TW9f135umMZKUqdd/tFQTxLNSf2ImbU4Y/MlLVAUpF1l64VdjTOhbClAqPjCb5p/SqHDxLpUHXrw==}
     peerDependencies:
@@ -1379,6 +1399,14 @@ snapshots:
       vue-demi: 0.14.8(vue@3.4.27)
 
   '@types/estree@1.0.5': {}
+
+  '@vee-validate/valibot@4.13.2(vue@3.4.27)':
+    dependencies:
+      type-fest: 4.23.0
+      valibot: 0.33.3
+      vee-validate: 4.13.2(vue@3.4.27)
+    transitivePeerDependencies:
+      - vue
 
   '@vee-validate/yup@4.13.2(vue@3.4.27)':
     dependencies:
@@ -2006,6 +2034,10 @@ snapshots:
       picocolors: 1.0.1
 
   util-deprecate@1.0.2: {}
+
+  valibot@0.33.3: {}
+
+  valibot@0.37.0: {}
 
   vee-validate@4.13.2(vue@3.4.27):
     dependencies:
