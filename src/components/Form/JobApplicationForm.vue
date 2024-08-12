@@ -1,7 +1,11 @@
 <template>
   <v-container tag="form" @submit.prevent="onSubmit">
     <v-row>
-      <v-radio-group v-model="schema" label="Schema used" inline>
+      <v-radio-group
+        v-model="schema"
+        :label="'Schema: ' + schema.toUpperCase()"
+        inline
+      >
         <v-radio label="Zod" value="zod"></v-radio>
         <v-radio label="Yup" value="yup"></v-radio>
         <v-radio label="Valibot" value="valibot"></v-radio>
@@ -312,7 +316,9 @@ const zodSchema = zodToTypedSchema(
           .string({
             message: "firstName.required",
           })
-          .min(2),
+          .min(2, {
+            message: "firstName.required",
+          }),
         lastName: z
           .string({
             message: "lastName.required",
@@ -484,8 +490,10 @@ const yupSchema = yupToTypedSchema(
   yup.object().shape({
     personalInformation: yup.object().shape({
       name: yup.object().shape({
-        firstName: yup.string().required("firstName.required"),
-        lastName: yup.string().required("lastName.required"),
+        firstName: yup
+          .string("firstName.required")
+          .required("firstName.required"),
+        lastName: yup.string("lastName.required").required("lastName.required"),
       }),
       address: yup.object().shape({
         streetAddress: yup.string().required("streetAddress.required"),
@@ -596,6 +604,30 @@ const valibotSchema = valibotToTypedSchema(
         ),
       }),
     }),
+    education: v.object({
+      highSchool: v.object({
+        name: v.pipe(v.string(), v.nonEmpty("highSchoolName.required")),
+        location: v.pipe(v.string(), v.nonEmpty("highSchoolLocation.required")),
+      }),
+      university: v.object({
+        name: v.pipe(v.string(), v.nonEmpty("universityName.required")),
+        location: v.pipe(v.string(), v.nonEmpty("universityLocation.required")),
+      }),
+    }),
+    skills: v.pipe(
+      v.array(
+        v.object({
+          name: v.pipe(v.string(), v.nonEmpty("skillName.required")),
+          level: v.pipe(
+            v.string("skillLevel.invalid"),
+            v.nonEmpty("skillLevel.invalid")
+          ),
+        })
+      ),
+      v.minLength(3, "skills.atLeastThree")
+    ),
+    agreement: v.pipe(v.boolean(), v.nonEmpty("agreement.required")),
+    signature: v.pipe(v.string(), v.nonEmpty("signature.required")),
   })
 );
 
@@ -611,12 +643,14 @@ const validationSchema = computed(() => {
 });
 
 const { handleSubmit, errors, resetForm } = useForm({
-  validationSchema: validationSchema,
+  validationSchema,
   initialValues,
 });
 
 const localizedErrors = computed(() => {
   const output = {};
+
+  console.log(schema.value);
 
   // If there are no errors, return an empty object
   if (Object.keys(errors.value).length === 0) {
