@@ -15,7 +15,7 @@
             :label="$t('postcode', { ns: 'applicationForm' })"
             name="postcode"
             :formPath="postCodeFormPath"
-            :errorMessage="postCodeErrorMessage"
+            :errorMessage="postCodeErrorMessage ?? postcodeCustomError"
           ></BaseTextInput>
         </v-col>
       </v-row>
@@ -49,7 +49,7 @@
 import { ref, onMounted, watch, computed } from "vue";
 
 // Library imports
-import { useField } from "vee-validate";
+import { useField, useFieldValue } from "vee-validate";
 import { isEmpty } from "lodash";
 
 // Local imports
@@ -58,6 +58,7 @@ import BaseTextInput from "../base/BaseTextInput.vue";
 import BaseSelectInput from "../base/BaseSelectInput.vue";
 import BaseTextareaInput from "../base/BaseTextareaInput.vue";
 
+// Props
 const props = defineProps({
   formPath: {
     type: String,
@@ -69,63 +70,68 @@ const props = defineProps({
   },
 });
 
+// Form paths
 const streetAddressFormPath = `${props.formPath}.streetAddress`;
-const streetAddressErrorMessage = computed(() => {
-  return props.localizedErrors[streetAddressFormPath];
-});
-
 const postCodeFormPath = `${props.formPath}.postcode`;
-const postCodeErrorMessage = computed(() => {
-  return props.localizedErrors[postCodeFormPath];
-});
-
 const cityFormPath = `${props.formPath}.city`;
-const cityErrorMessage = computed(() => {
-  return props.localizedErrors[cityFormPath];
-});
-
 const countryFormPath = `${props.formPath}.country`;
-const countryErrorMessage = computed(() => {
-  return props.localizedErrors[countryFormPath];
+
+// Error messages
+const streetAddressErrorMessage = computed(
+  () => props.localizedErrors[streetAddressFormPath]
+);
+const postCodeErrorMessage = computed(
+  () => props.localizedErrors[postCodeFormPath]
+);
+const cityErrorMessage = computed(() => props.localizedErrors[cityFormPath]);
+const countryErrorMessage = computed(
+  () => props.localizedErrors[countryFormPath]
+);
+
+// Field values
+const { value } = useField(() => props.formPath);
+const curentCountry = useFieldValue(countryFormPath);
+const currentPostcode = useFieldValue(postCodeFormPath);
+
+// Custom error message for postcode
+const postcodeCustomError = computed(() => {
+  if (
+    curentCountry.value === "United States" &&
+    isEmpty(currentPostcode.value)
+  ) {
+    return props.localizedErrors[props.formPath];
+  }
+  return null;
 });
 
-const { value, errorMessage } = useField(() => props.formPath);
-
+// Country and city data
 const countries = ref([]);
 const isLoadingCountries = ref(false);
-
 const cities = ref([]);
-
 const isLoadingCities = ref(false);
 
+// Fetch countries on mount
 onMounted(async () => {
   isLoadingCountries.value = true;
   const countriesNameArray = await LocationService.getAllCountries();
   isLoadingCountries.value = false;
-
   countries.value = countriesNameArray;
 });
 
+// Watch for country changes to update cities
 const country = computed(() => value.value.country);
-
 watch(
   country,
-  (newCountry, oldCountry) => {
-    if (newCountry === oldCountry) {
-      return;
-    }
-
+  async (newCountry, oldCountry) => {
+    if (newCountry === oldCountry) return;
     value.value.city = "";
     cities.value = [];
     isLoadingCities.value = true;
-    LocationService.getStatesPerCountry(newCountry).then((citiesArray) => {
-      cities.value = citiesArray;
-      isLoadingCities.value = false;
-    });
+    const citiesArray = await LocationService.getStatesPerCountry(newCountry);
+    cities.value = citiesArray;
+    isLoadingCities.value = false;
   },
-  {
-    deep: true,
-  }
+  { deep: true }
 );
 </script>
 

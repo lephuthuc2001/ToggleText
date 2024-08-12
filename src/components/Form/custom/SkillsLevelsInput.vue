@@ -11,8 +11,8 @@
       <BaseTextInput
         :label="$t('skill', { ns: 'applicationForm', count: 1 })"
         name="skill"
-        :formPath="`${props.formPath}` + `[${idx}].name`"
-        :errorMessage="localizedErrors[`${props.formPath}` + `[${idx}].name`]"
+        :formPath="`${props.formPath}[${idx}].name`"
+        :errorMessage="localizedErrors[`${props.formPath}[${idx}].name`]"
       ></BaseTextInput>
     </v-col>
     <v-col cols="5">
@@ -21,7 +21,7 @@
         name="level"
         :items="levelsOptions"
         :formPath="`${props.formPath}` + `[${idx}].level`"
-        :errorMessage="localizedErrors[`${props.formPath}` + `[${idx}].level`]"
+        :errorMessage="localizedErrors[`${props.formPath}[${idx}].level`]"
       ></BaseSelectInput>
     </v-col>
     <v-col cols="1">

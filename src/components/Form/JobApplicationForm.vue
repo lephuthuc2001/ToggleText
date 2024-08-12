@@ -211,7 +211,9 @@
       </v-col>
     </v-row>
   </v-container>
-  {{ localizedErrors }}
+
+  <div>{{ errors }}</div>
+  <div>{{ localizedErrors }}</div>
 </template>
 
 <script setup>
@@ -293,9 +295,7 @@ const zodSchema = z.object({
         .string({
           message: "firstName.required",
         })
-        .min(2, {
-          message: "firstName.required",
-        }),
+        .min(2),
       lastName: z
         .string({
           message: "lastName.required",
@@ -304,32 +304,44 @@ const zodSchema = z.object({
           message: "lastName.required",
         }),
     }),
-    address: z.object({
-      streetAddress: z
-        .string({
-          message: "streetAddress.required",
-        })
-        .min(1, {
-          message: "streetAddress.required",
+    address: z
+      .object({
+        streetAddress: z
+          .string({
+            message: "streetAddress.required",
+          })
+          .min(1, {
+            message: "streetAddress.required",
+          }),
+        postcode: z.string({
+          message: "postcode.required",
         }),
-      postcode: z.string({
-        message: "postcode.required",
-      }),
-      city: z
-        .string({
-          message: "city.required",
-        })
-        .min(1, {
-          message: "city.required",
-        }),
-      country: z
-        .string({
-          message: "country.required",
-        })
-        .min(1, {
-          message: "country.required",
-        }),
-    }),
+        city: z
+          .string({
+            message: "city.required",
+          })
+          .min(1, {
+            message: "city.required",
+          }),
+        country: z
+          .string({
+            message: "country.required",
+          })
+          .min(1, {
+            message: "country.required",
+          }),
+      })
+      .refine(
+        ({ postcode, country }) => {
+          if (country === "United States" && isEmpty(postcode)) {
+            return false;
+          }
+          return true;
+        },
+        {
+          message: "postcode.required",
+        }
+      ),
     dateOfBirth: z
       .object({
         day: z
@@ -471,18 +483,6 @@ const localizedErrors = computed(() => {
 });
 
 const onSubmit = handleSubmit((values, actions) => {
-  if (
-    values["personalInfomation"]["address"]["country"] === "United States" &&
-    isEmpty(values["personalInfomation"]["address"]["postcode"])
-  ) {
-    actions.setFieldError(
-      "personalInfomation.address.postcode",
-      "postcode.required"
-    );
-    return;
-  } else {
-  }
-
   console.log(values);
 
   actions.resetForm();
