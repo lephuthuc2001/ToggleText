@@ -1,6 +1,13 @@
 <template>
   <v-container tag="form" @submit.prevent="onSubmit">
     <v-row>
+      <v-radio-group v-model="schema" label="Schema used" inline>
+        <v-radio label="Zod" value="zod"></v-radio>
+        <v-radio label="Yup" value="yup"></v-radio>
+        <v-radio label="Valibot" value="valibot"></v-radio>
+      </v-radio-group>
+    </v-row>
+    <v-row>
       <v-col>
         <h1 class="text-center text-sky-800 text-6xl uppercase font-bold">
           {{ $t("title", { ns: "applicationForm" }) }}
@@ -229,6 +236,7 @@ import { toTypedSchema as valibotToTypedSchema } from "@vee-validate/valibot";
 import { useForm } from "vee-validate";
 import { useTranslation } from "i18next-vue";
 import isEmpty from "lodash/isEmpty";
+import { ref } from "vue";
 
 // Utility imports
 import { phoneNumberRegex, isOlderThan18 } from "../../utils/utils";
@@ -293,6 +301,8 @@ const initialValues = {
   agreement: false,
   signature: "",
 };
+
+const schema = ref("zod");
 
 const zodSchema = zodToTypedSchema(
   z.object({
@@ -589,8 +599,19 @@ const valibotSchema = valibotToTypedSchema(
   })
 );
 
+const validationSchema = computed(() => {
+  switch (schema.value) {
+    case "zod":
+      return zodSchema;
+    case "yup":
+      return yupSchema;
+    case "valibot":
+      return valibotSchema;
+  }
+});
+
 const { handleSubmit, errors, resetForm } = useForm({
-  validationSchema: valibotSchema,
+  validationSchema: validationSchema,
   initialValues,
 });
 
