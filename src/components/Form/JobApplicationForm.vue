@@ -29,7 +29,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("name", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("name", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -58,7 +61,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("address", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("address", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <AddressInput
@@ -69,7 +75,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("dateOfBirth", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("dateOfBirth", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <DateOfBirthInput
@@ -80,7 +89,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("phone", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("phone", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -116,7 +128,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("highSchool", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("highSchool", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -141,7 +156,10 @@
     </v-row>
     <v-row>
       <v-col cols="2">
-        <h2>{{ $t("university", { ns: "applicationForm" }) }}</h2>
+        <h2>
+          {{ $t("university", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h2>
       </v-col>
       <v-col cols="10">
         <v-row>
@@ -170,6 +188,7 @@
           class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
         >
           {{ $t("skill", { ns: "applicationForm", count: 2 }) }}
+          <span class="text-red">&ast;</span>
         </h1>
       </v-col>
       <v-col cols="5">
@@ -177,6 +196,7 @@
           class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
         >
           {{ $t("level", { ns: "applicationForm", count: 2 }) }}
+          <span class="text-red">&ast;</span>
         </h1>
       </v-col>
     </v-row>
@@ -194,7 +214,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <h1 class="mb-2">{{ $t("signature", { ns: "applicationForm" }) }}</h1>
+        <h1 class="mb-2">
+          {{ $t("signature", { ns: "applicationForm" }) }}
+          <span class="text-red">&ast;</span>
+        </h1>
         <SignatureInput
           :errorMessage="localizedErrors['signature']"
           formPath="signature"
@@ -240,7 +263,7 @@ import { toTypedSchema as valibotToTypedSchema } from "@vee-validate/valibot";
 import { useForm } from "vee-validate";
 import { useTranslation } from "i18next-vue";
 import isEmpty from "lodash/isEmpty";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 // Utility imports
 import { phoneNumberRegex, isOlderThan18 } from "../../utils/utils";
@@ -619,14 +642,17 @@ const valibotSchema = valibotToTypedSchema(
         v.object({
           name: v.pipe(v.string(), v.nonEmpty("skillName.required")),
           level: v.pipe(
-            v.string("skillLevel.invalid"),
+            v.picklist(
+              ["Beginner", "Intermediate", "Advanced"],
+              "skillLevel.invalid"
+            ),
             v.nonEmpty("skillLevel.invalid")
           ),
         })
       ),
       v.minLength(3, "skills.atLeastThree")
     ),
-    agreement: v.pipe(v.boolean(), v.nonEmpty("agreement.required")),
+    agreement: v.pipe(v.boolean(), v.literal(true, "agreement.required")),
     signature: v.pipe(v.string(), v.nonEmpty("signature.required")),
   })
 );
@@ -658,7 +684,9 @@ const localizedErrors = computed(() => {
   }
 
   Object.entries(errors.value).forEach(([formPath, message]) => {
-    output[formPath] = t(message, { ns: "applicationForm" });
+    output[formPath] = t(schema.value + "." + message, {
+      ns: "applicationForm",
+    });
   });
 
   return output;
@@ -671,6 +699,10 @@ const onSubmit = handleSubmit((values, actions) => {
 });
 
 i18next.on("languageChanged", () => {
+  resetForm();
+});
+
+watch(schema, () => {
   resetForm();
 });
 </script>
