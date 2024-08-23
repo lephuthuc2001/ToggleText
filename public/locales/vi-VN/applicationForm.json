@@ -37,24 +37,184 @@
   "date": "Ngày Tháng",
   "approval": "Phê duyệt",
   "postcode": "Mã bưu chính",
-  "firstName.required": "Tên phải có ít nhất 2 ký tự.",
-  "lastName.required": "Họ phải có ít nhất 2 ký tự.",
-  "streetAddress.required": "Địa chỉ đường là bắt buộc.",
-  "postcode.required": "Mã bưu điện là bắt buộc.",
-  "city.required": "Thành phố là bắt buộc.",
-  "country.required": "Quốc gia là bắt buộc.",
-  "day.required": "Ngày là bắt buộc.",
-  "month.required": "Tháng là bắt buộc.",
-  "year.required": "Năm là bắt buộc.",
-  "olderThan18": "Bạn phải trên 18 tuổi.",
-  "phoneNumber.invalid": "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại hợp lệ, bao gồm mã quốc gia nếu có. Ví dụ: +1234567890, (123) 456-7890, 123-456-7890.",
-  "highSchoolName.required": "Tên trường trung học là bắt buộc.",
-  "highSchoolLocation.required": "Địa điểm trường trung học là bắt buộc.",
-  "universityName.required": "Tên trường đại học là bắt buộc.",
-  "universityLocation.required": "Địa điểm trường đại học là bắt buộc.",
-  "skillName.required": "Tên kỹ năng là bắt buộc.",
-  "skillLevel.invalid": "Trình độ kỹ năng phải là một trong các mức: Sơ cấp, Trung cấp, Cao cấp.",
-  "skills.atLeastThree": "Bạn phải có ít nhất ba kỹ năng.",
-  "agreement.required": "Bạn phải đồng ý với các điều khoản.",
-  "signature.required": "Chữ ký là bắt buộc."
+  "zod": {
+    "firstName": {
+      "required": "Vui lòng cung cấp tên của bạn. Tên phải có ít nhất 2 ký tự."
+    },
+    "lastName": {
+      "required": "Vui lòng cung cấp họ của bạn. Họ phải có ít nhất 2 ký tự."
+    },
+    "streetAddress": {
+      "required": "Địa chỉ đường là bắt buộc."
+    },
+    "postcode": {
+      "required": "Vui lòng nhập mã bưu điện của bạn."
+    },
+    "city": {
+      "required": "Tên thành phố là bắt buộc."
+    },
+    "country": {
+      "required": "Tên quốc gia là bắt buộc."
+    },
+    "day": {
+      "required": "Ngày là trường bắt buộc."
+    },
+    "month": {
+      "required": "Tháng là trường bắt buộc."
+    },
+    "year": {
+      "required": "Năm là trường bắt buộc."
+    },
+    "olderThan18": "Người nộp đơn phải trên 18 tuổi.",
+    "phoneNumber": {
+      "invalid": "Định dạng số điện thoại không hợp lệ. Vui lòng bao gồm mã quốc gia nếu có. Ví dụ: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "Tên trường trung học của bạn là bắt buộc."
+    },
+    "highSchoolLocation": {
+      "required": "Địa điểm trường trung học của bạn là bắt buộc."
+    },
+    "universityName": {
+      "required": "Tên trường đại học của bạn là bắt buộc."
+    },
+    "universityLocation": {
+      "required": "Địa điểm trường đại học của bạn là bắt buộc."
+    },
+    "skillName": {
+      "required": "Vui lòng cung cấp tên kỹ năng."
+    },
+    "skillLevel": {
+      "invalid": "Trình độ kỹ năng phải là một trong các mức: Sơ cấp, Trung cấp, Cao cấp."
+    },
+    "skills": {
+      "atLeastThree": "Bạn cần liệt kê ít nhất ba kỹ năng."
+    },
+    "agreement": {
+      "required": "Bạn phải đồng ý với các điều khoản và điều kiện."
+    },
+    "signature": {
+      "required": "Chữ ký của bạn là bắt buộc."
+    }
+  },
+  "yup": {
+    "firstName": {
+      "required": "Tên là bắt buộc và phải có ít nhất 2 ký tự."
+    },
+    "lastName": {
+      "required": "Họ là bắt buộc và phải có ít nhất 2 ký tự."
+    },
+    "streetAddress": {
+      "required": "Địa chỉ đường không được để trống."
+    },
+    "postcode": {
+      "required": "Mã bưu điện không được để trống."
+    },
+    "city": {
+      "required": "Thành phố không được để trống."
+    },
+    "country": {
+      "required": "Quốc gia không được để trống."
+    },
+    "day": {
+      "required": "Ngày không được để trống."
+    },
+    "month": {
+      "required": "Tháng không được để trống."
+    },
+    "year": {
+      "required": "Năm không được để trống."
+    },
+    "olderThan18": "Bạn phải ít nhất 18 tuổi.",
+    "phoneNumber": {
+      "invalid": "Vui lòng nhập định dạng số điện thoại hợp lệ. Ví dụ: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "Tên trường trung học không được để trống."
+    },
+    "highSchoolLocation": {
+      "required": "Địa điểm trường trung học không được để trống."
+    },
+    "universityName": {
+      "required": "Tên trường đại học không được để trống."
+    },
+    "universityLocation": {
+      "required": "Địa điểm trường đại học không được để trống."
+    },
+    "skillName": {
+      "required": "Tên kỹ năng không được để trống."
+    },
+    "skillLevel": {
+      "invalid": "Trình độ kỹ năng phải là một trong các mức: Sơ cấp, Trung cấp, Cao cấp."
+    },
+    "skills": {
+      "atLeastThree": "Cần có ít nhất ba kỹ năng."
+    },
+    "agreement": {
+      "required": "Bạn phải chấp nhận các điều khoản."
+    },
+    "signature": {
+      "required": "Chữ ký không được để trống."
+    }
+  },
+  "valibot": {
+    "firstName": {
+      "required": "Tên là trường bắt buộc và phải có ít nhất 2 ký tự."
+    },
+    "lastName": {
+      "required": "Họ là trường bắt buộc và phải có ít nhất 2 ký tự."
+    },
+    "streetAddress": {
+      "required": "Địa chỉ đường là trường bắt buộc."
+    },
+    "postcode": {
+      "required": "Mã bưu điện là trường bắt buộc."
+    },
+    "city": {
+      "required": "Thành phố là trường bắt buộc."
+    },
+    "country": {
+      "required": "Quốc gia là trường bắt buộc."
+    },
+    "day": {
+      "required": "Ngày là trường bắt buộc."
+    },
+    "month": {
+      "required": "Tháng là trường bắt buộc."
+    },
+    "year": {
+      "required": "Năm là trường bắt buộc."
+    },
+    "olderThan18": "Bạn phải trên 18 tuổi.",
+    "phoneNumber": {
+      "invalid": "Định dạng số điện thoại không hợp lệ. Bao gồm mã quốc gia nếu cần thiết. Ví dụ: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "Tên trường trung học là trường bắt buộc."
+    },
+    "highSchoolLocation": {
+      "required": "Địa điểm trường trung học là trường bắt buộc."
+    },
+    "universityName": {
+      "required": "Tên trường đại học là trường bắt buộc."
+    },
+    "universityLocation": {
+      "required": "Địa điểm trường đại học là trường bắt buộc."
+    },
+    "skillName": {
+      "required": "Tên kỹ năng là trường bắt buộc."
+    },
+    "skillLevel": {
+      "invalid": "Trình độ kỹ năng phải là một trong các mức: Sơ cấp, Trung cấp, Cao cấp."
+    },
+    "skills": {
+      "atLeastThree": "Bạn cần có ít nhất ba kỹ năng."
+    },
+    "agreement": {
+      "required": "Bạn phải đồng ý với các điều khoản và điều kiện."
+    },
+    "signature": {
+      "required": "Chữ ký là trường bắt buộc."
+    }
+  }
 }

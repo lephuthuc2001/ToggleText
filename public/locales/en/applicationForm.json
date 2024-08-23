@@ -37,24 +37,184 @@
   "date": "Date",
   "approval": "Approval",
   "postcode": "Postcode",
-  "firstName.required": "First name is required and must be at least 2 characters long.",
-  "lastName.required": "Last name is required and must be at least 2 characters long.",
-  "streetAddress.required": "Street address is required.",
-  "postcode.required": "Postcode is required.",
-  "city.required": "City is required.",
-  "country.required": "Country is required.",
-  "day.required": "Day is required.",
-  "month.required": "Month is required.",
-  "year.required": "Year is required.",
-  "olderThan18": "You must be older than 18 years.",
-  "phoneNumber.invalid": "Invalid phone number format. Please enter a valid phone number, including the country code if applicable. Examples: +1234567890, (123) 456-7890, 123-456-7890.",
-  "highSchoolName.required": "High school name is required.",
-  "highSchoolLocation.required": "High school location is required.",
-  "universityName.required": "University name is required.",
-  "universityLocation.required": "University location is required.",
-  "skillName.required": "Skill name is required.",
-  "skillLevel.invalid": "Skill level must be one of: Beginner, Intermediate, Advanced.",
-  "skills.atLeastThree": "You must have at least three skills.",
-  "agreement.required": "You must agree to the terms.",
-  "signature.required": "Signature is required."
+  "zod": {
+    "firstName": {
+      "required": "Please provide your first name. It must be at least 2 characters long."
+    },
+    "lastName": {
+      "required": "Please provide your last name. It must be at least 2 characters long."
+    },
+    "streetAddress": {
+      "required": "Your street address is required."
+    },
+    "postcode": {
+      "required": "Please enter your postcode."
+    },
+    "city": {
+      "required": "City name is required."
+    },
+    "country": {
+      "required": "Country name is required."
+    },
+    "day": {
+      "required": "Day is a required field."
+    },
+    "month": {
+      "required": "Month is a required field."
+    },
+    "year": {
+      "required": "Year is a required field."
+    },
+    "olderThan18": "Applicants must be older than 18 years.",
+    "phoneNumber": {
+      "invalid": "The phone number format is invalid. Please include the country code if applicable. Examples: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "The name of your high school is required."
+    },
+    "highSchoolLocation": {
+      "required": "The location of your high school is required."
+    },
+    "universityName": {
+      "required": "The name of your university is required."
+    },
+    "universityLocation": {
+      "required": "The location of your university is required."
+    },
+    "skillName": {
+      "required": "Please provide the name of the skill."
+    },
+    "skillLevel": {
+      "invalid": "Skill level must be one of the following: Beginner, Intermediate, Advanced."
+    },
+    "skills": {
+      "atLeastThree": "You need to list at least three skills."
+    },
+    "agreement": {
+      "required": "You must agree to the terms and conditions."
+    },
+    "signature": {
+      "required": "Your signature is required."
+    }
+  },
+  "yup": {
+    "firstName": {
+      "required": "First name is mandatory and should be at least 2 characters long."
+    },
+    "lastName": {
+      "required": "Last name is mandatory and should be at least 2 characters long."
+    },
+    "streetAddress": {
+      "required": "Street address cannot be empty."
+    },
+    "postcode": {
+      "required": "Postcode cannot be empty."
+    },
+    "city": {
+      "required": "City cannot be empty."
+    },
+    "country": {
+      "required": "Country cannot be empty."
+    },
+    "day": {
+      "required": "Day cannot be empty."
+    },
+    "month": {
+      "required": "Month cannot be empty."
+    },
+    "year": {
+      "required": "Year cannot be empty."
+    },
+    "olderThan18": "You must be at least 18 years old.",
+    "phoneNumber": {
+      "invalid": "Please enter a valid phone number format. Examples: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "High school name cannot be empty."
+    },
+    "highSchoolLocation": {
+      "required": "High school location cannot be empty."
+    },
+    "universityName": {
+      "required": "University name cannot be empty."
+    },
+    "universityLocation": {
+      "required": "University location cannot be empty."
+    },
+    "skillName": {
+      "required": "Skill name cannot be empty."
+    },
+    "skillLevel": {
+      "invalid": "Skill level must be one of these: Beginner, Intermediate, Advanced."
+    },
+    "skills": {
+      "atLeastThree": "At least three skills are required."
+    },
+    "agreement": {
+      "required": "You must accept the terms."
+    },
+    "signature": {
+      "required": "Signature cannot be empty."
+    }
+  },
+  "valibot": {
+    "firstName": {
+      "required": "First name is a required field and must have at least 2 characters."
+    },
+    "lastName": {
+      "required": "Last name is a required field and must have at least 2 characters."
+    },
+    "streetAddress": {
+      "required": "Street address is a required field."
+    },
+    "postcode": {
+      "required": "Postcode is a required field."
+    },
+    "city": {
+      "required": "City is a required field."
+    },
+    "country": {
+      "required": "Country is a required field."
+    },
+    "day": {
+      "required": "Day is a required field."
+    },
+    "month": {
+      "required": "Month is a required field."
+    },
+    "year": {
+      "required": "Year is a required field."
+    },
+    "olderThan18": "You must be over 18 years old.",
+    "phoneNumber": {
+      "invalid": "Invalid phone number format. Include the country code if necessary. Examples: +1234567890, (123) 456-7890, 123-456-7890."
+    },
+    "highSchoolName": {
+      "required": "High school name is a required field."
+    },
+    "highSchoolLocation": {
+      "required": "High school location is a required field."
+    },
+    "universityName": {
+      "required": "University name is a required field."
+    },
+    "universityLocation": {
+      "required": "University location is a required field."
+    },
+    "skillName": {
+      "required": "Skill name is a required field."
+    },
+    "skillLevel": {
+      "invalid": "Skill level must be one of the following: Beginner, Intermediate, Advanced."
+    },
+    "skills": {
+      "atLeastThree": "You need to have at least three skills."
+    },
+    "agreement": {
+      "required": "You must agree to the terms and conditions."
+    },
+    "signature": {
+      "required": "Signature is a required field."
+    }
+  }
 }
