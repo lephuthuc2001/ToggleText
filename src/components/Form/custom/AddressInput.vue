@@ -8,6 +8,9 @@
             name="street-address"
             :formPath="streetAddressFormPath"
             :errorMessage="streetAddressErrorMessage"
+            :required="
+              isRequired(props.validationSchema, streetAddressFormPath)
+            "
           ></BaseTextareaInput>
         </v-col>
         <v-col>
@@ -16,6 +19,7 @@
             name="postcode"
             :formPath="postCodeFormPath"
             :errorMessage="postCodeErrorMessage ?? postcodeCustomError"
+            :required="isPostcodeRequired"
           ></BaseTextInput>
         </v-col>
       </v-row>
@@ -28,6 +32,7 @@
             :loading="isLoadingCities"
             :formPath="cityFormPath"
             :errorMessage="cityErrorMessage"
+            :required="isRequired(props.validationSchema, cityFormPath)"
           ></BaseSelectInput>
         </v-col>
         <v-col>
@@ -37,6 +42,7 @@
             :items="countries"
             :formPath="countryFormPath"
             :errorMessage="countryErrorMessage"
+            :required="isRequired(props.validationSchema, countryFormPath)"
           ></BaseSelectInput>
         </v-col>
       </v-row>
@@ -57,6 +63,9 @@ import LocationService from "../../../services/LocationService";
 import BaseTextInput from "../base/BaseTextInput.vue";
 import BaseSelectInput from "../base/BaseSelectInput.vue";
 import BaseTextareaInput from "../base/BaseTextareaInput.vue";
+import { isRequired } from "../../../utils/utils";
+import { required } from "valibot";
+import { is } from "valibot";
 
 const props = defineProps({
   formPath: {
@@ -66,6 +75,10 @@ const props = defineProps({
   localizedErrors: {
     type: Object,
     default: () => ({}),
+  },
+  validationSchema: {
+    type: Object,
+    required: true,
   },
 });
 
@@ -122,6 +135,9 @@ onMounted(async () => {
 
 const country = computed(() => value.value.country);
 
+const isPostcodeRequired = computed(() => {
+  return curentCountry.value === "United States";
+});
 watch(
   country,
   (newCountry, oldCountry) => {

@@ -2,9 +2,13 @@
   <v-textarea
     v-model="value"
     :name="props.name"
-    :label="props.label"
     :error-messages="props.errorMessage ?? errorMessage"
-  ></v-textarea>
+  >
+    <template #label>
+      {{ props.label }}
+      <span class="text-red" v-if="props.required"> (required) &#42;</span>
+    </template></v-textarea
+  >
 </template>
 
 <script setup>
@@ -25,6 +29,10 @@ const props = defineProps({
   errorMessage: {
     type: String,
     default: undefined,
+  },
+  required: {
+    type: Boolean,
+    default: false,
   },
 });
 // The `name` is returned in a function because we want to make sure it stays reactive

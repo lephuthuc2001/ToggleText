@@ -13,6 +13,9 @@
         name="skill"
         :formPath="`${props.formPath}[${idx}].name`"
         :errorMessage="localizedErrors[`${props.formPath}[${idx}].name`]"
+        :required="
+          isRequired(props.validationSchema, `${props.formPath}[${idx}].name`)
+        "
       ></BaseTextInput>
     </v-col>
     <v-col cols="5">
@@ -22,6 +25,9 @@
         :items="levelsOptions"
         :formPath="`${props.formPath}` + `[${idx}].level`"
         :errorMessage="localizedErrors[`${props.formPath}[${idx}].level`]"
+        :required="
+          isRequired(props.validationSchema, `${props.formPath}[${idx}].level`)
+        "
       ></BaseSelectInput>
     </v-col>
     <v-col cols="1">
@@ -51,6 +57,8 @@ import { useFieldArray, useFieldError } from "vee-validate";
 import ErrorMessage from "../base/ErrorMessage.vue";
 import BaseTextInput from "../base/BaseTextInput.vue";
 import BaseSelectInput from "../base/BaseSelectInput.vue";
+import { isRequired } from "../../../utils/utils";
+import { required } from "valibot";
 
 const { t } = useTranslation();
 const props = defineProps({
@@ -61,6 +69,10 @@ const props = defineProps({
   localizedErrors: {
     type: Object,
     default: () => ({}),
+  },
+  validationSchema: {
+    type: Object,
+    required: true,
   },
 });
 

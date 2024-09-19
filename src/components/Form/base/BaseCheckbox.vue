@@ -2,10 +2,14 @@
   <v-checkbox
     v-model="checked"
     @update:modelValue="handleChange"
-    :label="props.label"
     :name="props.name"
     :error-messages="props.errorMessage ?? errorMessage"
-  ></v-checkbox>
+  >
+    <template #label>
+      {{ props.label }}
+      <span class="text-red" v-if="props.required"> (required) &#42;</span>
+    </template></v-checkbox
+  >
 </template>
 
 <script setup>
@@ -27,6 +31,10 @@ const props = defineProps({
   errorMessage: {
     type: String,
     default: undefined,
+  },
+  required: {
+    type: Boolean,
+    default: false,
   },
 });
 

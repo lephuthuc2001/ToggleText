@@ -14,6 +14,7 @@
         name="day"
         :formPath="dayInputFormPath"
         :errorMessage="dayErrorMessage"
+        :required="isRequired(props.validationSchema, dayInputFormPath)"
       ></BaseSelectInput
     ></v-col>
 
@@ -24,6 +25,7 @@
         name="month"
         :formPath="monthInputFormPath"
         :errorMessage="monthErrorMessage"
+        :required="isRequired(props.validationSchema, monthInputFormPath)"
       ></BaseSelectInput>
     </v-col>
     <v-col>
@@ -33,6 +35,7 @@
         :items="yearRange"
         :formPath="yearInputFormPath"
         :errorMessage="yearErrorMessage"
+        :required="isRequired(props.validationSchema, yearInputFormPath)"
       ></BaseSelectInput>
     </v-col>
   </v-row>
@@ -46,9 +49,13 @@ import { defineProps, defineModel, computed } from "vue";
 import { useField } from "vee-validate";
 
 // Local imports
-import { getDateRangeForDateOfBirthInput } from "../../../utils/utils";
+import {
+  getDateRangeForDateOfBirthInput,
+  isRequired,
+} from "../../../utils/utils";
 import BaseSelectInput from "../base/BaseSelectInput.vue";
 import ErrorMessage from "../base/ErrorMessage.vue";
+import { required } from "valibot";
 
 const props = defineProps({
   errorMessage: {
@@ -61,6 +68,10 @@ const props = defineProps({
   localizedErrors: {
     type: Object,
     default: () => ({}),
+  },
+  validationSchema: {
+    type: Object,
+    required: true,
   },
 });
 

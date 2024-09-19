@@ -2,11 +2,16 @@
   <v-text-field
     v-model="value"
     :name="props.name"
-    :label="props.label"
     :error-messages="props.errorMessage ?? errorMessage"
-  ></v-text-field>
+  >
+    <template #label>
+      {{ props.label }}
+      <span class="text-red" v-if="props.required"> (required) &#42;</span>
+    </template>
+  </v-text-field>
 </template>
 <script setup>
+import { required } from "valibot";
 import { useField } from "vee-validate";
 const props = defineProps({
   name: {
@@ -24,6 +29,10 @@ const props = defineProps({
   errorMessage: {
     type: String,
     default: undefined,
+  },
+  required: {
+    type: Boolean,
+    default: false,
   },
 });
 // The `name` is returned in a function because we want to make sure it stays reactive

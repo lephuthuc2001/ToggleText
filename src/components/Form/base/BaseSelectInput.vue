@@ -1,6 +1,5 @@
 <template>
   <v-autocomplete
-    :label="props.label"
     :name="props.name"
     v-model="value"
     :items="props.items"
@@ -8,10 +7,16 @@
     :item-value="props.itemValue"
     :error-messages="props.errorMessage ?? errorMessage"
     :loading="props.loading"
-  ></v-autocomplete>
+  >
+    <template #label>
+      {{ props.label }}
+      <span class="text-red" v-if="props.required"> (required) &#42;</span>
+    </template></v-autocomplete
+  >
 </template>
 
 <script setup>
+import { required } from "valibot";
 import { useField } from "vee-validate";
 
 const props = defineProps({
@@ -46,6 +51,10 @@ const props = defineProps({
   errorMessage: {
     type: String,
     default: undefined,
+  },
+  required: {
+    type: Boolean,
+    default: false,
   },
 });
 

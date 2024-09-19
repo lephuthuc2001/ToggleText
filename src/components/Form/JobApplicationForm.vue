@@ -31,7 +31,6 @@
       <v-col cols="2">
         <h2>
           {{ $t("name", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
@@ -44,6 +43,12 @@
               :errorMessage="
                 localizedErrors['personalInformation.name.firstName']
               "
+              :required="
+                isRequired(
+                  validationSchema,
+                  'personalInformation.name.firstName'
+                )
+              "
             />
           </v-col>
           <v-col cols="6">
@@ -54,6 +59,12 @@
               :errorMessage="
                 localizedErrors['personalInformation.name.lastName']
               "
+              :required="
+                isRequired(
+                  validationSchema,
+                  'personalInformation.name.firstName'
+                )
+              "
             />
           </v-col>
         </v-row>
@@ -63,13 +74,13 @@
       <v-col cols="2">
         <h2>
           {{ $t("address", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
         <AddressInput
           :localizedErrors="localizedErrors"
           formPath="personalInformation.address"
+          :validationSchema="validationSchema"
         />
       </v-col>
     </v-row>
@@ -77,13 +88,13 @@
       <v-col cols="2">
         <h2>
           {{ $t("dateOfBirth", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
         <DateOfBirthInput
           :localizedErrors="localizedErrors"
           formPath="personalInformation.dateOfBirth"
+          :validationSchema="validationSchema"
         />
       </v-col>
     </v-row>
@@ -91,7 +102,6 @@
       <v-col cols="2">
         <h2>
           {{ $t("phone", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
@@ -102,6 +112,9 @@
               :label="$t('home', { ns: 'applicationForm' })"
               formPath="personalInformation.phone.home"
               :errorMessage="localizedErrors['personalInformation.phone.home']"
+              :required="
+                isRequired(validationSchema, 'personalInformation.phone.home')
+              "
             />
           </v-col>
           <v-col cols="6">
@@ -111,6 +124,9 @@
               formPath="personalInformation.phone.mobile"
               :errorMessage="
                 localizedErrors['personalInformation.phone.mobile']
+              "
+              :required="
+                isRequired(validationSchema, 'personalInformation.phone.mobile')
               "
             />
           </v-col>
@@ -130,7 +146,6 @@
       <v-col cols="2">
         <h2>
           {{ $t("highSchool", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
@@ -141,6 +156,9 @@
               :label="$t('highSchoolName', { ns: 'applicationForm' })"
               formPath="education.highSchool.name"
               :errorMessage="localizedErrors['education.highSchool.name']"
+              :required="
+                isRequired(validationSchema, 'education.highSchool.name')
+              "
             />
           </v-col>
           <v-col cols="6">
@@ -149,6 +167,9 @@
               :label="$t('highSchoolLocation', { ns: 'applicationForm' })"
               formPath="education.highSchool.location"
               :errorMessage="localizedErrors['education.highSchool.location']"
+              :required="
+                isRequired(validationSchema, 'education.highSchool.location')
+              "
             />
           </v-col>
         </v-row>
@@ -158,7 +179,6 @@
       <v-col cols="2">
         <h2>
           {{ $t("university", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
         </h2>
       </v-col>
       <v-col cols="10">
@@ -169,6 +189,9 @@
               :label="$t('universityName', { ns: 'applicationForm' })"
               formPath="education.university.name"
               :errorMessage="localizedErrors['education.university.name']"
+              :required="
+                isRequired(validationSchema, 'education.university.name')
+              "
             />
           </v-col>
           <v-col cols="6">
@@ -177,6 +200,9 @@
               :label="$t('universityLocation', { ns: 'applicationForm' })"
               formPath="education.university.location"
               :errorMessage="localizedErrors['education.university.location']"
+              :required="
+                isRequired(validationSchema, 'education.university.location')
+              "
             />
           </v-col>
         </v-row>
@@ -188,7 +214,6 @@
           class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
         >
           {{ $t("skill", { ns: "applicationForm", count: 2 }) }}
-          <span class="text-red">&ast;</span>
         </h1>
       </v-col>
       <v-col cols="5">
@@ -196,11 +221,14 @@
           class="opacity-40 text-center text-2xl bg-sky-800 text-white font-semibold uppercase py-2"
         >
           {{ $t("level", { ns: "applicationForm", count: 2 }) }}
-          <span class="text-red">&ast;</span>
         </h1>
       </v-col>
     </v-row>
-    <SkillsLevelsInput :localizedErrors="localizedErrors" formPath="skills" />
+    <SkillsLevelsInput
+      :localizedErrors="localizedErrors"
+      formPath="skills"
+      :validationSchema="validationSchema"
+    />
 
     <v-row>
       <v-col>
@@ -216,7 +244,12 @@
       <v-col>
         <h1 class="mb-2">
           {{ $t("signature", { ns: "applicationForm" }) }}
-          <span class="text-red">&ast;</span>
+          <span
+            class="text-red"
+            v-if="isRequired(validationSchema, 'signature')"
+          >
+            (required) &#42;</span
+          >
         </h1>
         <SignatureInput
           :errorMessage="localizedErrors['signature']"
@@ -266,7 +299,7 @@ import isEmpty from "lodash/isEmpty";
 import { ref, watch } from "vue";
 
 // Utility imports
-import { phoneNumberRegex, isOlderThan18 } from "../../utils/utils";
+import { phoneNumberRegex, isOlderThan18, isRequired } from "../../utils/utils";
 
 // Component imports
 import DateOfBirthInput from "./custom/DateOfBirthInput.vue";
@@ -276,6 +309,7 @@ import SkillsLevelsInput from "./custom/SkillsLevelsInput.vue";
 import BaseTextInput from "./base/BaseTextInput.vue";
 import BaseCheckbox from "./base/BaseCheckbox.vue";
 import { computed } from "vue";
+import { required } from "valibot";
 
 const { t, i18next } = useTranslation();
 
@@ -287,7 +321,7 @@ const initialValues = {
     },
     address: {
       streetAddress: "",
-      postcode: "",
+      postcode: undefined,
       city: "",
       country: "",
     },
@@ -359,9 +393,13 @@ const zodSchema = zodToTypedSchema(
             .min(1, {
               message: "streetAddress.required",
             }),
-          postcode: z.string({
-            message: "postcode.required",
-          }),
+          postcode: z
+            .string({
+              message: "city.required",
+            })
+            .optional({
+              message: "city.required",
+            }),
           city: z
             .string({
               message: "city.required",
@@ -378,9 +416,9 @@ const zodSchema = zodToTypedSchema(
             }),
         })
         .refine(
-          ({ postcode, country }) => {
-            if (country === "United States" && isEmpty(postcode)) {
-              return false;
+          (value) => {
+            if (value.country === "United States") {
+              return value.postcode !== undefined;
             }
             return true;
           },
@@ -511,48 +549,71 @@ const zodSchema = zodToTypedSchema(
 
 const yupSchema = yupToTypedSchema(
   yup.object().shape({
-    personalInformation: yup.object().shape({
-      name: yup.object().shape({
-        firstName: yup
-          .string("firstName.required")
-          .required("firstName.required"),
-        lastName: yup.string("lastName.required").required("lastName.required"),
-      }),
-      address: yup.object().shape({
-        streetAddress: yup.string().required("streetAddress.required"),
-        postcode: yup.string().when("country", {
-          is: "United States",
-          then: (postcode) => postcode.required("postcode.required"),
-          otherwise: (addressSchema) => addressSchema.nullable(),
-        }),
-        city: yup.string().required("city.required"),
-        country: yup.string().required("country.required"),
-      }),
-      dateOfBirth: yup
+    personalInformation: yup
+      .object()
+      .shape({
+        name: yup
+          .object()
+          .shape({
+            firstName: yup
+              .string("firstName.required")
+              .required("firstName.required"),
+            lastName: yup
+              .string("lastName.required")
+              .required("lastName.required"),
+          })
+          .required(),
+        address: yup
+          .object()
+          .shape({
+            streetAddress: yup.string().required("streetAddress.required"),
+            postcode: yup.string().when("country", {
+              is: "United States",
+              then: (postcode) => postcode.required("postcode.required"),
+              otherwise: (addressSchema) => addressSchema.nullable(),
+            }),
+            city: yup.string().required("city.required"),
+            country: yup.string().required("country.required"),
+          })
+          .required(),
+        dateOfBirth: yup
+          .object()
+          .shape({
+            day: yup.string().required("day.required"),
+            month: yup.string().required("month.required"),
+            year: yup.string().required("year.required"),
+          })
+          .test("is-older-than-18", "olderThan18", function (value) {
+            return isOlderThan18(value);
+          })
+          .required(),
+        phone: yup
+          .object()
+          .shape({
+            home: yup.string().matches(phoneNumberRegex, "phoneNumber.invalid"),
+
+            mobile: yup
+              .string()
+              .matches(phoneNumberRegex, "phoneNumber.invalid"),
+          })
+          .required(),
+      })
+      .required(),
+    education: yup.object().shape({
+      highSchool: yup
         .object()
         .shape({
-          day: yup.string().required("day.required"),
-          month: yup.string().required("month.required"),
-          year: yup.string().required("year.required"),
+          name: yup.string().required("highSchoolName.required"),
+          location: yup.string().required("highSchoolLocation.required"),
         })
-        .test("is-older-than-18", "olderThan18", function (value) {
-          return isOlderThan18(value);
-        }),
-      phone: yup.object().shape({
-        home: yup.string().matches(phoneNumberRegex, "phoneNumber.invalid"),
-
-        mobile: yup.string().matches(phoneNumberRegex, "phoneNumber.invalid"),
-      }),
-    }),
-    education: yup.object().shape({
-      highSchool: yup.object().shape({
-        name: yup.string().required("highSchoolName.required"),
-        location: yup.string().required("highSchoolLocation.required"),
-      }),
-      university: yup.object().shape({
-        name: yup.string().required("universityName.required"),
-        location: yup.string().required("universityLocation.required"),
-      }),
+        .required(),
+      university: yup
+        .object()
+        .shape({
+          name: yup.string().required("universityName.required"),
+          location: yup.string().required("universityLocation.required"),
+        })
+        .required(),
     }),
     skills: yup
       .array()
@@ -568,7 +629,8 @@ const yupSchema = yupToTypedSchema(
             .required("skillLevel.invalid"),
         })
       )
-      .min(3, "skills.atLeastThree"),
+      .min(3, "skills.atLeastThree")
+      .required(),
     agreement: yup.boolean().oneOf([true], "agreement.required"),
     signature: yup.string().required("signature.required"),
   })
@@ -587,7 +649,7 @@ const valibotSchema = valibotToTypedSchema(
             v.string(),
             v.nonEmpty("streetAddress.required")
           ),
-          postcode: v.string(),
+          postcode: v.optional(v.string()),
           city: v.pipe(v.string(), v.nonEmpty("city.required")),
           country: v.pipe(v.string(), v.nonEmpty("country.required")),
         }),
@@ -652,7 +714,9 @@ const valibotSchema = valibotToTypedSchema(
       ),
       v.minLength(3, "skills.atLeastThree")
     ),
-    agreement: v.pipe(v.boolean(), v.literal(true, "agreement.required")),
+    agreement: v.optional(
+      v.pipe(v.boolean(), v.literal(true, "agreement.required"))
+    ),
     signature: v.pipe(v.string(), v.nonEmpty("signature.required")),
   })
 );
@@ -668,16 +732,13 @@ const validationSchema = computed(() => {
   }
 });
 
-const { handleSubmit, errors, resetForm } = useForm({
+const { handleSubmit, errors, resetForm, values } = useForm({
   validationSchema,
   initialValues,
 });
 
 const localizedErrors = computed(() => {
   const output = {};
-
-  console.log(schema.value);
-
   // If there are no errors, return an empty object
   if (Object.keys(errors.value).length === 0) {
     return output;
@@ -693,8 +754,6 @@ const localizedErrors = computed(() => {
 });
 
 const onSubmit = handleSubmit((values, actions) => {
-  console.log(values);
-
   actions.resetForm();
 });
 
@@ -704,7 +763,23 @@ i18next.on("languageChanged", () => {
 
 watch(schema, () => {
   resetForm();
+
+  console.log(
+    validationSchema.value.describe("personalInformation.address.postcode")
+  );
 });
+
+watch(
+  values,
+  () => {
+    console.log(
+      validationSchema.value.describe("personalInformation.address.postcode")
+    );
+  },
+  {
+    deep: true,
+  }
+);
 </script>
 
 <style scoped></style>

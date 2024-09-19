@@ -60,3 +60,20 @@ export function getDateRangeForDateOfBirthInput() {
 
   return { dayRange, monthRange, yearRange };
 }
+
+/**
+ * Checks if a field is required in the given validation schema.
+ *
+ * @param {Object} validationSchema - The validation schema object from toTypedSchema
+ * @param {string} fieldPath - The path to the field in the schema.
+ * @returns {boolean} - Returns true if the field is required, otherwise false.
+ * @throws {Error} - Throws an error if the field path is invalid or not found.
+ */
+export const isRequired = (validationSchema, fieldPath) => {
+  try {
+    const fieldDescription = validationSchema.describe(fieldPath);
+    return fieldDescription.required;
+  } catch (error) {
+    throw new Error(`Invalid field path: ${fieldPath}. ${error.message}`);
+  }
+};
